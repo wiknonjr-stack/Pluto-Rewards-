@@ -104,3 +104,72 @@ app.get("/auth/spotify/callback", async (req, res) => {
     res.redirect(`${FRONTEND_URL}?error=auth_failed`);
   }
 });
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "No token" });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: "Invalid token" });
+  }
+}
+
+app.get("/auth/me", requireAuth, async (req, res) => {
+  const { data, error } = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  if (error) return res.status(404).json({ error: "User not found" });
+  res.json({ user: data });
+});
+
+app.get("/api/campaigns", async (req, res) => {
+  const { data, error } = await supabase
+    .from("campaigns")
+    .select("*")
+    .eq("status", "active")
+    .order("created_at", { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ campaigns: data });
+});
+
+app.post("/api/campaigns", requireAuth, async (req, res) => {
+  const { title, description, campaign_type, target_type, artist_name, genre, reward_pool, duration, ends_at } = req.body;
+  const { data, error } = await supabase.from("campaigns").insert({
+    operator_id: req.user.id, title, description, campaign_type,
+    target_type, artist_name, genre, reward_pool,
+    remaining_pool: reward_pool, duration, ends_at, status: "active",
+  }).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json({ campaign: data });
+});
+
+app.post("/api/waitlist", async (req, res) => {
+  const { email, name, type = "fan", genre_interest } = req.body;
+  if (!email || !email.includes("@")) return res.status(400).json({ error: "Valid email required" });
+  const { data, error } = await supabase.from("waitlist").upsert(
+    { email, name, type, genre_interest },
+    { onConflict: "email", ignoreDuplicates: true }
+  ).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json({ message: "Added to waitlist", id: data?.id });
+});
+
+app.get("/api/profile", requireAuth, async (req, res) => {
+  const { data, error } = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  if (error) return res.status(404).json({ error: "Not found" });
+  res.json({ user: data });
+});
+
+app.patch("/api/profile", requireAuth, async (req, res) => {
+  const { wallet_address, twitter_handle } = req.body;
+  const updates = {};
+  if (wallet_address) updates.wallet_address = wallet_address;
+  if (twitter_handle) updates.twitter_handle = twitter_handle;
+  const { data, error } = await supabase.from("users").update(updates).eq("id", req.user.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ user: data });
+});
+
+app.listen(PORT, () => {
+  console.log(`Pluto Rewards backend running on port ${PORT}`);
+  console.log(`Spotify redirect: ${SPOTIFY_REDIRECT_URI}`);
+});
