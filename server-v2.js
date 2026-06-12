@@ -175,6 +175,18 @@ app.post("/api/waitlist", async (req, res) => {
   res.status(201).json({ message: "Added to waitlist", id: data?.id });
 });
 
+app.post("/api/set-username", requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name || name.trim().length < 2) return res.status(400).json({ error: "Name too short" });
+  const { data, error } = await supabase
+    .from("users")
+    .update({ spotify_name: name.trim(), needs_username: false })
+    .eq("id", req.user.id)
+    .select()
+    .single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ user: data });
+});
 app.get("/api/profile", requireAuth, async (req, res) => {
   const { data, error } = await supabase.from("users").select("*").eq("id", req.user.id).single();
   if (error) return res.status(404).json({ error: "Not found" });
