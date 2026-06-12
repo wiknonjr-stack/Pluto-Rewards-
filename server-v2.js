@@ -69,36 +69,47 @@ app.get("/auth/spotify/callback", async (req, res) => {
       }
     );
 
-    const { access_token } = tokenRes.data;
+const { access_token } = tokenRes.data;
 
-    const profileRes = await axios.get("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-    const profile = profileRes.data;
+// Generate a stable unique ID from the access token (since /v1/me is blocked)
+const crypto = require("crypto");
+const spotifyId = "sp_" + crypto.createHash("sha256").update(access_token.slice(0, 40)).digest("hex").slice(0, 16);
 
-    const { data: user, error: dbErr } = await supabase
-      .from("users")
-      .upsert({
-        spotify_id: profile.id,
-        spotify_name: profile.display_name || profile.id,
-        spotify_image: profile.images?.[0]?.url || null,
-        email: profile.email || null,
-      }, { onConflict: "spotify_id" })
-      .select()
-      .single();
+// Check if this user already exists
+const { data: existing } = await supabase
+  .from("users")
+  .select("*")
+  .eq("spotify_id", spotifyId)
+  .single();
 
-    if (dbErr) {
-      console.error("DB error:", dbErr);
-      return res.redirect(`${FRONTEND_URL}?error=db_error`);
-    }
+let user = existing;
 
-    const jwtToken = jwt.sign(
-      { id: user.id, spotify_id: user.spotify_id, role: user.role || "fan" },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+if (!user) {
+  const { data: newUser, error: dbErr } = await supabase
+    .from("users")
+    .insert({
+      spotify_id: spotifyId,
+      spotify_name: null,
+      needs_username: true,
+    })
+    .select()
+    .single();
 
-    res.redirect(`${FRONTEND_URL}?token=${jwtToken}&user_id=${user.id}&name=${encodeURIComponent(user.spotify_name)}`);
+  if (dbErr) {
+    console.error("DB error:", dbErr);
+    return res.redirect(`${FRONTEND_URL}?error=db_error`);
+  }
+  user = newUser;
+}
+
+const jwtToken = jwt.sign(
+  { id: user.id, spotify_id: user.spotify_id, role: user.role || "fan" },
+  JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
+const needsUsername = !user.spotify_name;
+res.redirect(`${FRONTEND_URL}?token=${jwtToken}&user_id=${user.id}&new_user=${needsUsername}`);
   } catch (err) {
     console.error("Spotify auth error:", err.response?.data || err.message);
     res.redirect(`${FRONTEND_URL}?error=auth_failed`);
@@ -114,7 +125,18 @@ function requireAuth(req, res, next) {
     res.status(401).json({ error: "Invalid token" });
   }
 }
-
+app.post("/api/set-username", requireAuth, async (req, res) => {
+  const { name } = req.body;
+  if (!name || name.trim().length < 2) return res.status(400).json({ error: "Name too short" });
+  const { data, error } = await supabase
+    .from("users")
+    .update({ spotify_name: name.trim(), needs_username: false })
+    .eq("id", req.user.id)
+    .select()
+    .single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ user: data });
+});
 app.get("/auth/me", requireAuth, async (req, res) => {
   const { data, error } = await supabase.from("users").select("*").eq("id", req.user.id).single();
   if (error) return res.status(404).json({ error: "User not found" });
