@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Campaigns — Pluto Rewards</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#04040f;color:#f0f0f5;font-family:'Segoe UI',sans-serif}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.logo{font-size:18px;font-weight:800;letter-spacing:3px;color:#f0f0f5;text-decoration:none}
+.logo span{color:#8b5cf6}
+.back{font-size:13px;color:#9ca3af;text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 18px}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px 80px}
+.tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#00c896;margin-bottom:12px}
+h1{font-size:clamp(32px,6vw,52px);font-weight:900;line-height:1.1;margin-bottom:12px}
+.sub{font-size:15px;color:#9ca3af;margin-bottom:36px;max-width:520px;line-height:1.7}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filter-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-size:12px;padding:7px 16px;border-radius:50px;cursor:pointer;transition:all .15s}
+.filter-btn.active{background:rgba(139,92,246,0.15);border-color:#8b5cf6;color:#a78bfa}
+#campaign-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.campaign-card{background:#0f0e1c;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px;transition:transform .2s,border-color .2s;cursor:pointer}
+.campaign-card:hover{transform:translateY(-3px)}
+.c-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.c-title{font-size:15px;font-weight:700;color:#f9fafb;margin-bottom:10px;line-height:1.4}
+.c-desc{font-size:12px;color:#6b7280;line-height:1.6;margin-bottom:16px}
+.c-footer{display:flex;justify-content:space-between;align-items:center}
+.c-pool{font-size:16px;font-weight:800}
+.c-pool-label{font-size:10px;color:#6b7280;letter-spacing:1px}
+.c-btn{color:#000;font-weight:700;font-size:12px;padding:8px 16px;border:none;border-radius:50px;cursor:pointer}
+
+#detail-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:998;display:none;align-items:center;justify-content:center;padding:20px}
+#detail-modal.show{display:flex}
+.modal-box{background:#0f0e1c;border:1px solid rgba(139,92,246,0.3);border-radius:18px;padding:28px;max-width:420px;width:100%}
+.modal-box h2{font-size:22px;font-weight:800;color:#f9fafb;margin:10px 0}
+.modal-box p{font-size:13px;color:#9ca3af;line-height:1.7;margin-bottom:18px}
+.stat-row{display:flex;gap:12px;margin-bottom:20px}
+.stat-box{flex:1;background:rgba(255,255,255,0.03);border-radius:10px;padding:12px;text-align:center}
+.stat-val{font-size:18px;font-weight:800}
+.stat-label{font-size:10px;color:#6b7280}
+.btn-join{width:100%;background:#00c896;color:#000;font-weight:700;font-size:15px;padding:14px;border:none;border-radius:50px;cursor:pointer;margin-bottom:10px}
+.btn-close{width:100%;background:rgba(255,255,255,0.04);color:#9ca3af;font-weight:600;font-size:14px;padding:12px;border:1px solid rgba(255,255,255,0.1);border-radius:50px;cursor:pointer}
+.loading,.empty,.err{color:#6b7280;font-size:13px;text-align:center;padding:40px 0;grid-column:1/-1}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/"><span>♇</span> PLUTO REWARDS</a>
+  <a class="back" href="/">← Home</a>
+</nav>
+
+<div class="wrap">
+  <div class="tag">🟢 39 campaigns live</div>
+  <h1>Pick your genre.<br><span style="color:#00c896">Start earning.</span></h1>
+  <p class="sub">Every campaign rewards a different kind of listener — top streamers, genre explorers, streak keepers, and more. Connect Spotify on the home page first, then join any campaign here.</p>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="top_listener">🏆 Top Listener</button>
+    <button class="filter-btn" data-filter="discovery">👋 Discovery</button>
+    <button class="filter-btn" data-filter="streak">🔥 Streak</button>
+    <button class="filter-btn" data-filter="weekend_drop">⚡ Weekend Drop</button>
+    <button class="filter-btn" data-filter="social">📣 Social</button>
+    <button class="filter-btn" data-filter="milestone">🎯 Milestone</button>
+    <button class="filter-btn" data-filter="referral">🤝 Referral</button>
+  </div>
+
+  <div id="campaign-grid">
+    <div class="loading">Loading campaigns...</div>
+  </div>
+</div>
+
+<div id="detail-modal">
+  <div class="modal-box" id="modal-content"></div>
+</div>
+<script>
+var API = "https://pluto-rewards-production.up.railway.app";
+var GENRE_COLORS = {"Afrobeats":"#E8820A","Amapiano":"#10B981","Hip-Hop":"#FACC15","R&B":"#A855F7","Pop":"#F472B6","Latin":"#EF4444","UK Drill":"#3B82F6","K-Pop":"#EC4899","EDM":"#22D3EE","Gospel":"#F59E0B","Reggae":"#10B981","Indie":"#34D399","Country":"#D97706","Bollywood":"#F59E0B","Afropop":"#E8820A","Highlife":"#EF4444","Bongo Flava":"#8B5CF6","J-Pop":"#A855F7","Arabic Pop":"#F59E0B","OPM":"#3B82F6","Sertanejo":"#F59E0B","C-Pop":"#EF4444","Salsa":"#F59E0B","Trap":"#EF4444","Ndombolo":"#A855F7","Rai":"#10B981","Turkish Pop":"#EF4444","Classical":"#C4B5FD","French Pop":"#EC4899","Multi-Genre":"#8b5cf6","All Genres":"#00c896","Indie Rock":"#34D399"};
+var TYPE_ICONS = {"top_listener":"🏆","discovery":"👋","streak":"🔥","weekend_drop":"⚡","social":"📣","milestone":"🎯","referral":"🤝","genre_battle":"🌍"};
+
+var allCampaigns = [];
+var campaignMap = {};
+
+fetch(API + "/api/campaigns")
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    allCampaigns = data.campaigns || [];
+    allCampaigns.forEach(function(c) { campaignMap[c.id] = c; });
+    render("all");
+  })
+  .catch(function() {
+    document.getElementById("campaign-grid").innerHTML = '<div class="err">Could not load campaigns. Try refreshing.</div>';
+  });
+
+function render(filter) {
+  var grid = document.getElementById("campaign-grid");
+  var list = filter === "all" ? allCampaigns : allCampaigns.filter(function(c) { return c.campaign_type === filter; });
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty">No campaigns in this category yet.</div>';
+    return;
+  }
+
+  grid.innerHTML = "";
+  list.forEach(function(c) {
+    var color = GENRE_COLORS[c.genre] || "#8b5cf6";
+    var icon = TYPE_ICONS[c.campaign_type] || "♇";
+    var card = document.createElement("div");
+    card.className = "campaign-card";
+    card.style.borderColor = color + "33";
+    card.onclick = function() { showDetail(c.id); };
+    card.innerHTML =
+      '<div class="c-tag" style="color:' + color + '">' + icon + ' ' + (c.genre || "Artist") + '</div>' +
+      '<div class="c-title">' + c.title + '</div>' +
+      '<div class="c-desc">' + (c.description || "") + '</div>' +
+      '<div class="c-footer">' +
+        '<div><div class="c-pool" style="color:' + color + '">' + Number(c.reward_pool).toLocaleString() + ' ♇</div>' +
+        '<div class="c-pool-label">REWARD POOL</div></div>' +
+        '<button class="c-btn" style="background:' + color + '">View →</button>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById("filters").addEventListener("click", function(e) {
+  if (!e.target.classList.contains("filter-btn")) return;
+  document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
+  e.target.classList.add("active");
+  render(e.target.getAttribute("data-filter"));
+});
+
+function showDetail(id) {
+  var c = campaignMap[id];
+  if (!c) return;
+  var color = GENRE_COLORS[c.genre] || "#8b5cf6";
+  document.getElementById("modal-content").innerHTML =
+    '<div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:' + color + '">' + (c.genre || "Artist") + '</div>' +
+    '<h2>' + c.title + '</h2>' +
+    '<p>' + (c.description || "") + '</p>' +
+    '<div class="stat-row">' +
+      '<div class="stat-box"><div class="stat-val" style="color:' + color + '">' + Number(c.reward_pool).toLocaleString() + ' ♇</div><div class="stat-label">REWARD POOL</div></div>' +
+      '<div class="stat-box"><div class="stat-val" style="color:#00c896">' + (c.duration || "—") + '</div><div class="stat-label">DURATION</div></div>' +
+    '</div>' +
+    '<button class="btn-join" onclick="joinCampaign(\'' + c.id + '\')">Join Campaign</button>' +
+    '<button class="btn-close" onclick="closeModal()">Close</button>';
+  document.getElementById("detail-modal").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("detail-modal").classList.remove("show");
+}
+
+function joinCampaign(id) {
+  var token = localStorage.getItem("pluto_token");
+  if (!token) {
+    alert("Connect your Spotify on the home page first!");
+    window.location.href = "/";
+    return;
+  }
+  var wallet = prompt("Enter your World Chain wallet address (0x...) to join:");
+  if (!wallet || !wallet.startsWith("0x")) { alert("Invalid wallet address"); return; }
+
+  fetch(API + "/api/campaigns/" + id + "/join", {
+    method: "POST",
+    headers: {"Content-Type": "application/json","Authorization": "Bearer " + token},
+    body: JSON.stringify({ wallet_address: wallet })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    closeModal();
+    if (data.error) { alert("Error: " + data.error); }
+    else { alert("You're in! 🎉 Discovery Score: " + (data.discovery_score || 0) + " | Streak: " + (data.streak_days || 0) + " 🔥"); }
+  })
+  .catch(function() { alert("Something went wrong."); });
+}
+</script>
+
+</body>
+</html>
