@@ -36,3 +36,91 @@ h1{font-size:clamp(40px,9vw,72px);font-weight:900;line-height:1.0;margin-bottom:
 <a class="btn2" href="#how">How it works ↓</a>
 </div>
   </section>
+<div id="pluto-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0f0e1c;border:1px solid rgba(139,92,246,0.3);border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;">
+    <div style="font-size:40px;margin-bottom:12px;">♇</div>
+    <h2 style="font-size:22px;font-weight:800;color:#f9fafb;margin-bottom:8px;">Welcome to Pluto!</h2>
+    <p style="font-size:13px;color:#9ca3af;line-height:1.7;margin-bottom:20px;">You're connected. What should we call you on the leaderboard?</p>
+    <input id="pluto-name-input" type="text" placeholder="Your display name" maxlength="24"
+      style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;color:#f9fafb;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:14px;text-align:center;">
+    <button id="pluto-name-submit"
+      style="width:100%;background:#00c896;color:#000;font-weight:700;font-size:15px;padding:13px;border:none;border-radius:50px;cursor:pointer;">
+      Save & Continue
+    </button>
+    <p id="pluto-name-error" style="font-size:12px;color:#ef4444;margin-top:10px;display:none;">Please enter at least 2 characters.</p>
+  </div>
+</div>
+
+<script>
+(function() {
+  var API = "https://pluto-rewards-production.up.railway.app";
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get("token");
+  var userId = params.get("user_id");
+  var newUser = params.get("new_user");
+  var error = params.get("error");
+
+  if (error) {
+    alert("Login failed: " + error + ". Please try again.");
+    history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  if (token && userId) {
+    localStorage.setItem("pluto_token", token);
+    localStorage.setItem("pluto_user_id", userId);
+
+    if (newUser === "true") {
+      document.getElementById("pluto-modal").style.display = "flex";
+    } else {
+      showLoggedInState();
+    }
+
+    history.replaceState({}, document.title, window.location.pathname);
+  } else if (localStorage.getItem("pluto_token")) {
+    showLoggedInState();
+  }
+
+  document.getElementById("pluto-name-submit").addEventListener("click", function() {
+    var name = document.getElementById("pluto-name-input").value.trim();
+    var errorEl = document.getElementById("pluto-name-error");
+    if (name.length < 2) {
+      errorEl.style.display = "block";
+      return;
+    }
+    errorEl.style.display = "none";
+
+    fetch(API + "/api/set-username", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("pluto_token")
+      },
+      body: JSON.stringify({ name: name })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById("pluto-modal").style.display = "none";
+      localStorage.setItem("pluto_name", name);
+      showLoggedInState();
+    })
+    .catch(function(e) {
+      errorEl.textContent = "Something went wrong. Try again.";
+      errorEl.style.display = "block";
+    });
+  });
+
+  function showLoggedInState() {
+    var name = localStorage.getItem("pluto_name") || "Fan";
+    var joinBtns = document.querySelectorAll('#join, a[href*="auth/spotify"]');
+    joinBtns.forEach(function(btn) {
+      btn.textContent = "✓ Connected as " + name;
+      btn.style.background = "#8b5cf6";
+      btn.style.color = "#fff";
+      btn.style.pointerEvents = "none";
+      btn.removeAttribute("href");
+    });
+  }
+})();
+</script>
+</body>
+</html>
