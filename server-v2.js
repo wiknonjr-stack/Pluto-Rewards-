@@ -254,7 +254,125 @@ app.post("/api/waitlist", async (req, res) => {
   }
   res.status(201).json({ message: "Added to waitlist", id: result.data ? result.data.id : null });
 });
+app.post("/api/campaigns/:id/join", requireAuth, async (req, res) => {
+  const wallet = req.body.wallet_address;
+  if (!wallet || !wallet.startsWith("0x")) {
+    return res.status(400).json({ error: "Valid wallet address required" });
+  }
 
+  const campaignRes = await supabase.from("campaigns").select("*").eq("id", req.params.id).single();
+  if (campaignRes.error || !campaignRes.data) {
+    return res.status(404).json({ error: "Campaign not found" });
+  }
+  const campaign = campaignRes.data;
+
+  await supabase.from("users").update({ wallet_address: wallet }).eq("id", req.user.id);
+
+  const existingJoin = await supabase
+    .from("campaign_participants")
+    .select("*")
+    .eq("campaign_id", req.params.id)
+    .eq("user_id", req.user.id)
+    .single();
+
+  if (existingJoin.data) {
+    return res.json({ message: "Already joined", participant: existingJoin.data });
+  }
+
+  const insertRes = await supabase.from("campaign_participants").insert({
+    campaign_id: req.params.id,
+    user_id: req.user.id,
+    wallet_address: wallet,
+    genre: campaign.genre,
+  }).select().single();
+
+  if (insertRes.error) {
+    return res.status(500).json({ error: insertRes.error.message });
+  }
+
+  // Discovery score: check if this genre is new for the user
+  const priorGenres = await supabase
+    .from("campaign_participants")
+    .select("genre")
+    .eq("user_id", req.user.id);
+
+  const uniqueGenres = new Set((priorGenres.data || []).map(function(p) { return p.genre; }));
+  const discoveryScore = uniqueGenres.size * 10;
+
+  // Streak logic
+  const userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  const user = userRes.data;
+  const today = new Date().toISOString().split("T")[0];
+  let newStreak = user.streak_days || 0;
+
+  if (user.last_active_date !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    newStreak = (user.last_active_date === yesterday) ? newStreak + 1 : 1;
+  }
+
+  await supabase.from("users").update({
+    discovery_score: discoveryScore,
+    last_active_date: today,
+    streak_days: newStreak,
+  }).eq("id", req.user.id);
+
+  res.json({
+    message: "Joined campaign",
+    participant: insertRes.data,
+    discovery_score: discoveryScore,
+    streak_days: newStreak,
+    genres_explored: uniqueGenres.size,
+  });
+});
+
+app.get("/api/leaderboard/discovery", async (req, res) => {
+  const result = await supabase
+    .from("users")
+    .select("spotify_name, discovery_score, streak_days, fan_level")
+    .order("discovery_score", { ascending: false })
+    .limit(20);
+
+  if (result.error) {
+    return res.status(500).json({ error: result.error.message });
+  }
+  res.json({ leaderboard: result.data });
+});
+app.post("/api/checkin", requireAuth, async (req, res) => {
+  const userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  if (userRes.error) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  const user = userRes.data;
+  const today = new Date().toISOString().split("T")[0];
+
+  if (user.last_active_date === today) {
+    return res.json({
+      message: "Already checked in today",
+      streak_days: user.streak_days || 0,
+      reward: 0,
+    });
+  }
+
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+  const newStreak = (user.last_active_date === yesterday) ? (user.streak_days || 0) + 1 : 1;
+
+  let reward = 100;
+  if (newStreak % 30 === 0) reward = 5000;
+  else if (newStreak % 7 === 0) reward = 1000;
+
+  await supabase.from("users").update({
+    streak_days: newStreak,
+    last_active_date: today,
+    total_pluto: (user.total_pluto || 0) + reward,
+  }).eq("id", req.user.id);
+
+  res.json({
+    message: "Checked in!",
+    streak_days: newStreak,
+    reward: reward,
+    total_pluto: (user.total_pluto || 0) + reward,
+  });
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
