@@ -185,6 +185,39 @@ h1{font-size:clamp(40px,9vw,72px);font-weight:900;line-height:1.0;margin-bottom:
     });
   }
 })();
+  <div id="pluto-checkin" style="display:none;text-align:center;margin:20px auto;max-width:300px;">
+  <button id="pluto-checkin-btn" style="background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;font-weight:700;font-size:14px;padding:12px 28px;border:none;border-radius:50px;cursor:pointer;width:100%;">
+    🔥 Daily Check-In
+  </button>
+  <div id="pluto-checkin-result" style="font-size:12px;color:#9ca3af;margin-top:8px;"></div>
+</div>
+
+<script>
+(function() {
+  var API = "https://pluto-rewards-production.up.railway.app";
+  var token = localStorage.getItem("pluto_token");
+  if (token) {
+    document.getElementById("pluto-checkin").style.display = "block";
+  }
+  document.getElementById("pluto-checkin-btn").addEventListener("click", function() {
+    fetch(API + "/api/checkin", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + token }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var result = document.getElementById("pluto-checkin-result");
+      if (data.reward > 0) {
+        result.textContent = "🔥 " + data.streak_days + " day streak! +" + data.reward + " ♇";
+        result.style.color = "#00c896";
+      } else {
+        result.textContent = "Already checked in today. Streak: " + data.streak_days + " 🔥";
+        result.style.color = "#6b7280";
+      }
+    });
+  });
+})();
+</script>
 </script>
 </body>
 </html>
