@@ -33,6 +33,70 @@ h1{font-size:clamp(40px,9vw,72px);font-weight:900;line-height:1.0;margin-bottom:
 <p class="desc">Your streams already happened. Pluto Rewards turns your listening history into real cryptocurrency sent automatically to your wallet. No purchase required.</p>
 <div class="btns">
 <a class="btn1" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join">🎵 Connect Spotify & Claim</a>
+  <section class="section" id="campaigns">
+  <div class="section-tag">Live now</div>
+  <h2 class="section-title">Pick your genre.<br><span style="color:#00c896">Start earning.</span></h2>
+  <div id="campaign-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+    <div style="color:#6b7280;font-size:13px;">Loading campaigns...</div>
+  </div>
+</section>
+
+<script>
+(function() {
+  var API = "https://pluto-rewards-production.up.railway.app";
+  var GENRE_COLORS = {"Afrobeats":"#E8820A","Amapiano":"#10B981","Hip-Hop":"#FACC15","R&B":"#A855F7","Pop":"#F472B6","Latin":"#EF4444","UK Drill":"#3B82F6","K-Pop":"#EC4899","EDM":"#22D3EE","Gospel":"#F59E0B","Reggae":"#10B981","Indie":"#34D399","Country":"#D97706","Bollywood":"#F59E0B","Afropop":"#E8820A","Highlife":"#EF4444","Bongo Flava":"#8B5CF6","J-Pop":"#A855F7","Arabic Pop":"#F59E0B","OPM":"#3B82F6","Sertanejo":"#F59E0B","C-Pop":"#EF4444","Salsa":"#F59E0B","Trap":"#EF4444","Ndombolo":"#A855F7","Rai":"#10B981","Turkish Pop":"#EF4444","Classical":"#C4B5FD","French Pop":"#EC4899"};
+
+  fetch(API + "/api/campaigns")
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var grid = document.getElementById("campaign-grid");
+      grid.innerHTML = "";
+      if (!data.campaigns || data.campaigns.length === 0) {
+        grid.innerHTML = '<div style="color:#6b7280;font-size:13px;">No campaigns live yet.</div>';
+        return;
+      }
+      data.campaigns.forEach(function(c) {
+        var color = GENRE_COLORS[c.genre] || "#8b5cf6";
+        var card = document.createElement("div");
+        card.style.background = "#0f0e1c";
+        card.style.border = "1px solid " + color + "33";
+        card.style.borderRadius = "16px";
+        card.style.padding = "20px";
+        card.innerHTML =
+          '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:' + color + ';margin-bottom:8px;">' + (c.genre || "Artist") + '</div>' +
+          '<div style="font-size:15px;font-weight:700;color:#f9fafb;margin-bottom:10px;line-height:1.4;">' + c.title + '</div>' +
+          '<div style="font-size:12px;color:#6b7280;line-height:1.6;margin-bottom:14px;">' + (c.description || "") + '</div>' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<div><div style="font-size:16px;font-weight:800;color:' + color + ';">' + Number(c.reward_pool).toLocaleString() + ' ♇</div>' +
+            '<div style="font-size:10px;color:#6b7280;letter-spacing:1px;">REWARD POOL</div></div>' +
+            '<button onclick="plutoJoinCampaign(\'' + c.id + '\')" style="background:' + color + ';color:#000;font-weight:700;font-size:12px;padding:8px 16px;border:none;border-radius:50px;cursor:pointer;">Join \u2192</button>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    })
+    .catch(function() {
+      document.getElementById("campaign-grid").innerHTML = '<div style="color:#ef4444;font-size:13px;">Could not load campaigns.</div>';
+    });
+
+  window.plutoJoinCampaign = function(campaignId) {
+    var token = localStorage.getItem("pluto_token");
+    if (!token) { alert("Connect your Spotify first!"); document.getElementById("join").click(); return; }
+    var wallet = prompt("Enter your World Chain wallet address (0x...) to join:");
+    if (!wallet || !wallet.startsWith("0x")) { alert("Invalid wallet address"); return; }
+    fetch(API + "/api/campaigns/" + campaignId + "/join", {
+      method: "POST",
+      headers: {"Content-Type": "application/json","Authorization": "Bearer " + token},
+      body: JSON.stringify({ wallet_address: wallet })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) { alert("Error: " + data.error); }
+      else { alert("You're in! 🎉 Stream this genre to climb the leaderboard."); }
+    })
+    .catch(function() { alert("Something went wrong."); });
+  };
+})();
+</script>
 <a class="btn2" href="#how">How it works ↓</a>
 </div>
   </section>
