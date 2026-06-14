@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leaderboard — Pluto Rewards</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#04040f;color:#f0f0f5;font-family:'Segoe UI',sans-serif}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.logo{font-size:18px;font-weight:800;letter-spacing:3px;color:#f0f0f5;text-decoration:none}
+.logo span{color:#8b5cf6}
+.back{font-size:13px;color:#9ca3af;text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 18px}
+.wrap{max-width:700px;margin:0 auto;padding:36px 20px 100px}
+.tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#00c896;margin-bottom:10px;text-align:center}
+h1{font-size:clamp(28px,6vw,42px);font-weight:900;text-align:center;margin-bottom:8px}
+.sub{font-size:13px;color:#6b7280;text-align:center;margin-bottom:28px}
+
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+.tab-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-size:12px;padding:9px 18px;border-radius:50px;cursor:pointer}
+.tab-btn.active{background:rgba(139,92,246,0.18);border-color:#8b5cf6;color:#a78bfa}
+
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-bottom:36px}
+.podium-card{background:#0f0e1c;border-radius:14px;padding:16px 12px;text-align:center;flex:1;max-width:140px}
+.podium-card.p1{order:2;border:1px solid #fbbf24;padding-top:24px;transform:scale(1.05)}
+.podium-card.p2{order:1;border:1px solid #cbd5e1}
+.podium-card.p3{order:3;border:1px solid #d97706}
+.podium-medal{font-size:28px;margin-bottom:6px}
+.podium-name{font-size:13px;font-weight:700;color:#f9fafb;margin-bottom:4px;word-break:break-word}
+.podium-score{font-size:18px;font-weight:900}
+.podium-label{font-size:9px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+.lb-row{display:flex;align-items:center;gap:12px;background:#0f0e1c;border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.lb-row.me{border-color:#8b5cf6;background:rgba(139,92,246,0.06)}
+.lb-rank{font-size:14px;font-weight:800;color:#6b7280;width:28px;text-align:center}
+.lb-tier{font-size:18px}
+.lb-name{flex:1;font-size:14px;font-weight:600;color:#f9fafb;display:flex;align-items:center;gap:6px}
+.lb-flames{font-size:12px}
+.lb-val{font-size:15px;font-weight:800;color:#a78bfa}
+.lb-val-label{font-size:9px;color:#6b7280;letter-spacing:1px;text-align:right}
+
+.me-banner{position:fixed;bottom:0;left:0;right:0;background:#0f0e1c;border-top:1px solid rgba(139,92,246,0.3);padding:14px 20px;display:flex;align-items:center;gap:12px;z-index:50}
+.me-banner-rank{font-size:18px;font-weight:900;color:#8b5cf6;width:40px;text-align:center}
+.me-banner-info{flex:1}
+.me-banner-name{font-size:13px;font-weight:700;color:#f9fafb}
+.me-banner-sub{font-size:11px;color:#6b7280}
+.me-banner-val{font-size:16px;font-weight:900;color:#00c896}
+
+.loading,.empty,.err{color:#6b7280;font-size:13px;text-align:center;padding:40px 0}
+.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;font-size:11px;color:#6b7280}
+.legend span{display:flex;align-items:center;gap:4px}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/"><span>♇</span> PLUTO REWARDS</a>
+  <a class="back" href="/">← Home</a>
+</nav>
+
+<div class="wrap">
+  <div class="tag">🏆 Live rankings</div>
+  <h1>Leaderboard</h1>
+  <p class="sub">Compete across discovery, streaks, and earnings. Updated in real time.</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-type="discovery">👋 Discovery</button>
+    <button class="tab-btn" data-type="streak">🔥 Streaks</button>
+    <button class="tab-btn" data-type="earnings">♇ Earnings</button>
+  </div>
+
+  <div class="legend">
+    <span>👑 Legendary 200+</span>
+    <span>💎 Platinum 100+</span>
+    <span>🥇 Gold 50+</span>
+    <span>🥈 Silver 20+</span>
+    <span>🥉 Bronze 0+</span>
+  </div>
+
+  <div id="podium" class="podium"></div>
+  <div id="list"><div class="loading">Loading leaderboard...</div></div>
+</div>
+
+<div class="me-banner" id="me-banner" style="display:none">
+  <div class="me-banner-rank" id="me-rank">—</div>
+  <div class="me-banner-info">
+    <div class="me-banner-name" id="me-name">You</div>
+    <div class="me-banner-sub" id="me-sub">Connect Spotify to see your rank</div>
+  </div>
+  <div class="me-banner-val" id="me-val">—</div>
+                        </div>
+                        <script>
+var API = "https://pluto-rewards-production.up.railway.app";
+var currentType = "discovery";
+var VAL_LABELS = { discovery: "SCORE", streak: "DAYS", earnings: "♇" };
+
+function load(type) {
+  currentType = type;
+  document.getElementById("podium").innerHTML = "";
+  document.getElementById("list").innerHTML = '<div class="loading">Loading...</div>';
+
+  fetch(API + "/api/leaderboard/" + type)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      renderPodium(data.leaderboard.slice(0, 3), type);
+      renderList(data.leaderboard.slice(3), type);
+      loadMe(type);
+    })
+    .catch(function() {
+      document.getElementById("list").innerHTML = '<div class="err">Could not load leaderboard.</div>';
+    });
+}
+
+function getVal(u, type) {
+  if (type === "streak") return u.streak_days;
+  if (type === "earnings") return u.total_pluto;
+  return u.discovery_score;
+}
+
+function renderPodium(top3, type) {
+  var podium = document.getElementById("podium");
+  if (top3.length === 0) {
+    podium.innerHTML = '<div class="empty">No fans yet. Be the first!</div>';
+    return;
+  }
+  var medals = ["🥇", "🥈", "🥉"];
+  var classes = ["p1", "p2", "p3"];
+  podium.innerHTML = "";
+  top3.forEach(function(u, i) {
+    var div = document.createElement("div");
+    div.className = "podium-card " + classes[i];
+    div.innerHTML =
+      '<div class="podium-medal">' + medals[i] + '</div>' +
+      '<div class="podium-name">' + u.name + ' ' + (u.flames || "") + '</div>' +
+      '<div class="podium-score">' + Number(getVal(u, type)).toLocaleString() + '</div>' +
+      '<div class="podium-label">' + VAL_LABELS[type] + '</div>';
+    podium.appendChild(div);
+  });
+}
+
+function renderList(rest, type) {
+  var list = document.getElementById("list");
+  var myId = localStorage.getItem("pluto_user_id");
+  if (rest.length === 0) {
+    list.innerHTML = "";
+    return;
+  }
+  list.innerHTML = "";
+  rest.forEach(function(u) {
+    var row = document.createElement("div");
+    row.className = "lb-row" + (u.id === myId ? " me" : "");
+    row.innerHTML =
+      '<div class="lb-rank">#' + u.rank + '</div>' +
+      '<div class="lb-tier">' + u.tier.icon + '</div>' +
+      '<div class="lb-name">' + u.name + ' <span class="lb-flames">' + (u.flames || "") + '</span></div>' +
+      '<div style="text-align:right"><div class="lb-val">' + Number(getVal(u, type)).toLocaleString() + '</div><div class="lb-val-label">' + VAL_LABELS[type] + '</div></div>';
+    list.appendChild(row);
+  });
+}
+
+function loadMe(type) {
+  var token = localStorage.getItem("pluto_token");
+  var banner = document.getElementById("me-banner");
+  if (!token) {
+    banner.style.display = "flex";
+    document.getElementById("me-rank").textContent = "—";
+    document.getElementById("me-name").textContent = "Not connected";
+    document.getElementById("me-sub").textContent = "Connect Spotify on the home page";
+    document.getElementById("me-val").textContent = "—";
+    return;
+  }
+
+  fetch(API + "/api/leaderboard/" + type + "/me", {
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    banner.style.display = "flex";
+    if (!data.me) {
+      document.getElementById("me-rank").textContent = "—";
+      document.getElementById("me-name").textContent = "Not ranked yet";
+      document.getElementById("me-sub").textContent = "Join a campaign to appear here";
+      document.getElementById("me-val").textContent = "—";
+      return;
+    }
+    document.getElementById("me-rank").textContent = "#" + data.rank;
+    document.getElementById("me-name").textContent = data.me.name + " " + data.me.tier.icon;
+    document.getElementById("me-sub").textContent = data.me.tier.name + " · out of " + data.total;
+    document.getElementById("me-val").textContent = Number(getVal(data.me, type)).toLocaleString();
+  })
+  .catch(function() {
+    banner.style.display = "none";
+  });
+}
+
+document.getElementById("tabs").addEventListener("click", function(e) {
+  if (!e.target.classList.contains("tab-btn")) return;
+  document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+  e.target.classList.add("active");
+  load(e.target.getAttribute("data-type"));
+});
+
+load("discovery");
+</script>
+
+</body>
+</html>
