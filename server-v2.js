@@ -373,6 +373,112 @@ app.post("/api/checkin", requireAuth, async (req, res) => {
     total_pluto: (user.total_pluto || 0) + reward,
   });
 });
+function getTier(score) {
+  if (score >= 200) return { name: "Legendary", color: "#fbbf24", icon: "👑" };
+  if (score >= 100) return { name: "Platinum", color: "#a78bfa", icon: "💎" };
+  if (score >= 50) return { name: "Gold", color: "#fcd34d", icon: "🥇" };
+  if (score >= 20) return { name: "Silver", color: "#cbd5e1", icon: "🥈" };
+  return { name: "Bronze", color: "#d97706", icon: "🥉" };
+}
+
+function streakFlames(days) {
+  if (days >= 100) return "🔥🔥🔥";
+  if (days >= 30) return "🔥🔥";
+  if (days >= 7) return "🔥";
+  return "";
+}
+
+app.get("/api/leaderboard/:type", async (req, res) => {
+  var sortField = "discovery_score";
+  if (req.params.type === "streak") sortField = "streak_days";
+  if (req.params.type === "earnings") sortField = "total_pluto";
+
+  var result = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, total_pluto, fan_level")
+    .order(sortField, { ascending: false })
+    .limit(50);
+
+  if (result.error) {
+    return res.status(500).json({ error: result.error.message });
+  }
+
+  var enriched = result.data.map(function(u, i) {
+    return {
+      rank: i + 1,
+      id: u.id,
+      name: u.spotify_name || "Anonymous Fan",
+      discovery_score: u.discovery_score || 0,
+      streak_days: u.streak_days || 0,
+      total_pluto: u.total_pluto || 0,
+      tier: getTier(u.discovery_score || 0),
+      flames: streakFlames(u.streak_days || 0),
+    };
+  });
+
+  res.json({ leaderboard: enriched, type: req.params.type });
+});
+
+app.get("/api/leaderboard/:type/me", requireAuth, async (req, res) => {
+  var sortField = "discovery_score";
+  if (req.params.type === "streak") sortField = "streak_days";
+  if (req.params.type === "earnings") sortField = "total_pluto";
+
+  var all = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, total_pluto")
+    .order(sortField, { ascending: false });
+
+  if (all.error) {
+    return res.status(500).json({ error: all.error.message });
+  }
+
+  var idx = all.data.findIndex(function(u) { return u.id === req.user.id; });
+  var me = all.data[idx];
+
+  var nearby = all.data.slice(Math.max(0, idx - 2), idx + 3).map(function(u, i) {
+    var realIdx = Math.max(0, idx - 2) + i;
+    return {
+      rank: realIdx + 1,
+      id: u.id,
+      name: u.spotify_name || "Anonymous Fan",
+      discovery_score: u.discovery_score || 0,
+      streak_days: u.streak_days || 0,
+      total_pluto: u.total_pluto || 0,
+      isMe: u.id === req.user.id,
+      tier: getTier(u.discovery_score || 0),
+      flames: streakFlames(u.streak_days || 0),
+    };
+  });
+
+  res.json({
+    rank: idx + 1,
+    total: all.data.length,
+    me: me ? {
+      name: me.spotify_name || "Anonymous Fan",
+      discovery_score: me.discovery_score || 0,
+      streak_days: me.streak_days || 0,
+      total_pluto: me.total_pluto || 0,
+      genres_explored: 0,
+      tier: getTier(me.discovery_score || 0),
+    } : null,
+    nearby: nearby,
+  });
+});
+
+app.get("/api/genres-explored/:userId", async (req, res) => {
+  var result = await supabase
+    .from("campaign_participants")
+    .select("genre")
+    .eq("user_id", req.params.userId);
+
+  if (result.error) {
+    return res.status(500).json({ error: result.error.message });
+  }
+
+  var unique = new Set(result.data.map(function(p) { return p.genre; }));
+  res.json({ genres_explored: unique.size, total_genres: 29 });
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
