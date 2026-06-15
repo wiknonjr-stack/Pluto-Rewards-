@@ -542,6 +542,46 @@ app.get("/api/profile/me", requireAuth, async (req, res) => {
     campaigns_joined: (genresRes.data || []).length,
   });
 });
+app.post("/api/profile/avatar", requireAuth, async (req, res) => {
+  var imageBase64 = req.body.image;
+  if (!imageBase64) {
+    return res.status(400).json({ error: "No image provided" });
+  }
+
+  try {
+    var matches = imageBase64.match(/^data:(image\/\w+);base64,(.+)$/);
+    if (!matches) {
+      return res.status(400).json({ error: "Invalid image format" });
+    }
+    var mimeType = matches[1];
+    var ext = mimeType.split("/")[1];
+    var base64Data = matches[2];
+    var buffer = Buffer.from(base64Data, "base64");
+
+    if (buffer.length > 2 * 1024 * 1024) {
+      return res.status(400).json({ error: "Image too large (max 2MB)" });
+    }
+
+    var fileName = req.user.id + "." + ext;
+
+    var uploadRes = await supabase.storage
+      .from("avatars")
+      .upload(fileName, buffer, { contentType: mimeType, upsert: true });
+
+    if (uploadRes.error) {
+      return res.status(500).json({ error: uploadRes.error.message });
+    }
+
+    var publicUrl = SUPABASE_URL + "/storage/v1/object/public/avatars/" + fileName;
+
+    await supabase.from("users").update({ avatar_url: publicUrl }).eq("id", req.user.id);
+
+    res.json({ avatar_url: publicUrl });
+  } catch (err) {
+    console.error("Avatar upload error:", err.message);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
