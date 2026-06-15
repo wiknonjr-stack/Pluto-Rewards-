@@ -528,6 +528,7 @@ app.get("/api/profile/me", requireAuth, async (req, res) => {
 
   res.json({
     name: user.spotify_name || "Anonymous Fan",
+    avatar_url: user.avatar_url || null,
     discovery_score: score,
     streak_days: streak,
     flames: flames,
