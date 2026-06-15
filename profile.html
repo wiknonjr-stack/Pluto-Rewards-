@@ -15,7 +15,13 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:20px 2
 
 .profile-card{background:linear-gradient(135deg,#1a1530,#0f0e1c);border:1px solid rgba(139,92,246,0.25);border-radius:20px;padding:28px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
 .profile-card::before{content:"";position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);pointer-events:none}
-.tier-icon{font-size:44px;margin-bottom:8px}
+
+.avatar-wrap{position:relative;width:80px;height:80px;margin:0 auto 10px;border-radius:50%;overflow:hidden;border:2px solid rgba(139,92,246,0.4);background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1}
+.avatar-wrap img{width:100%;height:100%;object-fit:cover}
+.avatar-wrap .placeholder{font-size:32px}
+.avatar-edit{position:absolute;bottom:0;right:0;background:#00c896;color:#000;font-size:10px;font-weight:800;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+#avatar-input{display:none}
+
 .profile-name{font-size:22px;font-weight:900;margin-bottom:4px}
 .tier-name{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:18px}
 .flames-big{font-size:18px;margin-bottom:14px}
@@ -57,6 +63,7 @@ canvas{display:none}
 </div>
 
 <canvas id="shareCanvas" width="600" height="800"></canvas>
+
 <script>
 var API = "https://pluto-rewards-production.up.railway.app";
 var token = localStorage.getItem("pluto_token");
@@ -87,14 +94,18 @@ function render(p) {
 
   document.getElementById("content").innerHTML =
     '<div class="profile-card">' +
-      '<div class="tier-icon">' + p.tier.icon + '</div>' +
+      '<div class="avatar-wrap" id="avatar-wrap" onclick="document.getElementById(\'avatar-input\').click()">' +
+        (p.avatar_url ? '<img src="' + p.avatar_url + '" />' : '<div class="placeholder">' + p.tier.icon + '</div>') +
+        '<div class="avatar-edit">\u270E</div>' +
+      '</div>' +
+      '<input type="file" id="avatar-input" accept="image/*" />' +
       '<div class="profile-name">' + p.name + '</div>' +
       '<div class="tier-name" style="color:' + p.tier.color + '">' + p.tier.name + ' Tier</div>' +
       (p.flames ? '<div class="flames-big">' + p.flames + ' ' + p.streak_days + '-day streak</div>' : '') +
       '<div class="stat-grid">' +
         '<div class="stat-box"><div class="stat-num">' + p.discovery_score + '</div><div class="stat-lbl">Discovery</div></div>' +
         '<div class="stat-box"><div class="stat-num">' + p.streak_days + '</div><div class="stat-lbl">Streak</div></div>' +
-        '<div class="stat-box"><div class="stat-num">' + Number(p.total_pluto).toLocaleString() + '</div><div class="stat-lbl">♇ Earned</div></div>' +
+        '<div class="stat-box"><div class="stat-num">' + Number(p.total_pluto).toLocaleString() + '</div><div class="stat-lbl">\u2647 Earned</div></div>' +
       '</div>' +
       '<div class="progress-wrap">' +
         '<div class="progress-label"><span>' + p.tier.name + '</span><span>' + progressLabel + '</span></div>' +
@@ -102,7 +113,7 @@ function render(p) {
       '</div>' +
     '</div>' +
 
-    '<button class="share-btn" id="share-btn">📤 Share My Stats</button>' +
+    '<button class="share-btn" id="share-btn">\uD83D\uDCE4 Share My Stats</button>' +
 
     '<div class="section-title">Genre Map — ' + p.genres_count + ' / ' + p.total_genres + ' explored</div>' +
     '<div class="genre-grid">' + genreChips + '</div>' +
@@ -115,6 +126,44 @@ function render(p) {
 
   document.getElementById("share-btn").addEventListener("click", function() {
     shareStats(p);
+  });
+
+  setupAvatarUpload(p);
+}
+  <script>
+function setupAvatarUpload(p) {
+  var input = document.getElementById("avatar-input");
+  input.addEventListener("change", function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image too large. Max 2MB.");
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function() {
+      fetch(API + "/api/profile/avatar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ image: reader.result })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.avatar_url) {
+          p.avatar_url = data.avatar_url;
+          document.getElementById("avatar-wrap").innerHTML =
+            '<img src="' + data.avatar_url + '" />' +
+            '<div class="avatar-edit">\u270E</div>';
+        } else {
+          alert("Upload failed: " + (data.error || "unknown error"));
+        }
+      })
+      .catch(function() { alert("Upload failed."); });
+    };
+    reader.readAsDataURL(file);
   });
 }
 
@@ -130,27 +179,51 @@ function shareStats(p) {
 
   ctx.fillStyle = "#8b5cf6";
   ctx.font = "bold 28px sans-serif";
-  ctx.fillText("♇ PLUTO REWARDS", 40, 60);
+  ctx.fillText("\u2647 PLUTO REWARDS", 40, 60);
 
-  ctx.font = "80px sans-serif";
-  ctx.fillText(p.tier.icon, 40, 180);
+  if (p.avatar_url) {
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(90, 140, 50, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(img, 40, 90, 100, 100);
+      ctx.restore();
+      finishShareCard(p, ctx, canvas);
+    };
+    img.onerror = function() {
+      ctx.font = "80px sans-serif";
+      ctx.fillText(p.tier.icon, 40, 180);
+      finishShareCard(p, ctx, canvas);
+    };
+    img.src = p.avatar_url;
+  } else {
+    ctx.font = "80px sans-serif";
+    ctx.fillText(p.tier.icon, 40, 180);
+    finishShareCard(p, ctx, canvas);
+  }
+}
 
+function finishShareCard(p, ctx, canvas) {
   ctx.fillStyle = "#f9fafb";
   ctx.font = "bold 40px sans-serif";
-  ctx.fillText(p.name, 40, 250);
+  ctx.fillText(p.name, 160, 145);
 
   ctx.fillStyle = p.tier.color;
   ctx.font = "bold 18px sans-serif";
-  ctx.fillText(p.tier.name.toUpperCase() + " TIER", 40, 285);
+  ctx.fillText(p.tier.name.toUpperCase() + " TIER", 160, 180);
 
   var stats = [
     { label: "DISCOVERY SCORE", val: p.discovery_score },
     { label: "DAY STREAK " + (p.flames || ""), val: p.streak_days },
-    { label: "PLUTO EARNED", val: Number(p.total_pluto).toLocaleString() + " ♇" },
+    { label: "PLUTO EARNED", val: Number(p.total_pluto).toLocaleString() + " \u2647" },
     { label: "GENRES EXPLORED", val: p.genres_count + " / " + p.total_genres }
   ];
 
-  var y = 350;
+  var y = 260;
   stats.forEach(function(s) {
     ctx.fillStyle = "rgba(255,255,255,0.05)";
     ctx.fillRect(40, y, 520, 80);
@@ -173,7 +246,7 @@ function shareStats(p) {
       navigator.share({
         files: [file],
         title: "My Pluto Rewards Stats",
-        text: "Check out my Pluto Rewards stats! " + p.tier.icon + " " + p.tier.name + " tier, " + p.discovery_score + " discovery score, " + p.streak_days + "-day streak 🔥"
+        text: "Check out my Pluto Rewards stats! " + p.tier.icon + " " + p.tier.name + " tier, " + p.discovery_score + " discovery score, " + p.streak_days + "-day streak \uD83D\uDD25"
       }).catch(function() {});
     } else {
       var url = URL.createObjectURL(blob);
