@@ -365,7 +365,10 @@ app.post("/api/checkin", requireAuth, async (req, res) => {
     last_active_date: today,
     total_pluto: (user.total_pluto || 0) + reward,
   }).eq("id", req.user.id);
-
+await supabase.from("checkins_log").insert({
+    user_id: req.user.id,
+    reward: reward,
+  });
   res.json({
     message: "Checked in!",
     streak_days: newStreak,
@@ -582,6 +585,112 @@ app.post("/api/profile/avatar", requireAuth, async (req, res) => {
     console.error("Avatar upload error:", err.message);
     res.status(500).json({ error: "Upload failed" });
   }
+});
+// ===== FOLLOW SYSTEM =====
+app.get("/api/users/search", async (req, res) => {
+  var q = req.query.q || "";
+  if (q.length < 2) return res.json({ users: [] });
+
+  var result = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, avatar_url")
+    .ilike("spotify_name", "%" + q + "%")
+    .limit(10);
+
+  if (result.error) return res.status(500).json({ error: result.error.message });
+  res.json({ users: result.data });
+});
+
+app.post("/api/follow/:userId", requireAuth, async (req, res) => {
+  if (req.params.userId === req.user.id) {
+    return res.status(400).json({ error: "Cannot follow yourself" });
+  }
+  var result = await supabase.from("follows").insert({
+    follower_id: req.user.id,
+    following_id: req.params.userId,
+  }).select().single();
+
+  if (result.error) {
+    if (result.error.code === "23505") return res.json({ message: "Already following" });
+    return res.status(500).json({ error: result.error.message });
+  }
+  res.status(201).json({ message: "Followed" });
+});
+
+app.delete("/api/follow/:userId", requireAuth, async (req, res) => {
+  var result = await supabase
+    .from("follows")
+    .delete()
+    .eq("follower_id", req.user.id)
+    .eq("following_id", req.params.userId);
+
+  if (result.error) return res.status(500).json({ error: result.error.message });
+  res.json({ message: "Unfollowed" });
+});
+
+app.get("/api/friends", requireAuth, async (req, res) => {
+  var followsRes = await supabase
+    .from("follows")
+    .select("following_id")
+    .eq("follower_id", req.user.id);
+
+  if (followsRes.error) return res.status(500).json({ error: followsRes.error.message });
+
+  var ids = followsRes.data.map(function(f) { return f.following_id; });
+  if (ids.length === 0) return res.json({ friends: [] });
+
+  var usersRes = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, avatar_url")
+    .in("id", ids);
+
+  if (usersRes.error) return res.status(500).json({ error: usersRes.error.message });
+
+  var friends = usersRes.data.map(function(u) {
+    return {
+      id: u.id,
+      name: u.spotify_name || "Anonymous Fan",
+      avatar_url: u.avatar_url || null,
+      discovery_score: u.discovery_score || 0,
+      streak_days: u.streak_days || 0,
+      tier: tierInfo(u.discovery_score || 0),
+    };
+  });
+
+  res.json({ friends: friends });
+});
+
+// ===== RECAP =====
+app.get("/api/recap", requireAuth, async (req, res) => {
+  var period = req.query.period === "month" ? 30 : 7;
+  var since = new Date(Date.now() - period * 86400000).toISOString();
+
+  var checkinsRes = await supabase
+    .from("checkins_log")
+    .select("reward, created_at")
+    .eq("user_id", req.user.id)
+    .gte("created_at", since);
+
+  var joinsRes = await supabase
+    .from("campaign_participants")
+    .select("genre, created_at")
+    .eq("user_id", req.user.id)
+    .gte("created_at", since);
+
+  if (checkinsRes.error || joinsRes.error) {
+    return res.status(500).json({ error: "Failed to load recap" });
+  }
+
+  var totalEarned = checkinsRes.data.reduce(function(sum, c) { return sum + (c.reward || 0); }, 0);
+  var uniqueGenres = new Set(joinsRes.data.map(function(j) { return j.genre; }));
+
+  res.json({
+    period: period === 30 ? "month" : "week",
+    checkins: checkinsRes.data.length,
+    pluto_earned: totalEarned,
+    campaigns_joined: joinsRes.data.length,
+    new_genres: uniqueGenres.size,
+  });
 });
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
