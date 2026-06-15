@@ -479,6 +479,69 @@ app.get("/api/genres-explored/:userId", async (req, res) => {
   var unique = new Set(result.data.map(function(p) { return p.genre; }));
   res.json({ genres_explored: unique.size, total_genres: 29 });
 });
+var ALL_GENRES = ["Afrobeats","Amapiano","Hip-Hop","R&B","Pop","Latin","UK Drill","K-Pop","EDM","Gospel","Reggae","Indie","Country","Bollywood","Afropop","Highlife","Bongo Flava","J-Pop","Arabic Pop","OPM","Sertanejo","C-Pop","Salsa","Trap","Ndombolo","Rai","Turkish Pop","Classical","French Pop"];
+
+function tierInfo(score) {
+  var tiers = [
+    { name: "Bronze", min: 0, max: 20, color: "#d97706", icon: "🥉" },
+    { name: "Silver", min: 20, max: 50, color: "#cbd5e1", icon: "🥈" },
+    { name: "Gold", min: 50, max: 100, color: "#fcd34d", icon: "🥇" },
+    { name: "Platinum", min: 100, max: 200, color: "#a78bfa", icon: "💎" },
+    { name: "Legendary", min: 200, max: 999999, color: "#fbbf24", icon: "👑" },
+  ];
+  var current = tiers[0];
+  for (var i = 0; i < tiers.length; i++) {
+    if (score >= tiers[i].min) current = tiers[i];
+  }
+  var next = tiers[tiers.indexOf(current) + 1];
+  return {
+    name: current.name,
+    color: current.color,
+    icon: current.icon,
+    next: next ? next.name : null,
+    pointsToNext: next ? next.min - score : 0,
+    progress: next ? Math.round(((score - current.min) / (next.min - current.min)) * 100) : 100,
+  };
+}
+
+app.get("/api/profile/me", requireAuth, async (req, res) => {
+  var userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  if (userRes.error) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  var user = userRes.data;
+
+  var genresRes = await supabase
+    .from("campaign_participants")
+    .select("genre, created_at")
+    .eq("user_id", req.user.id);
+
+  var joinedGenres = (genresRes.data || []).map(function(p) { return p.genre; });
+  var uniqueGenres = Array.from(new Set(joinedGenres));
+
+  var score = user.discovery_score || 0;
+  var streak = user.streak_days || 0;
+  var flames = "";
+  if (streak >= 100) flames = "🔥🔥🔥";
+  else if (streak >= 30) flames = "🔥🔥";
+  else if (streak >= 7) flames = "🔥";
+
+  res.json({
+    name: user.spotify_name || "Anonymous Fan",
+    discovery_score: score,
+    streak_days: streak,
+    flames: flames,
+    total_pluto: user.total_pluto || 0,
+    wallet_address: user.wallet_address || null,
+    member_since: user.created_at,
+    tier: tierInfo(score),
+    genres_explored: uniqueGenres,
+    genres_count: uniqueGenres.length,
+    total_genres: ALL_GENRES.length,
+    all_genres: ALL_GENRES,
+    campaigns_joined: (genresRes.data || []).length,
+  });
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
