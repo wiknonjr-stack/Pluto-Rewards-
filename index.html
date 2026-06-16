@@ -6,101 +6,72 @@
 <title>Pluto Rewards — Get Paid to Listen</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#04040f;color:#f0f0f5;font-family:'Segoe UI',sans-serif;overflow-x:hidden}
+body{background:#080808;color:#fafafa;font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:70px}
 
-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;background:#04040fcc;backdrop-filter:blur(10px);z-index:100}
-.logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;letter-spacing:3px;color:#f0f0f5;text-decoration:none}
-.logo span{color:#8b5cf6;font-size:22px}
-.nav-right{display:flex;gap:10px;align-items:center}
-.nav-link{font-size:13px;color:#9ca3af;text-decoration:none}
-.nav-cta{background:#00c896;color:#000;font-weight:700;padding:10px 20px;border-radius:50px;text-decoration:none;font-size:13px;border:none;cursor:pointer}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(245,158,11,0.12);position:sticky;top:0;background:#080808dd;backdrop-filter:blur(10px);z-index:100}
+.logo{font-size:18px;font-weight:800;letter-spacing:3px;color:#fafafa;text-decoration:none}
+.logo span{color:#f59e0b;font-size:22px}
+.nav-cta{background:#f59e0b;color:#000;font-weight:700;padding:10px 20px;border-radius:50px;text-decoration:none;font-size:13px;border:none;cursor:pointer;white-space:nowrap}
 
 .hero{padding:70px 24px 50px;max-width:720px;margin:0 auto;text-align:center}
-.tag{display:inline-block;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8b5cf6;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:20px;padding:5px 14px;margin-bottom:24px}
+.tag{display:inline-block;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#f59e0b;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:20px;padding:5px 14px;margin-bottom:24px}
 h1{font-size:clamp(38px,9vw,68px);font-weight:900;line-height:1.04;margin-bottom:18px}
-.green{color:#00c896}
-.outline{-webkit-text-stroke:2px #8b5cf6;color:transparent}
+.gold{color:#f59e0b}
+.outline{-webkit-text-stroke:2px #f59e0b;color:transparent}
 .desc{font-size:16px;color:#9ca3af;line-height:1.8;max-width:480px;margin:0 auto 32px}
-.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.btn1{background:#00c896;color:#000;font-weight:700;font-size:15px;padding:14px 28px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;box-shadow:0 0 30px rgba(0,200,150,0.25)}
-.btn2{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-size:14px;padding:13px 24px;border-radius:50px;text-decoration:none}
+.btn1{background:#f59e0b;color:#000;font-weight:700;font-size:15px;padding:14px 28px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;box-shadow:0 0 30px rgba(245,158,11,0.25);display:inline-block}
 
-.stats{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:44px;padding-top:36px;border-top:1px solid rgba(255,255,255,0.06)}
-.stat-num{font-size:32px;font-weight:900;color:#8b5cf6}
+.stats{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:44px;padding-top:36px;border-top:1px solid rgba(245,158,11,0.1)}
+.stat-num{font-size:32px;font-weight:900;color:#f59e0b}
 .stat-lbl{font-size:10px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
 
-.marquee{overflow:hidden;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 0;background:#0a0a14}
+.marquee{overflow:hidden;border-top:1px solid rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.1);padding:14px 0;background:#0d0d0d}
 .marquee-inner{display:flex;animation:marquee 22s linear infinite;width:max-content}
 .marquee-inner span{font-size:13px;letter-spacing:3px;padding:0 24px;color:#4b5563;white-space:nowrap}
-.marquee-inner span.a{color:#00c896}
+.marquee-inner span.a{color:#f59e0b}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-.section{padding:70px 24px;max-width:900px;margin:0 auto}
-.section-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8b5cf6;margin-bottom:14px}
-.section-title{font-size:clamp(30px,5vw,46px);font-weight:900;margin-bottom:40px;line-height:1.12}
-
-.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2px}
-.why-card{background:#0f0e1c;padding:28px;border:1px solid rgba(255,255,255,0.05)}
-.why-num{font-size:48px;font-weight:900;color:rgba(124,58,237,0.15);line-height:1;margin-bottom:10px}
-.why-title{font-size:17px;font-weight:700;color:#f9fafb;margin-bottom:8px}
-.why-body{font-size:13px;color:#6b7280;line-height:1.8}
-
-.cta-band{padding:70px 24px;text-align:center;background:#0a0a14;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
+.cta-band{padding:70px 24px;text-align:center;background:#0d0d0d;border-top:1px solid rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.1)}
 .cta-band h2{font-size:clamp(28px,6vw,48px);font-weight:900;margin-bottom:14px;line-height:1.1}
 .cta-band p{font-size:14px;color:#6b7280;margin-bottom:28px}
-.contract{font-size:11px;color:rgba(139,92,246,0.4);margin-top:20px;font-family:monospace;word-break:break-all}
+.contract{font-size:11px;color:rgba(245,158,11,0.4);margin-top:20px;font-family:monospace;word-break:break-all}
 
-footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-.footer-logo{font-size:13px;font-weight:800;letter-spacing:3px;color:#6b7280}
-.footer-links{display:flex;gap:18px}
-.footer-links a{font-size:12px;color:#6b7280;text-decoration:none}
+footer{padding:24px;text-align:center;font-size:12px;color:#374151}
 
-#pluto-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;align-items:center;justify-content:center;padding:24px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111111;border-top:1px solid rgba(245,158,11,0.12);display:flex;justify-content:space-around;align-items:center;padding:10px 0;z-index:100}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6b7280;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 16px;border-radius:10px;transition:color .15s}
+.bottom-nav a.active{color:#f59e0b}
+.bottom-nav a span.icon{font-size:22px}
+
+#pluto-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;padding:24px}
 #pluto-modal.show{display:flex}
-.modal-card{background:#0f0e1c;border:1px solid rgba(139,92,246,0.3);border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
+.modal-card{background:#111111;border:1px solid rgba(245,158,11,0.3);border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
 .modal-card .icon{font-size:38px;margin-bottom:10px}
-.modal-card h2{font-size:21px;font-weight:800;color:#f9fafb;margin-bottom:6px}
+.modal-card h2{font-size:21px;font-weight:800;color:#fafafa;margin-bottom:6px}
 .modal-card p{font-size:13px;color:#9ca3af;line-height:1.7;margin-bottom:18px}
-.modal-card input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;color:#f9fafb;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:14px;text-align:center}
-.modal-card .submit-btn{width:100%;background:#00c896;color:#000;font-weight:700;font-size:15px;padding:13px;border:none;border-radius:50px;cursor:pointer}
+.modal-card input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;color:#fafafa;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:14px;text-align:center}
+.modal-card .submit-btn{width:100%;background:#f59e0b;color:#000;font-weight:700;font-size:15px;padding:13px;border:none;border-radius:50px;cursor:pointer}
 .modal-card .err{font-size:12px;color:#ef4444;margin-top:10px;display:none}
-
-#pluto-checkin{display:none;text-align:center;margin:24px auto;max-width:320px;padding:0 24px}
-#pluto-checkin-btn{background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;font-weight:700;font-size:14px;padding:12px 28px;border:none;border-radius:50px;cursor:pointer;width:100%}
-#pluto-checkin-result{font-size:12px;color:#9ca3af;margin-top:10px}
 </style>
 </head>
 <body>
 
 <nav>
   <a class="logo" href="/"><span>♇</span> PLUTO</a>
-  <div class="nav-right">
-    <a class="nav-link" href="/campaigns.html">Campaigns</a>
-    <a class="nav-link" href="/leaderboard.html">Leaderboard</a>
-    <a class="nav-link" href="/profile.html">Profile</a>
-    <a class="nav-cta" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join">Get Rewarded →</a>
-  </div>
+  <a class="nav-cta" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join">Get Rewarded →</a>
 </nav>
 
 <section class="hero">
   <div class="tag">🟢 Live on World Chain</div>
-  <h1>You've been<br><span class="outline">listening.</span><br><span class="green">Get paid.</span></h1>
+  <h1>You've been<br><span class="outline">listening.</span><br><span class="gold">Get paid.</span></h1>
   <p class="desc">Your streams already happened. Pluto Rewards turns your listening history into real cryptocurrency — sent automatically to your wallet. No purchase required.</p>
-  <div class="btns">
-    <a class="btn1" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join2">🎵 Connect Spotify & Claim</a>
-    <a class="btn2" href="/campaigns.html">View Campaigns →</a>
-  </div>
-
-  <div id="pluto-checkin">
-    <button id="pluto-checkin-btn">🔥 Daily Check-In</button>
-    <div id="pluto-checkin-result"></div>
-  </div>
+  <a class="btn1" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join2">🎵 Connect Spotify & Claim</a>
 
   <div class="stats">
     <div><div class="stat-num">39</div><div class="stat-lbl">Live campaigns</div></div>
     <div><div class="stat-num">8</div><div class="stat-lbl">Ways to earn</div></div>
     <div><div class="stat-num">100K</div><div class="stat-lbl">Max ♇ per fan</div></div>
-    <div><div class="stat-num">2 min</div><div class="stat-lbl">To start earning</div></div>
+    <div><div class="stat-num">2 min</div><div class="stat-lbl">To start</div></div>
   </div>
 </section>
 
@@ -117,49 +88,33 @@ footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:
   </div>
 </div>
 
-<section class="section" id="how">
-  <div class="section-tag">Simple by design</div>
-  <h2 class="section-title">How it works.</h2>
-  <div class="why-grid">
-    <div class="why-card">
-      <div class="why-num">01</div>
-      <div class="why-title">Connect your Spotify</div>
-      <div class="why-body">Log in with Spotify in two taps. We never store your password.</div>
-    </div>
-    <div class="why-card">
-      <div class="why-num">02</div>
-      <div class="why-title">Pick a campaign</div>
-      <div class="why-body">Browse 39 live campaigns across genres — top listener boards, discovery bonuses, streaks, and weekend drops.</div>
-    </div>
-    <div class="why-card">
-      <div class="why-num">03</div>
-      <div class="why-title">Join with your wallet</div>
-      <div class="why-body">Add your World Chain wallet address. Any EVM wallet works — Trust Wallet, MetaMask, or World App.</div>
-    </div>
-    <div class="why-card">
-      <div class="why-num">04</div>
-      <div class="why-title">Earn Pluto daily</div>
-      <div class="why-body">Check in daily to build your streak, climb leaderboards, and earn real ♇ tokens sent to your wallet.</div>
-    </div>
-  </div>
-</section>
-
 <div class="cta-band">
-  <div class="section-tag" style="display:inline-block">Ready?</div>
-  <h2>Your streams.<br><span class="green">Your tokens.</span></h2>
+  <h2>Your streams.<br><span class="gold">Your tokens.</span></h2>
   <p>39 campaigns live right now. Two minutes to join.</p>
-  <a class="btn1" href="/campaigns.html" style="display:inline-flex;font-size:16px;padding:15px 32px">Browse Campaigns →</a>
+  <a class="btn1" href="/campaigns.html" style="font-size:16px;padding:15px 32px">Browse Campaigns →</a>
   <div class="contract">Contract: 0x818b85e381b9f36b5a3f597788513633981c406e · World Chain</div>
 </div>
 
-<footer>
-  <div class="footer-logo">♇ PLUTO REWARDS</div>
-  <div class="footer-links">
-    <a href="/campaigns.html">Campaigns</a>
-    <a href="mailto:plutorewardsio@gmail.com">Contact</a>
-  </div>
-  <div class="footer-links">© 2026 Pluto Rewards</div>
-</footer>
+<footer>© 2026 Pluto Rewards · <a href="mailto:plutorewardsio@gmail.com" style="color:#6b7280">Contact</a></footer>
+
+<nav class="bottom-nav">
+  <a href="/" class="active">
+    <span class="icon">🏠</span>
+    Home
+  </a>
+  <a href="/campaigns.html">
+    <span class="icon">🎯</span>
+    Campaigns
+  </a>
+  <a href="/leaderboard.html">
+    <span class="icon">🏆</span>
+    Leaderboard
+  </a>
+  <a href="/profile.html">
+    <span class="icon">👤</span>
+    Profile
+  </a>
+</nav>
 
 <div id="pluto-modal">
   <div class="modal-card">
@@ -170,8 +125,8 @@ footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:
     <button class="submit-btn" id="pluto-name-submit">bet</button>
     <p class="err" id="pluto-name-error">at least 2 characters please</p>
   </div>
-</div>
-<script>
+    </div>
+    <script>
 (function() {
   var API = "https://pluto-rewards-production.up.railway.app";
   var params = new URLSearchParams(window.location.search);
@@ -188,7 +143,6 @@ footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:
   if (token && userId) {
     localStorage.setItem("pluto_token", token);
     localStorage.setItem("pluto_user_id", userId);
-
     if (newUser === "true") {
       document.getElementById("pluto-modal").classList.add("show");
     } else {
@@ -207,7 +161,6 @@ footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:
       return;
     }
     errorEl.style.display = "none";
-
     fetch(API + "/api/set-username", {
       method: "POST",
       headers: {
@@ -229,35 +182,14 @@ footer{padding:28px 24px;display:flex;justify-content:space-between;align-items:
   });
 
   function showLoggedInState() {
-    var name = localStorage.getItem("pluto_name") || "Fan";
     document.querySelectorAll('#join, #join2').forEach(function(btn) {
-      btn.textContent = "✓ Connected as " + name;
-      btn.style.background = "#8b5cf6";
-      btn.style.color = "#fff";
+      btn.textContent = "✓ Connected";
+      btn.style.background = "#d97706";
+      btn.style.color = "#000";
       btn.style.pointerEvents = "none";
       btn.removeAttribute("href");
     });
-    document.getElementById("pluto-checkin").style.display = "block";
   }
-
-  document.getElementById("pluto-checkin-btn").addEventListener("click", function() {
-    var t = localStorage.getItem("pluto_token");
-    fetch(API + "/api/checkin", {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + t }
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var result = document.getElementById("pluto-checkin-result");
-      if (data.reward > 0) {
-        result.textContent = "🔥 " + data.streak_days + " day streak! +" + data.reward + " ♇";
-        result.style.color = "#00c896";
-      } else {
-        result.textContent = "Already checked in. Streak: " + data.streak_days + " 🔥";
-        result.style.color = "#6b7280";
-      }
-    });
-  });
 })();
 </script>
 
