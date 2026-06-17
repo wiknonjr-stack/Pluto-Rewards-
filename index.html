@@ -15,6 +15,87 @@
 --border-cyan:rgba(34,211,238,0.2);
 }
 body{background:var(--bg);color:var(--white);font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:80px;min-height:100vh}
+  <div id="launch-screen" style="position:fixed;inset:0;background:#09090B;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;transition:opacity 0.8s ease">
+
+  <div style="position:absolute;inset:0;background-image:radial-gradient(1px 1px at 15% 25%,rgba(212,175,55,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 35% 65%,rgba(139,92,246,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 25% 85%,rgba(139,92,246,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 65% 78%,rgba(34,211,238,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 92% 60%,rgba(212,175,55,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 45% 38%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 78% 88%,rgba(139,92,246,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 8% 50%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 52% 52%,rgba(212,175,55,0.3) 0%,transparent 100%);pointer-events:none"></div>
+
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%);pointer-events:none;animation:glow-pulse 2s ease-in-out infinite"></div>
+
+  <div id="launch-logo" style="font-size:52px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#D4AF37,#F4C430,#E6C76B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;opacity:0;transform:translateY(20px);transition:all 0.6s ease;position:relative;z-index:1">
+    ♇ PLUTO
+  </div>
+
+  <div id="launch-tag" style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#A1A1AA;margin-bottom:48px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.2s;position:relative;z-index:1">
+    Rewards
+  </div>
+
+  <div id="launch-tagline" style="font-size:clamp(28px,7vw,48px);font-weight:900;color:#FFFFFF;text-align:center;line-height:1.1;margin-bottom:16px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.4s;position:relative;z-index:1">
+    Not trending.<br><span style="background:linear-gradient(135deg,#D4AF37,#F4C430);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Yet.</span>
+  </div>
+
+  <div id="launch-sub" style="font-size:13px;color:#A1A1AA;letter-spacing:1px;text-align:center;opacity:0;transition:all 0.6s ease 0.6s;position:relative;z-index:1">
+    Your streams. Your tokens.
+  </div>
+
+  <div id="launch-bar-wrap" style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:120px;opacity:0;transition:opacity 0.4s ease 0.8s">
+    <div style="height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden">
+      <div id="launch-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#D4AF37,#F4C430);border-radius:1px;transition:width 2.4s linear"></div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+@keyframes glow-pulse{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+</style>
+
+<script>
+(function() {
+  if (sessionStorage.getItem("pluto_launched")) {
+    document.getElementById("launch-screen").style.display = "none";
+    return;
+  }
+
+  var screen = document.getElementById("launch-screen");
+  var logo = document.getElementById("launch-logo");
+  var tag = document.getElementById("launch-tag");
+  var tagline = document.getElementById("launch-tagline");
+  var sub = document.getElementById("launch-sub");
+  var barWrap = document.getElementById("launch-bar-wrap");
+  var bar = document.getElementById("launch-bar");
+
+  setTimeout(function() {
+    logo.style.opacity = "1";
+    logo.style.transform = "translateY(0)";
+  }, 100);
+
+  setTimeout(function() {
+    tag.style.opacity = "1";
+    tag.style.transform = "translateY(0)";
+  }, 300);
+
+  setTimeout(function() {
+    tagline.style.opacity = "1";
+    tagline.style.transform = "translateY(0)";
+  }, 500);
+
+  setTimeout(function() {
+    sub.style.opacity = "1";
+  }, 700);
+
+  setTimeout(function() {
+    barWrap.style.opacity = "1";
+    setTimeout(function() { bar.style.width = "100%"; }, 50);
+  }, 900);
+
+  setTimeout(function() {
+    screen.style.opacity = "0";
+    setTimeout(function() {
+      screen.style.display = "none";
+      sessionStorage.setItem("pluto_launched", "1");
+    }, 800);
+  }, 3200);
+})();
 body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 50% 10%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 70% 40%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 85% 15%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 20% 80%,rgba(139,92,246,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 60% 75%,rgba(34,211,238,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 90% 55%,rgba(212,175,55,0.3) 0%,transparent 100%);pointer-events:none;z-index:0}
 
 nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
