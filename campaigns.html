@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Campaigns — Pluto Rewards</title>
+<title>Quests — Pluto Rewards</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -15,35 +15,95 @@
 --border-cyan:rgba(34,211,238,0.2);
 }
 body{background:var(--bg);color:var(--white);font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:80px;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 20% 80%,rgba(139,92,246,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 65% 75%,rgba(34,211,238,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 90% 55%,rgba(212,175,55,0.3) 0%,transparent 100%);pointer-events:none;z-index:0}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 20% 80%,rgba(139,92,246,0.2) 0%,transparent 100%);pointer-events:none;z-index:0}
 
 nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
 .logo{font-size:18px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none}
 .logo-pluto{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px}
 
-.wrap{max-width:700px;margin:0 auto;padding:32px 20px 24px;position:relative;z-index:1}
-.page-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
-.page-title{font-size:clamp(28px,6vw,42px);font-weight:900;margin-bottom:6px;line-height:1.1}
+.wrap{max-width:700px;margin:0 auto;padding:28px 16px 20px;position:relative;z-index:1}
+.page-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;text-align:center}
+.page-title{font-size:clamp(28px,6vw,42px);font-weight:900;margin-bottom:6px;line-height:1.1;text-align:center}
 .page-title span{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.page-sub{font-size:13px;color:var(--gray);margin-bottom:24px;line-height:1.7;max-width:500px}
+.page-sub{font-size:12px;color:var(--gray);margin-bottom:8px;line-height:1.6;text-align:center}
 
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.filter-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:7px 16px;border-radius:50px;cursor:pointer;transition:all .15s;white-space:nowrap}
-.filter-btn.active{background:rgba(139,92,246,0.15);border-color:var(--purple);color:var(--purple);font-weight:700}
+.section-block{margin:26px 0}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;padding:0 16px}
+.section-icon{font-size:16px}
+.section-name{font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.section-name.discover{color:var(--cyan)}
+.section-name.play{color:var(--purple)}
+.section-name.explore{color:var(--cyan)}
+.section-name.compete{color:var(--gold)}
+.section-name.community{color:#f97316}
+.section-name.rewards{color:var(--gold)}
+.section-desc{font-size:11px;color:var(--gray);padding:0 16px;margin-bottom:12px}
 
-#campaign-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;position:relative;z-index:1}
+.quest-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
+.quest-scroll::-webkit-scrollbar{display:none}
 
-.campaign-card{background:var(--card);border:1px solid var(--border-gold);border-radius:18px;padding:20px;cursor:pointer;transition:transform .2s,border-color .2s;position:relative;overflow:hidden}
-.campaign-card::before{content:"";position:absolute;top:-40%;right:-20%;width:120px;height:120px;background:radial-gradient(circle,rgba(212,175,55,0.06),transparent 70%);pointer-events:none}
-.campaign-card:hover{transform:translateY(-3px);border-color:rgba(212,175,55,0.35)}
-.c-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:700}
-.c-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:8px;line-height:1.4}
-.c-desc{font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:16px}
-.c-footer{display:flex;justify-content:space-between;align-items:center}
-.c-pool{font-size:17px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.c-pool-label{font-size:9px;color:var(--gray);letter-spacing:1px;margin-top:2px}
-.c-btn{font-size:11px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--gold),var(--gold-bright));border-radius:50px;padding:7px 16px;border:none;cursor:pointer}
+.quest-card{background:var(--card);border-radius:16px;padding:18px;min-width:190px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer}
+.quest-card.cyan-bd{border:1px solid var(--border-cyan)}
+.quest-card.purple-bd{border:1px solid var(--border-purple)}
+.quest-card.gold-bd{border:1px solid var(--border-gold)}
+.quest-card.orange-bd{border:1px solid rgba(249,115,22,0.2)}
+.quest-card::before{content:"";position:absolute;top:-30%;right:-20%;width:90px;height:90px;background:radial-gradient(circle,rgba(255,255,255,0.04),transparent 70%);pointer-events:none}
+.quest-icon{font-size:24px;margin-bottom:10px}
+.quest-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3}
+.quest-desc{font-size:11px;color:var(--gray);line-height:1.5;margin-bottom:14px}
+.quest-reward{font-size:15px;font-weight:900}
+.quest-reward.gold-text{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quest-reward.cyan-text{color:var(--cyan)}
+.quest-reward.purple-text{color:var(--purple)}
+.quest-reward-label{font-size:8px;color:var(--gray);letter-spacing:1px;margin-top:2px}
+
+.full-card{background:var(--card);border-radius:16px;padding:18px;margin:0 16px 12px}
+.full-card.purple-bd{border:1px solid var(--border-purple)}
+.full-card.gold-bd{border:1px solid var(--border-gold)}
+.full-card.cyan-bd{border:1px solid var(--border-cyan)}
+
+.daily-quest-row{display:flex;align-items:center;gap:14px}
+.daily-icon-wrap{font-size:32px;width:54px;height:54px;background:rgba(139,92,246,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.daily-content{flex:1}
+.daily-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px}
+.daily-desc{font-size:11px;color:var(--gray);line-height:1.5}
+.daily-claim{font-size:11px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--purple),#a78bfa);border-radius:50px;padding:7px 16px;border:none;cursor:pointer;white-space:nowrap}
+
+.map-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.map-tile{background:rgba(34,211,238,0.03);border:1px solid rgba(34,211,238,0.06);border-radius:8px;padding:8px 4px;text-align:center;font-size:9px;color:#4b5563;line-height:1.4}
+.map-tile.unlocked{background:rgba(34,211,238,0.1);border-color:rgba(34,211,238,0.3);color:var(--cyan);font-weight:700}
+
+.region-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.region-tile{background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.1);border-radius:12px;padding:14px;text-align:center}
+.region-name{font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.region-count{font-size:18px;font-weight:900;color:var(--white)}
+.region-label{font-size:8px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
+
+.community-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 16px 12px}
+.comm-stat{background:var(--card);border:1px solid rgba(249,115,22,0.15);border-radius:14px;padding:16px;text-align:center}
+.comm-num{font-size:22px;font-weight:900;color:#f97316}
+.comm-label{font-size:9px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+
+.feed-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:7px;height:7px;border-radius:50%;background:#f97316;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
+.feed-text{font-size:11px;color:var(--gray);flex:1}
+.feed-text strong{color:var(--white)}
+.feed-time{font-size:9px;color:#4b5563}
+
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 16px 12px}
+.badge-tile{background:var(--card);border:1px solid var(--border-gold);border-radius:14px;padding:14px 6px;text-align:center;opacity:0.3}
+.badge-tile.earned{opacity:1;border-color:rgba(212,175,55,0.4);box-shadow:0 0 12px rgba(212,175,55,0.08)}
+.badge-icon{font-size:24px;margin-bottom:6px}
+.badge-name{font-size:8px;color:var(--gray);line-height:1.3}
+.badge-tile.earned .badge-name{color:var(--gold-soft);font-weight:700}
+
+.score-card{background:linear-gradient(135deg,#1a1400,var(--card));border:1px solid rgba(212,175,55,0.3);border-radius:16px;padding:20px;margin:0 16px 12px;display:flex;align-items:center;gap:16px}
+.score-icon{font-size:36px}
+.score-val{font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-label{font-size:10px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 
 #detail-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:998;display:none;align-items:center;justify-content:center;padding:20px}
 #detail-modal.show{display:flex}
@@ -58,8 +118,7 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .btn-join{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;font-size:15px;padding:14px;border:none;border-radius:50px;cursor:pointer;margin-bottom:10px}
 .btn-close{width:100%;background:rgba(255,255,255,0.04);color:var(--gray);font-weight:600;font-size:13px;padding:12px;border:1px solid var(--border-gold);border-radius:50px;cursor:pointer}
 
-.empty{color:var(--gray);font-size:13px;text-align:center;padding:48px 0;grid-column:1/-1}
-.loading{color:var(--gray);font-size:13px;text-align:center;padding:48px 0;grid-column:1/-1}
+.loading,.empty{color:var(--gray);font-size:12px;text-align:center;padding:20px 16px}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
 .bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
@@ -68,31 +127,128 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 </style>
 </head>
 <body>
-
-<nav class="top-nav">
+ <nav class="top-nav">
   <a class="logo" href="/"><span class="logo-pluto">♇ PLUTO</span></a>
   <a class="back" href="/">← Home</a>
 </nav>
 
 <div class="wrap">
-  <div class="page-tag">🟢 39 campaigns live</div>
-  <h1 class="page-title">Pick your genre.<br><span>Start earning.</span></h1>
-  <p class="page-sub">Every campaign rewards a different kind of listener — top streamers, genre explorers, streak keepers, and more. Connect Spotify on the home page first.</p>
+  <div class="page-tag">🎮 39 Quests Live</div>
+  <h1 class="page-title">The Quest <span>Board</span></h1>
+  <p class="page-sub">Discover, play, explore, and compete. Every quest earns Pluto.</p>
+</div>
 
-  <div class="filters" id="filters">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="top_listener">🏆 Top Listener</button>
-    <button class="filter-btn" data-filter="discovery">👋 Discovery</button>
-    <button class="filter-btn" data-filter="streak">🔥 Streak</button>
-    <button class="filter-btn" data-filter="weekend_drop">⚡ Weekend Drop</button>
-    <button class="filter-btn" data-filter="social">📣 Social</button>
-    <button class="filter-btn" data-filter="milestone">🎯 Milestone</button>
-    <button class="filter-btn" data-filter="referral">🤝 Referral</button>
+<!-- DISCOVER -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">🚀</span>
+    <span class="section-name discover">Discover</span>
+  </div>
+  <div class="section-desc">New artists, hidden campaigns, and what's rising right now.</div>
+  <div class="quest-scroll" id="discover-row">
+    <div class="loading">Loading...</div>
+  </div>
+</div>
+
+<!-- PLAY -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">🎯</span>
+    <span class="section-name play">Play</span>
+  </div>
+  <div class="section-desc">Your daily loop. Check in, keep your streak, complete journeys.</div>
+
+  <div class="full-card purple-bd">
+    <div class="daily-quest-row">
+      <div class="daily-icon-wrap" id="daily-quest-icon">🔥</div>
+      <div class="daily-content">
+        <div class="daily-title" id="daily-quest-title">Loading quest...</div>
+        <div class="daily-desc" id="daily-quest-desc">—</div>
+      </div>
+      <button class="daily-claim" id="daily-claim-btn" onclick="doCheckin()">Claim</button>
+    </div>
+    <div id="checkin-result" style="font-size:11px;color:var(--purple);margin-top:10px;display:none"></div>
   </div>
 
-  <div id="campaign-grid">
-    <div class="loading">Loading campaigns...</div>
+  <div class="quest-scroll" id="play-row">
+    <div class="loading">Loading...</div>
   </div>
+</div>
+
+<!-- EXPLORE -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">🌍</span>
+    <span class="section-name explore">Explore</span>
+  </div>
+  <div class="section-desc">Travel the world through music. Unlock regions and cultures.</div>
+  <div class="full-card cyan-bd">
+    <div style="font-size:12px;color:var(--gray);margin-bottom:4px">World Discovery — regions unlocked</div>
+    <div class="region-grid" id="region-grid"></div>
+  </div>
+</div>
+  <!-- COMPETE -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">👑</span>
+    <span class="section-name compete">Compete</span>
+  </div>
+  <div class="section-desc">Elite leaderboards, milestone chases, and limited-time seasons.</div>
+  <div class="quest-scroll" id="compete-row">
+    <div class="loading">Loading...</div>
+  </div>
+</div>
+
+<!-- COMMUNITY -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">🤝</span>
+    <span class="section-name community">Community</span>
+  </div>
+  <div class="section-desc">What the whole Pluto fanbase is achieving together.</div>
+
+  <div class="community-grid" id="community-stats">
+    <div class="comm-stat"><div class="comm-num">—</div><div class="comm-label">Fans</div></div>
+    <div class="comm-stat"><div class="comm-num">—</div><div class="comm-label">♇ Distributed</div></div>
+    <div class="comm-stat"><div class="comm-num">—</div><div class="comm-label">Check-ins</div></div>
+    <div class="comm-stat"><div class="comm-num">—</div><div class="comm-label">Quests Joined</div></div>
+  </div>
+
+  <div class="full-card" style="border:1px solid rgba(249,115,22,0.15)">
+    <div style="font-size:11px;color:#f97316;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:10px">⚡ Live Activity</div>
+    <div id="live-feed">
+      <div class="feed-item"><div class="feed-dot"></div><div class="feed-text"><strong>wiknon</strong> joined the Afrobeats quest</div><div class="feed-time">now</div></div>
+      <div class="feed-item"><div class="feed-dot"></div><div class="feed-text"><strong>A fan</strong> hit a 7-day streak 🔥</div><div class="feed-time">2m</div></div>
+      <div class="feed-item"><div class="feed-dot"></div><div class="feed-text"><strong>A fan</strong> unlocked their 5th region 🌍</div><div class="feed-time">5m</div></div>
+      <div class="feed-item"><div class="feed-dot"></div><div class="feed-text"><strong>Weekend Drop</strong> K-Pop quest is live ⚡</div><div class="feed-time">10m</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REWARDS -->
+<div class="section-block">
+  <div class="section-head">
+    <span class="section-icon">🎁</span>
+    <span class="section-name rewards">Rewards</span>
+  </div>
+  <div class="section-desc">What you've earned. Badges, titles, score, and Pluto.</div>
+
+  <div class="score-card">
+    <div class="score-icon">👑</div>
+    <div>
+      <div class="score-val" id="my-discovery-score">—</div>
+      <div class="score-label">Your Discovery Score</div>
+    </div>
+  </div>
+
+  <div style="padding:0 16px;font-size:11px;color:var(--gray);margin-bottom:8px">Badges <span id="badge-progress" style="color:var(--gold)"></span></div>
+  <div class="badge-grid" id="badge-grid">
+    <div class="loading">Connect Spotify to see your badges</div>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:10px;color:rgba(212,175,55,0.3);font-family:monospace;padding:16px 0 4px;word-break:break-all">
+  Contract: 0x818b85e381b9f36b5a3f597788513633981c406e · World Chain
 </div>
 
 <div id="detail-modal">
@@ -101,101 +257,221 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 
 <nav class="bottom-nav">
   <a href="/"><span class="icon">🏠</span>Home</a>
-  <a href="/campaigns.html" class="active"><span class="icon">🎯</span>Campaigns</a>
+  <a href="/campaigns.html" class="active"><span class="icon">🎯</span>Quests</a>
   <a href="/leaderboard.html"><span class="icon">🏆</span>Board</a>
   <a href="/profile.html"><span class="icon">👤</span>Profile</a>
-</nav>
-<script>
+                                                              </nav>
+                                                              <script>
 var API = "https://pluto-rewards-production.up.railway.app";
-var TYPE_ICONS = {"top_listener":"🏆","discovery":"👋","streak":"🔥","weekend_drop":"⚡","social":"📣","milestone":"🎯","referral":"🤝","genre_battle":"🌍"};
-var TYPE_COLORS = {"top_listener":"var(--gold)","discovery":"var(--cyan)","streak":"#f97316","weekend_drop":"var(--purple)","social":"var(--cyan)","milestone":"var(--gold)","referral":"var(--purple)","genre_battle":"var(--cyan)"};
-
+var token = localStorage.getItem("pluto_token");
 var allCampaigns = [];
 var campaignMap = {};
 
+var TYPE_ICONS = {"top_listener":"🏆","discovery":"👋","streak":"🔥","weekend_drop":"⚡","social":"📣","milestone":"🎯","referral":"🤝","genre_battle":"🌍"};
+var REGIONS = ["Africa","Americas","Latin America","Europe","Asia","MENA","Global"];
+
+// Load campaigns and distribute into sections
 fetch(API + "/api/campaigns")
   .then(function(r){return r.json();})
   .then(function(data){
     allCampaigns = data.campaigns || [];
     allCampaigns.forEach(function(c){campaignMap[c.id]=c;});
-    render("all");
+    renderDiscover();
+    renderPlay();
+    renderCompete();
+    renderRegions();
   })
   .catch(function(){
-    document.getElementById("campaign-grid").innerHTML='<div class="empty">Could not load campaigns. Try refreshing.</div>';
+    document.getElementById("discover-row").innerHTML = '<div class="empty">Could not load quests.</div>';
   });
 
-function render(filter){
-  var grid = document.getElementById("campaign-grid");
-  var list = filter==="all" ? allCampaigns : allCampaigns.filter(function(c){return c.campaign_type===filter;});
-  if(list.length===0){grid.innerHTML='<div class="empty">No campaigns in this category yet.</div>';return;}
-  grid.innerHTML="";
-  list.forEach(function(c){
-    var color = TYPE_COLORS[c.campaign_type] || "var(--gold)";
-    var icon = TYPE_ICONS[c.campaign_type] || "♇";
-    var card = document.createElement("div");
-    card.className="campaign-card";
-    card.onclick=function(){showDetail(c.id);};
-    card.innerHTML=
-      '<div class="c-tag" style="color:'+color+'">'+icon+' '+(c.genre||"All Genres")+'</div>'+
-      '<div class="c-title">'+c.title+'</div>'+
-      '<div class="c-desc">'+(c.description||"")+'</div>'+
-      '<div class="c-footer">'+
-        '<div><div class="c-pool">'+Number(c.reward_pool).toLocaleString()+' \u2647</div><div class="c-pool-label">REWARD POOL</div></div>'+
-        '<button class="c-btn">View \u2192</button>'+
-      '</div>';
-    grid.appendChild(card);
+function questCard(c, colorClass, rewardClass) {
+  var icon = TYPE_ICONS[c.campaign_type] || "♇";
+  var card = document.createElement("div");
+  card.className = "quest-card " + colorClass;
+  card.onclick = function() { showDetail(c.id); };
+  card.innerHTML =
+    '<div class="quest-icon">' + icon + '</div>' +
+    '<div class="quest-title">' + c.title + '</div>' +
+    '<div class="quest-desc">' + (c.genre || "All Genres") + '</div>' +
+    '<div class="quest-reward ' + rewardClass + '">' + Number(c.reward_pool).toLocaleString() + ' \u2647</div>' +
+    '<div class="quest-reward-label">REWARD POOL</div>';
+  return card;
+}
+
+function renderDiscover() {
+  var row = document.getElementById("discover-row");
+  var items = allCampaigns.filter(function(c) { return c.campaign_type === "discovery"; });
+  if (items.length === 0) items = allCampaigns.slice(0, 4);
+  row.innerHTML = "";
+  items.slice(0, 6).forEach(function(c) {
+    row.appendChild(questCard(c, "cyan-bd", "cyan-text"));
   });
 }
 
-document.getElementById("filters").addEventListener("click",function(e){
-  if(!e.target.classList.contains("filter-btn"))return;
-  document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active");});
-  e.target.classList.add("active");
-  render(e.target.getAttribute("data-filter"));
-});
+function renderPlay() {
+  var row = document.getElementById("play-row");
+  var items = allCampaigns.filter(function(c) { return c.campaign_type === "streak" || c.campaign_type === "social"; });
+  if (items.length === 0) items = allCampaigns.slice(4, 8);
+  row.innerHTML = "";
+  items.slice(0, 6).forEach(function(c) {
+    row.appendChild(questCard(c, "purple-bd", "purple-text"));
+  });
+}
 
-function showDetail(id){
+function renderCompete() {
+  var row = document.getElementById("compete-row");
+  var items = allCampaigns.filter(function(c) { return c.campaign_type === "top_listener" || c.campaign_type === "weekend_drop" || c.campaign_type === "milestone"; });
+  row.innerHTML = "";
+  items.slice(0, 8).forEach(function(c) {
+    row.appendChild(questCard(c, "gold-bd", "gold-text"));
+  });
+}
+
+function renderRegions() {
+  var grid = document.getElementById("region-grid");
+  grid.innerHTML = "";
+  REGIONS.forEach(function(r) {
+    var count = allCampaigns.filter(function(c) {
+      return c.genre && genreRegion(c.genre) === r;
+    }).length;
+    var tile = document.createElement("div");
+    tile.className = "region-tile";
+    tile.innerHTML =
+      '<div class="region-name">' + r + '</div>' +
+      '<div class="region-count">' + count + '</div>' +
+      '<div class="region-label">Quests</div>';
+    grid.appendChild(tile);
+  });
+}
+
+function genreRegion(genre) {
+  var map = {"Afrobeats":"Africa","Amapiano":"Africa","Afropop":"Africa","Highlife":"Africa","Bongo Flava":"Africa","Ndombolo":"Africa","Gospel":"Africa","Rai":"Africa","Hip-Hop":"Americas","R&B":"Americas","Pop":"Americas","Country":"Americas","Indie":"Americas","Trap":"Americas","Latin":"Latin America","Salsa":"Latin America","Sertanejo":"Latin America","UK Drill":"Europe","French Pop":"Europe","Turkish Pop":"Europe","Classical":"Europe","K-Pop":"Asia","J-Pop":"Asia","C-Pop":"Asia","Bollywood":"Asia","OPM":"Asia","EDM":"Global","Reggae":"Global","Arabic Pop":"MENA"};
+  return map[genre] || "Global";
+}
+
+// Daily quest
+fetch(API + "/api/quests/daily")
+  .then(function(r){return r.json();})
+  .then(function(data){
+    document.getElementById("daily-quest-icon").textContent = data.quest.icon;
+    document.getElementById("daily-quest-title").textContent = data.quest.title;
+    document.getElementById("daily-quest-desc").textContent = data.quest.desc + " (+" + data.quest.reward + " \u2647)";
+  })
+  .catch(function(){});
+
+function doCheckin() {
+  if (!token) { alert("Connect your Spotify on the home page first!"); window.location.href = "/"; return; }
+  var btn = document.getElementById("daily-claim-btn");
+  btn.textContent = "...";
+  fetch(API + "/api/checkin", {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var result = document.getElementById("checkin-result");
+    result.style.display = "block";
+    if (data.reward > 0) {
+      result.textContent = "\uD83D\uDD25 " + data.streak_days + "-day streak! +" + data.reward + " \u2647 earned";
+      btn.textContent = "Claimed!";
+    } else {
+      result.textContent = "Already checked in today.";
+      result.style.color = "var(--gray)";
+      btn.textContent = "Done";
+    }
+  })
+  .catch(function(){ btn.textContent = "Claim"; });
+}
+
+// Community stats
+fetch(API + "/api/community/stats")
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var grid = document.getElementById("community-stats");
+    grid.innerHTML =
+      '<div class="comm-stat"><div class="comm-num">' + data.total_fans + '</div><div class="comm-label">Fans</div></div>' +
+      '<div class="comm-stat"><div class="comm-num">' + Number(data.total_pluto_distributed).toLocaleString() + '</div><div class="comm-label">\u2647 Distributed</div></div>' +
+      '<div class="comm-stat"><div class="comm-num">' + data.total_checkins + '</div><div class="comm-label">Check-ins</div></div>' +
+      '<div class="comm-stat"><div class="comm-num">' + data.total_joins + '</div><div class="comm-label">Quests Joined</div></div>';
+  })
+  .catch(function(){});
+
+// Badges + Discovery Score
+if (token) {
+  fetch(API + "/api/profile/me", { headers: { "Authorization": "Bearer " + token } })
+    .then(function(r){return r.json();})
+    .then(function(p){
+      document.getElementById("my-discovery-score").textContent = p.discovery_score || 0;
+    })
+    .catch(function(){});
+
+  fetch(API + "/api/badges/me", { headers: { "Authorization": "Bearer " + token } })
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var ALL_BADGES = [
+        {name:"First Discovery",icon:"🌱"},{name:"Genre Explorer",icon:"🌍"},
+        {name:"World Traveler",icon:"🗺️"},{name:"Week Warrior",icon:"🔥"},
+        {name:"Month Master",icon:"🏅"},{name:"Century Streak",icon:"💯"},
+        {name:"Platinum Discoverer",icon:"💎"},{name:"Legendary Status",icon:"👑"}
+      ];
+      var earnedNames = (data.badges || []).map(function(b){return b.name;});
+      var grid = document.getElementById("badge-grid");
+      grid.innerHTML = "";
+      ALL_BADGES.forEach(function(b){
+        var earned = earnedNames.indexOf(b.name) !== -1;
+        var tile = document.createElement("div");
+        tile.className = "badge-tile" + (earned ? " earned" : "");
+        tile.innerHTML = '<div class="badge-icon">' + b.icon + '</div><div class="badge-name">' + b.name + '</div>';
+        grid.appendChild(tile);
+      });
+      document.getElementById("badge-progress").textContent = "(" + earnedNames.length + "/8)";
+    })
+    .catch(function(){
+      document.getElementById("badge-grid").innerHTML = '<div class="loading">Could not load badges.</div>';
+    });
+} else {
+  document.getElementById("my-discovery-score").textContent = "0";
+  document.getElementById("badge-grid").innerHTML = '<div class="loading">Connect Spotify on the home page to track badges.</div>';
+}
+
+// Detail modal
+function showDetail(id) {
   var c = campaignMap[id];
-  if(!c)return;
-  var color = TYPE_COLORS[c.campaign_type] || "var(--gold)";
-  document.getElementById("modal-content").innerHTML=
-    '<div class="modal-genre" style="color:'+color+'">'+(TYPE_ICONS[c.campaign_type]||"♇")+' '+(c.genre||"All Genres")+'</div>'+
-    '<div class="modal-title">'+c.title+'</div>'+
-    '<div class="modal-desc">'+(c.description||"")+'</div>'+
-    '<div class="modal-stats">'+
-      '<div class="modal-stat"><div class="modal-stat-val">'+Number(c.reward_pool).toLocaleString()+' \u2647</div><div class="modal-stat-label">REWARD POOL</div></div>'+
-      '<div class="modal-stat"><div class="modal-stat-val">'+(c.duration||"\u2014")+'</div><div class="modal-stat-label">DURATION</div></div>'+
-    '</div>'+
-    '<button class="btn-join" onclick="joinCampaign(\''+c.id+'\')">Join Campaign</button>'+
+  if (!c) return;
+  document.getElementById("modal-content").innerHTML =
+    '<div class="modal-genre" style="color:var(--gold)">' + (TYPE_ICONS[c.campaign_type]||"♇") + ' ' + (c.genre||"All Genres") + '</div>' +
+    '<div class="modal-title">' + c.title + '</div>' +
+    '<div class="modal-desc">' + (c.description||"") + '</div>' +
+    '<div class="modal-stats">' +
+      '<div class="modal-stat"><div class="modal-stat-val">' + Number(c.reward_pool).toLocaleString() + ' \u2647</div><div class="modal-stat-label">REWARD POOL</div></div>' +
+      '<div class="modal-stat"><div class="modal-stat-val">' + (c.duration||"\u2014") + '</div><div class="modal-stat-label">DURATION</div></div>' +
+    '</div>' +
+    '<button class="btn-join" onclick="joinCampaign(\'' + c.id + '\')">Join Quest</button>' +
     '<button class="btn-close" onclick="closeModal()">Close</button>';
   document.getElementById("detail-modal").classList.add("show");
 }
 
-function closeModal(){
+function closeModal() {
   document.getElementById("detail-modal").classList.remove("show");
 }
 
-function joinCampaign(id){
-  var token = localStorage.getItem("pluto_token");
-  if(!token){
-    alert("Connect your Spotify on the home page first!");
-    window.location.href="/";
-    return;
-  }
+function joinCampaign(id) {
+  if (!token) { alert("Connect your Spotify on the home page first!"); window.location.href = "/"; return; }
   var wallet = prompt("Enter your World Chain wallet address (0x...) to join:");
-  if(!wallet||!wallet.startsWith("0x")){alert("Invalid wallet address");return;}
-  fetch(API+"/api/campaigns/"+id+"/join",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},
-    body:JSON.stringify({wallet_address:wallet})
+  if (!wallet || !wallet.startsWith("0x")) { alert("Invalid wallet address"); return; }
+  fetch(API + "/api/campaigns/" + id + "/join", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+    body: JSON.stringify({ wallet_address: wallet })
   })
   .then(function(r){return r.json();})
   .then(function(data){
     closeModal();
-    if(data.error){alert("Error: "+data.error);}
-    else{alert("You're in! \uD83C\uDF89\nDiscovery Score: "+(data.discovery_score||0)+"\nStreak: "+(data.streak_days||0)+" \uD83D\uDD25");}
+    if (data.error) { alert("Error: " + data.error); }
+    else { alert("You're in! \uD83C\uDF89\nDiscovery Score: " + (data.discovery_score||0) + "\nStreak: " + (data.streak_days||0) + " \uD83D\uDD25"); }
   })
-  .catch(function(){alert("Something went wrong. Try again.");});
+  .catch(function(){ alert("Something went wrong."); });
 }
 </script>
 
