@@ -692,6 +692,65 @@ app.get("/api/recap", requireAuth, async (req, res) => {
     new_genres: uniqueGenres.size,
   });
 });
+var GENRE_REGIONS = {
+  "Afrobeats":"Africa","Amapiano":"Africa","Afropop":"Africa","Highlife":"Africa","Bongo Flava":"Africa","Ndombolo":"Africa","Gospel":"Africa","Rai":"Africa",
+  "Hip-Hop":"Americas","R&B":"Americas","Pop":"Americas","Country":"Americas","Indie":"Americas","Trap":"Americas",
+  "Latin":"Latin America","Salsa":"Latin America","Sertanejo":"Latin America",
+  "UK Drill":"Europe","French Pop":"Europe","Turkish Pop":"Europe","Classical":"Europe",
+  "K-Pop":"Asia","J-Pop":"Asia","C-Pop":"Asia","Bollywood":"Asia","OPM":"Asia",
+  "EDM":"Global","Reggae":"Global","Arabic Pop":"MENA"
+};
+
+app.get("/api/community/stats", async (req, res) => {
+  var usersRes = await supabase.from("users").select("id, total_pluto, discovery_score", { count: "exact" });
+  var campaignsRes = await supabase.from("campaigns").select("id", { count: "exact" }).eq("status", "active");
+  var checkinsRes = await supabase.from("checkins_log").select("reward", { count: "exact" });
+  var joinsRes = await supabase.from("campaign_participants").select("id", { count: "exact" });
+
+  var totalPluto = (usersRes.data || []).reduce(function(sum, u) { return sum + (u.total_pluto || 0); }, 0);
+  var totalCheckinRewards = (checkinsRes.data || []).reduce(function(sum, c) { return sum + (c.reward || 0); }, 0);
+
+  res.json({
+    total_fans: usersRes.count || 0,
+    active_campaigns: campaignsRes.count || 0,
+    total_checkins: checkinsRes.count || 0,
+    total_joins: joinsRes.count || 0,
+    total_pluto_distributed: totalPluto + totalCheckinRewards,
+  });
+});
+
+app.get("/api/quests/daily", async (req, res) => {
+  var dayIndex = new Date().getDate() % 5;
+  var quests = [
+    { title: "Genre Hopper", desc: "Join a campaign in a genre you haven't tried yet.", reward: 500, icon: "🌍" },
+    { title: "Streak Keeper", desc: "Check in today to keep your streak alive.", reward: 100, icon: "🔥" },
+    { title: "Social Butterfly", desc: "Follow 2 new fans on Pluto.", reward: 300, icon: "🤝" },
+    { title: "Deep Diver", desc: "Join any Top Listener campaign.", reward: 400, icon: "🎯" },
+    { title: "Profile Polish", desc: "Upload an avatar to your profile.", reward: 200, icon: "✨" },
+  ];
+  res.json({ quest: quests[dayIndex], date: new Date().toISOString().split("T")[0] });
+});
+
+app.get("/api/badges/me", requireAuth, async (req, res) => {
+  var userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
+  if (userRes.error) return res.status(404).json({ error: "Not found" });
+  var user = userRes.data;
+
+  var genresRes = await supabase.from("campaign_participants").select("genre").eq("user_id", req.user.id);
+  var uniqueGenres = new Set((genresRes.data || []).map(function(p) { return p.genre; }));
+
+  var badges = [];
+  if ((user.discovery_score || 0) >= 10) badges.push({ name: "First Discovery", icon: "🌱", earned: true });
+  if (uniqueGenres.size >= 5) badges.push({ name: "Genre Explorer", icon: "🌍", earned: true });
+  if (uniqueGenres.size >= 15) badges.push({ name: "World Traveler", icon: "🗺️", earned: true });
+  if ((user.streak_days || 0) >= 7) badges.push({ name: "Week Warrior", icon: "🔥", earned: true });
+  if ((user.streak_days || 0) >= 30) badges.push({ name: "Month Master", icon: "🏅", earned: true });
+  if ((user.streak_days || 0) >= 100) badges.push({ name: "Century Streak", icon: "💯", earned: true });
+  if ((user.discovery_score || 0) >= 100) badges.push({ name: "Platinum Discoverer", icon: "💎", earned: true });
+  if ((user.discovery_score || 0) >= 200) badges.push({ name: "Legendary Status", icon: "👑", earned: true });
+
+  res.json({ badges: badges, total_possible: 8 });
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
