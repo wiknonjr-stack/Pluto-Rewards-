@@ -20,7 +20,8 @@ body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(
 nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
 .logo{font-size:18px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none}
 .logo-pluto{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px}
+.back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px;transition:all 0.2s ease}
+.back:hover,.back:focus{background:rgba(212,175,55,0.1);border-color:var(--gold);outline:none}
 
 .wrap{max-width:600px;margin:0 auto;padding:28px 16px 16px;position:relative;z-index:1}
 .page-title{font-size:clamp(26px,6vw,38px);font-weight:900;text-align:center;letter-spacing:1px}
@@ -33,18 +34,20 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .position-label{font-size:9px;color:var(--gray);letter-spacing:2px;text-transform:uppercase}
 .position-stats{display:flex;gap:14px;margin-top:4px;flex-wrap:wrap}
 .position-stat{font-size:11px;color:var(--gold-soft);font-weight:700}
-.position-change{font-size:11px;font-weight:700}
+.position-change{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
 .position-change.up{color:#22c55e}
 .position-change.down{color:#ef4444}
 
 /* TABS */
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:0 16px 4px;margin-bottom:10px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:8px 16px;border-radius:50px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.tab-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:8px 16px;border-radius:50px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s ease}
+.tab-btn:hover,.tab-btn:focus{background:rgba(255,255,255,0.06);outline:none}
 .tab-btn.active{background:rgba(139,92,246,0.15);border-color:var(--purple);color:var(--purple);font-weight:700}
 
 .filter-row{display:flex;gap:6px;padding:0 16px;margin-bottom:20px}
-.filter-btn{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:7px;border-radius:10px;cursor:pointer;text-align:center}
+.filter-btn{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:7px;border-radius:10px;cursor:pointer;text-align:center;transition:all 0.2s ease}
+.filter-btn:hover,.filter-btn:focus{background:rgba(255,255,255,0.06);outline:none}
 .filter-btn.active{background:rgba(212,175,55,0.1);border-color:var(--gold);color:var(--gold)}
 
 /* PODIUM */
@@ -54,8 +57,8 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .podium-card.p1{order:2;border:2px solid var(--gold);padding-top:26px;transform:scale(1.08);box-shadow:0 0 28px rgba(212,175,55,0.25)}
 .podium-card.p2{order:1;border:1px solid rgba(148,163,184,0.4);box-shadow:0 0 14px rgba(148,163,184,0.08)}
 .podium-card.p3{order:3;border:1px solid rgba(180,83,9,0.4);box-shadow:0 0 14px rgba(180,83,9,0.08)}
-.podium-medal{font-size:28px;margin-bottom:6px}
-.podium-name{font-size:13px;font-weight:800;color:var(--white);margin-bottom:2px}
+.podium-medal{font-size:28px;margin-bottom:6px;aria-hidden:true}
+.podium-name{font-size:13px;font-weight:800;color:var(--white);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .podium-title{font-size:9px;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 .podium-score{font-size:17px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .podium-score-label{font-size:8px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
@@ -63,7 +66,8 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 /* RANK ROWS */
 .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 16px 10px}
 .lb-list{margin:0 16px}
-.lb-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border-gold);border-radius:12px;padding:11px 14px;margin-bottom:7px}
+.lb-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border-gold);border-radius:12px;padding:11px 14px;margin-bottom:7px;transition:all 0.2s ease}
+.lb-row:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,0.1)}
 .lb-row.me{border-color:var(--purple);background:rgba(139,92,246,0.07);box-shadow:0 0 12px rgba(139,92,246,0.1)}
 .lb-rank{font-size:13px;font-weight:900;color:var(--gray);width:24px;text-align:center}
 .lb-info{flex:1;min-width:0}
@@ -71,40 +75,56 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .lb-title{font-size:9px;color:var(--purple);letter-spacing:0.5px}
 .lb-score-wrap{text-align:right}
 .lb-score{font-size:13px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.lb-move{font-size:10px;font-weight:700}
+.lb-move{font-size:10px;font-weight:700;display:flex;align-items:center;gap:3px}
 .lb-move.up{color:#22c55e}
 .lb-move.down{color:#ef4444}
 .lb-move.new{color:var(--cyan)}
+.lb-move.neutral{color:var(--gray)}
 
 /* RISING */
-.rising-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.rising-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:all 0.2s ease}
 .rising-row:last-child{border-bottom:none}
+.rising-row:hover{padding-left:4px}
 .rising-name{flex:1;font-size:12px;color:var(--white);font-weight:600}
-.rising-jump{font-size:12px;font-weight:800;color:#22c55e}
+.rising-jump{font-size:12px;font-weight:800;color:#22c55e;display:flex;align-items:center;gap:3px}
 
 /* HALL OF FAME */
 .hof-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(212,175,55,0.08)}
 .hof-row:last-child{border-bottom:none}
 .hof-rank{font-size:16px;font-weight:900;width:30px}
-.hof-name{flex:1;font-size:13px;font-weight:700;color:var(--white)}
+.hof-name{flex:1;font-size:13px;font-weight:700;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hof-score{font-size:12px;font-weight:800;color:var(--gold)}
 
 .card{background:var(--card);border:1px solid var(--border-gold);border-radius:16px;padding:18px;margin:0 16px}
 .card.orange-bd{border-color:rgba(249,115,22,0.2)}
 .card-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 
-.loading,.empty{color:var(--gray);font-size:12px;text-align:center;padding:24px 0}
+.loading{color:var(--gray);font-size:12px;text-align:center;padding:24px 0}
+.loading::after{content:"";animation:dots 1.5s steps(4,end) infinite;position:absolute;right:-12px}
+@keyframes dots{0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."}}
+
+.empty{color:var(--gray);font-size:12px;text-align:center;padding:24px 0;line-height:1.6}
+
+.error{color:#ef4444;font-size:12px;text-align:center;padding:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;margin:0 16px}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
-.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:8px;transition:all 0.2s ease}
+.bottom-nav a:hover,.bottom-nav a:focus{color:var(--purple);outline:none}
 .bottom-nav a.active{color:var(--purple)}
 .bottom-nav a .icon{font-size:20px}
+
+@media (max-width:480px){
+  .podium{margin:0 8px 24px;gap:6px}
+  .podium-card{max-width:110px;padding:14px 8px;font-size:12px}
+  .podium-name{font-size:11px}
+  .tabs{padding:0 8px 4px}
+}
 </style>
 </head>
 <body>
   <nav class="top-nav">
-  <a class="logo" href="/"><span class="logo-pluto">♇ PLUTO</span></a>
-  <a class="back" href="/">← Home</a>
+  <a class="logo" href="/" aria-label="Pluto Rewards Home"><span class="logo-pluto">♇ PLUTO</span></a>
+  <a class="back" href="/" aria-label="Back to home">← Home</a>
 </nav>
 
 <div class="wrap">
@@ -112,29 +132,29 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
   <p class="page-sub">Compete. Discover. Rise.</p>
 </div>
 
-<div class="position-card">
-  <div class="position-rank" id="my-rank">—</div>
+<div class="position-card" role="region" aria-label="Your rank">
+  <div class="position-rank" id="my-rank" aria-live="polite">—</div>
   <div class="position-info">
     <div class="position-label">Your Rank</div>
     <div class="position-stats">
-      <span class="position-stat" id="my-percentile">—</span>
-      <span class="position-change" id="my-change">—</span>
+      <span class="position-stat" id="my-percentile" aria-live="polite">—</span>
+      <span class="position-change" id="my-change" aria-live="polite">—</span>
     </div>
   </div>
 </div>
 
-<div class="tabs" id="category-tabs">
-  <button class="tab-btn active" data-type="discovery">👑 Overall</button>
-  <button class="tab-btn" data-type="streak">🔥 Streak Masters</button>
-  <button class="tab-btn" data-type="earnings">♇ Earnings</button>
+<div class="tabs" id="category-tabs" role="tablist">
+  <button class="tab-btn active" data-type="discovery" role="tab" aria-selected="true">👑 Overall</button>
+  <button class="tab-btn" data-type="streak" role="tab" aria-selected="false">🔥 Streak Masters</button>
+  <button class="tab-btn" data-type="earnings" role="tab" aria-selected="false">♇ Earnings</button>
 </div>
 
 <div class="filter-row" id="filter-row">
-  <button class="filter-btn active" data-filter="global">Global</button>
-  <button class="filter-btn" data-filter="friends">Friends</button>
+  <button class="filter-btn active" data-filter="global" aria-pressed="true">Global</button>
+  <button class="filter-btn" data-filter="friends" aria-pressed="false">Friends</button>
 </div>
 
-<div class="podium" id="podium"></div>
+<div class="podium" id="podium" role="region" aria-label="Top 3 players"></div>
 
 <div class="section-label">Rankings</div>
 <div class="lb-list" id="lb-list"><div class="loading">Loading...</div></div>
@@ -152,213 +172,423 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 <div style="height:20px"></div>
 
 <nav class="bottom-nav">
-  <a href="/"><span class="icon">🏠</span>Home</a>
-  <a href="/campaigns.html"><span class="icon">🎯</span>Quests</a>
-  <a href="/leaderboard.html" class="active"><span class="icon">🏆</span>Board</a>
-  <a href="/profile.html"><span class="icon">👤</span>Profile</a>
-  </nav>
-  <script>
-var API = "https://pluto-rewards-production.up.railway.app";
-var token = localStorage.getItem("pluto_token");
-var currentType = "discovery";
-var currentFilter = "global";
-var VAL_LABELS = {discovery:"SCORE",streak:"DAYS",earnings:"♇"};
+  <a href="/" aria-label="Home">
+    <span class="icon" aria-hidden="true">🏠</span>
+    <span>Home</span>
+  </a>
+  <a href="/campaigns.html" aria-label="Quests">
+    <span class="icon" aria-hidden="true">🎯</span>
+    <span>Quests</span>
+  </a>
+  <a href="/leaderboard.html" class="active" aria-label="Leaderboard (current page)" aria-current="page">
+    <span class="icon" aria-hidden="true">🏆</span>
+    <span>Board</span>
+  </a>
+  <a href="/profile.html" aria-label="Profile">
+    <span class="icon" aria-hidden="true">👤</span>
+    <span>Profile</span>
+  </a>
+</nav>
 
-function load(type, filter) {
-  currentType = type;
-  currentFilter = filter || currentFilter;
-  document.getElementById("podium").innerHTML = "";
-  document.getElementById("lb-list").innerHTML = '<div class="loading">Loading...</div>';
+<script>
+// ============================================
+// LEADERBOARD APP (Improved Version)
+// ============================================
 
-  if (currentFilter === "friends") {
-    loadFriendsBoard();
-    return;
+const CONFIG = {
+  API: "https://pluto-rewards-production.up.railway.app",
+  RETRY_ATTEMPTS: 2,
+  RETRY_DELAY: 1000,
+  VAL_LABELS: {
+    discovery: "SCORE",
+    streak: "DAYS",
+    earnings: "♇"
+  },
+  ARROWS: {
+    up: "↑",
+    down: "↓",
+    neutral: "—"
   }
+};
 
-  fetch(API + "/api/leaderboard/" + type)
-    .then(function(r){return r.json();})
-    .then(function(data){
-      renderPodium(data.leaderboard.slice(0,3), type);
-      renderList(data.leaderboard.slice(3), type);
-    })
-    .catch(function(){
-      document.getElementById("lb-list").innerHTML = '<div class="empty">Could not load leaderboard.</div>';
-    });
+// App State
+const State = {
+  token: localStorage.getItem("pluto_token"),
+  userId: localStorage.getItem("pluto_user_id"),
+  currentType: "discovery",
+  currentFilter: "global"
+};
 
-  loadMe(type);
-}
-
-function loadFriendsBoard() {
-  if (!token) {
-    document.getElementById("lb-list").innerHTML = '<div class="empty">Connect Spotify to see friends.</div>';
-    return;
-  }
-  fetch(API + "/api/friends", { headers: { "Authorization": "Bearer " + token } })
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var friends = data.friends || [];
-      if (friends.length === 0) {
-        document.getElementById("lb-list").innerHTML = '<div class="empty">No friends yet. Follow people on your Profile page.</div>';
-        return;
-      }
-      friends.sort(function(a,b){ return getVal(b,currentType) - getVal(a,currentType); });
-      renderPodium(friends.slice(0,3).map(function(f,i){ f.rank=i+1; return f; }), currentType);
-      renderList(friends.slice(3).map(function(f,i){ f.rank=i+4; return f; }), currentType);
-    });
-}
-
-function getVal(u, type){
-  if(type==="streak") return u.streak_days;
-  if(type==="earnings") return u.total_pluto;
-  return u.discovery_score;
-}
-
-function renderPodium(top3, type){
-  var podium = document.getElementById("podium");
-  if(top3.length===0){ podium.innerHTML = '<div class="empty">No fans yet. Be the first!</div>'; return; }
-  var medals = ["🥇","🥈","🥉"];
-  var classes = ["p1","p2","p3"];
-  podium.innerHTML = "";
-  top3.forEach(function(u,i){
-    var title = u.title ? u.title.name : "Newcomer";
-    var div = document.createElement("div");
-    div.className = "podium-card " + classes[i];
-    div.innerHTML =
-      '<div class="podium-medal">' + medals[i] + '</div>' +
-      '<div class="podium-name">' + u.name + '</div>' +
-      '<div class="podium-title">' + title + '</div>' +
-      '<div class="podium-score">' + Number(getVal(u,type)).toLocaleString() + '</div>' +
-      '<div class="podium-score-label">' + VAL_LABELS[type] + '</div>';
-    podium.appendChild(div);
-  });
-}
-
-function renderList(rest, type){
-  var list = document.getElementById("lb-list");
-  var myId = localStorage.getItem("pluto_user_id");
-  if(rest.length===0){ list.innerHTML=""; return; }
-  list.innerHTML="";
-  rest.forEach(function(u){
-    var title = u.title ? u.title.name : "Newcomer";
-    var moveHtml = "";
-    if (u.rank_change === null || u.rank_change === undefined) {
-      moveHtml = '<span class="lb-move new">NEW</span>';
-    } else if (u.rank_change > 0) {
-      moveHtml = '<span class="lb-move up">\u2191 ' + u.rank_change + '</span>';
-    } else if (u.rank_change < 0) {
-      moveHtml = '<span class="lb-move down">\u2193 ' + Math.abs(u.rank_change) + '</span>';
-    } else {
-      moveHtml = '<span class="lb-move">\u2014</span>';
+/**
+ * Safe fetch with retry and error handling
+ */
+async function fetchWithRetry(url, options = {}, attempt = 0) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    if (attempt < CONFIG.RETRY_ATTEMPTS) {
+      await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY));
+      return fetchWithRetry(url, options, attempt + 1);
     }
-    var row = document.createElement("div");
-    row.className = "lb-row" + (u.id===myId?" me":"");
-    row.innerHTML =
-      '<div class="lb-rank">#' + u.rank + '</div>' +
-      '<div class="lb-info"><div class="lb-name">' + u.name + '</div><div class="lb-title">' + title + '</div></div>' +
-      '<div class="lb-score-wrap"><div class="lb-score">' + Number(getVal(u,type)).toLocaleString() + '</div>' + moveHtml + '</div>';
-    list.appendChild(row);
-  });
+    throw error;
+  }
 }
 
-function loadMe(type){
-  if(!token){
+/**
+ * Safely extract value from user object
+ */
+function getVal(user, type) {
+  const valMap = {
+    streak: () => user.streak_days || 0,
+    earnings: () => user.total_pluto || 0,
+    discovery: () => user.discovery_score || 0
+  };
+  return (valMap[type] || valMap.discovery)();
+}
+
+/**
+ * Sanitize user input to prevent XSS
+ */
+function sanitize(text) {
+  if (!text) return "Unknown";
+  const div = document.createElement("div");
+  div.textContent = String(text).substring(0, 100);
+  return div.innerHTML;
+}
+
+/**
+ * Create rank change HTML with proper accessibility
+ */
+function createRankChangeHTML(rankChange) {
+  if (rankChange === null || rankChange === undefined) {
+    return `<span class="lb-move new" aria-label="New player">NEW</span>`;
+  }
+  if (rankChange > 0) {
+    return `<span class="lb-move up" aria-label="Rank improved by ${rankChange}"><span aria-hidden="true">${CONFIG.ARROWS.up}</span> ${rankChange}</span>`;
+  }
+  if (rankChange < 0) {
+    return `<span class="lb-move down" aria-label="Rank dropped by ${Math.abs(rankChange)}"><span aria-hidden="true">${CONFIG.ARROWS.down}</span> ${Math.abs(rankChange)}</span>`;
+  }
+  return `<span class="lb-move neutral" aria-hidden="true">${CONFIG.ARROWS.neutral}</span>`;
+}
+
+/**
+ * Render top 3 podium
+ */
+function renderPodium(top3, type) {
+  const podium = document.getElementById("podium");
+  if (top3.length === 0) {
+    podium.innerHTML = '<div class="empty">No fans yet. Be the first!</div>';
+    return;
+  }
+
+  const medals = ["🥇", "🥈", "🥉"];
+  const classes = ["p1", "p2", "p3"];
+  const fragment = document.createDocumentFragment();
+
+  top3.forEach((user, i) => {
+    const title = user.title?.name || "Newcomer";
+    const div = document.createElement("div");
+    div.className = `podium-card ${classes[i]}`;
+    
+    const medal = medals[i];
+    const name = sanitize(user.name);
+    const score = Number(getVal(user, type)).toLocaleString();
+    const label = CONFIG.VAL_LABELS[type];
+
+    div.innerHTML = `
+      <div class="podium-medal" aria-hidden="true">${medal}</div>
+      <div class="podium-name" title="${name}">${name}</div>
+      <div class="podium-title">${title}</div>
+      <div class="podium-score">${score}</div>
+      <div class="podium-score-label">${label}</div>
+    `;
+    fragment.appendChild(div);
+  });
+
+  podium.innerHTML = "";
+  podium.appendChild(fragment);
+}
+
+/**
+ * Render leaderboard list with DocumentFragment for performance
+ */
+function renderList(rest, type) {
+  const list = document.getElementById("lb-list");
+  if (rest.length === 0) {
+    list.innerHTML = "";
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  rest.forEach((user) => {
+    const title = user.title?.name || "Newcomer";
+    const moveHtml = createRankChangeHTML(user.rank_change);
+    const isMe = user.id === State.userId;
+
+    const row = document.createElement("div");
+    row.className = `lb-row${isMe ? " me" : ""}`;
+    if (isMe) {
+      row.setAttribute("aria-label", "Your ranking");
+    }
+
+    const name = sanitize(user.name);
+    const score = Number(getVal(user, type)).toLocaleString();
+
+    row.innerHTML = `
+      <div class="lb-rank">#${user.rank}</div>
+      <div class="lb-info">
+        <div class="lb-name" title="${name}">${name}</div>
+        <div class="lb-title">${title}</div>
+      </div>
+      <div class="lb-score-wrap">
+        <div class="lb-score">${score}</div>
+        ${moveHtml}
+      </div>
+    `;
+    fragment.appendChild(row);
+  });
+
+  list.innerHTML = "";
+  list.appendChild(fragment);
+}
+
+/**
+ * Load global leaderboard
+ */
+async function loadGlobalBoard(type) {
+  try {
+    const data = await fetchWithRetry(`${CONFIG.API}/api/leaderboard/${type}`);
+    const leaderboard = data.leaderboard || [];
+    renderPodium(leaderboard.slice(0, 3), type);
+    renderList(leaderboard.slice(3), type);
+  } catch (error) {
+    console.error("Failed to load leaderboard:", error);
+    document.getElementById("lb-list").innerHTML = 
+      '<div class="error">Unable to load leaderboard. Please try again later.</div>';
+  }
+}
+
+/**
+ * Load friends leaderboard
+ */
+async function loadFriendsBoard() {
+  if (!State.token) {
+    document.getElementById("lb-list").innerHTML = 
+      '<div class="empty">Connect Spotify to see friends.</div>';
+    return;
+  }
+
+  try {
+    const data = await fetchWithRetry(
+      `${CONFIG.API}/api/friends`,
+      { headers: { "Authorization": `Bearer ${State.token}` } }
+    );
+
+    const friends = data.friends || [];
+    if (friends.length === 0) {
+      document.getElementById("lb-list").innerHTML = 
+        '<div class="empty">No friends yet. Follow people on your Profile page.</div>';
+      return;
+    }
+
+    // Sort friends by current leaderboard type
+    friends.sort((a, b) => getVal(b, State.currentType) - getVal(a, State.currentType));
+
+    // Assign ranks
+    const top3 = friends.slice(0, 3).map((f, i) => ({ ...f, rank: i + 1 }));
+    const rest = friends.slice(3).map((f, i) => ({ ...f, rank: i + 4 }));
+
+    renderPodium(top3, State.currentType);
+    renderList(rest, State.currentType);
+  } catch (error) {
+    console.error("Failed to load friends:", error);
+    document.getElementById("lb-list").innerHTML = 
+      '<div class="error">Unable to load friends. Please try again.</div>';
+  }
+}
+
+/**
+ * Load current user's rank
+ */
+async function loadMe(type) {
+  if (!State.token) {
     document.getElementById("my-rank").textContent = "—";
     document.getElementById("my-percentile").textContent = "Not connected";
     document.getElementById("my-change").textContent = "";
     return;
   }
-  fetch(API + "/api/leaderboard/" + type + "/me", { headers:{"Authorization":"Bearer "+token} })
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data.me){
-        document.getElementById("my-rank").textContent = "—";
-        document.getElementById("my-percentile").textContent = "Join a quest to rank";
-        document.getElementById("my-change").textContent = "";
-        return;
-      }
-      document.getElementById("my-rank").textContent = "#" + data.rank;
-      document.getElementById("my-percentile").textContent = "Top " + (100 - data.percentile + 1) + "%";
-      var changeEl = document.getElementById("my-change");
-      if (data.rank_change > 0) {
-        changeEl.textContent = "\u2191 " + data.rank_change + " this week";
-        changeEl.className = "position-change up";
-      } else if (data.rank_change < 0) {
-        changeEl.textContent = "\u2193 " + Math.abs(data.rank_change) + " this week";
-        changeEl.className = "position-change down";
-      } else {
-        changeEl.textContent = data.me.title.icon + " " + data.me.title.name;
-        changeEl.className = "position-change";
-      }
-    })
-    .catch(function(){});
-}
 
-document.getElementById("category-tabs").addEventListener("click", function(e){
-  if(!e.target.classList.contains("tab-btn"))return;
-  document.querySelectorAll("#category-tabs .tab-btn").forEach(function(b){b.classList.remove("active");});
-  e.target.classList.add("active");
-  load(e.target.getAttribute("data-type"), currentFilter);
-});
+  try {
+    const data = await fetchWithRetry(
+      `${CONFIG.API}/api/leaderboard/${type}/me`,
+      { headers: { "Authorization": `Bearer ${State.token}` } }
+    );
 
-document.getElementById("filter-row").addEventListener("click", function(e){
-  if(!e.target.classList.contains("filter-btn"))return;
-  document.querySelectorAll("#filter-row .filter-btn").forEach(function(b){b.classList.remove("active");});
-  e.target.classList.add("active");
-  load(currentType, e.target.getAttribute("data-filter"));
-});
-
-// Rising players (mock from current leaderboard rank_change until enough history exists)
-fetch(API + "/api/leaderboard/discovery")
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var rising = (data.leaderboard || [])
-      .filter(function(u){ return u.rank_change && u.rank_change > 0; })
-      .sort(function(a,b){ return b.rank_change - a.rank_change; })
-      .slice(0,5);
-    var card = document.getElementById("rising-card");
-    if (rising.length === 0) {
-      card.innerHTML = '<div class="empty">Check back after a week of activity to see who\\'s climbing fastest.</div>';
+    if (!data.me) {
+      document.getElementById("my-rank").textContent = "—";
+      document.getElementById("my-percentile").textContent = "Join a quest to rank";
+      document.getElementById("my-change").textContent = "";
       return;
     }
-    card.innerHTML = "";
-    rising.forEach(function(u){
-      var row = document.createElement("div");
-      row.className = "rising-row";
-      row.innerHTML = '<div class="rising-name">' + u.name + '</div><div class="rising-jump">\u2191 ' + u.rank_change + '</div>';
-      card.appendChild(row);
-    });
-  })
-  .catch(function(){
-    document.getElementById("rising-card").innerHTML = '<div class="empty">Could not load.</div>';
-  });
 
-// Hall of Fame
-fetch(API + "/api/hall-of-fame")
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var card = document.getElementById("hof-card");
-    var hof = data.hall_of_fame || [];
+    document.getElementById("my-rank").textContent = `#${data.rank}`;
+    document.getElementById("my-percentile").textContent = `Top ${100 - data.percentile + 1}%`;
+
+    const changeEl = document.getElementById("my-change");
+    if (data.rank_change > 0) {
+      changeEl.textContent = `${CONFIG.ARROWS.up} ${data.rank_change} this week`;
+      changeEl.className = "position-change up";
+    } else if (data.rank_change < 0) {
+      changeEl.textContent = `${CONFIG.ARROWS.down} ${Math.abs(data.rank_change)} this week`;
+      changeEl.className = "position-change down";
+    } else {
+      changeEl.textContent = `${data.me.title?.icon || "✨"} ${data.me.title?.name || "Steady"}`;
+      changeEl.className = "position-change";
+    }
+  } catch (error) {
+    console.error("Failed to load user rank:", error);
+  }
+}
+
+/**
+ * Load and render rising players
+ */
+async function loadRisingPlayers() {
+  try {
+    const data = await fetchWithRetry(`${CONFIG.API}/api/leaderboard/discovery`);
+    const rising = (data.leaderboard || [])
+      .filter(u => u.rank_change && u.rank_change > 0)
+      .sort((a, b) => b.rank_change - a.rank_change)
+      .slice(0, 5);
+
+    const card = document.getElementById("rising-card");
+    if (rising.length === 0) {
+      card.innerHTML = '<div class="empty">Check back after a week of activity to see who\'s climbing fastest.</div>';
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    rising.forEach(user => {
+      const row = document.createElement("div");
+      row.className = "rising-row";
+      const name = sanitize(user.name);
+      row.innerHTML = `
+        <div class="rising-name" title="${name}">${name}</div>
+        <div class="rising-jump" aria-label="Jumped ${user.rank_change} positions">
+          <span aria-hidden="true">${CONFIG.ARROWS.up}</span> ${user.rank_change}
+        </div>
+      `;
+      fragment.appendChild(row);
+    });
+
+    card.innerHTML = "";
+    card.appendChild(fragment);
+  } catch (error) {
+    console.error("Failed to load rising players:", error);
+    document.getElementById("rising-card").innerHTML = 
+      '<div class="error">Unable to load rising players.</div>';
+  }
+}
+
+/**
+ * Load and render hall of fame
+ */
+async function loadHallOfFame() {
+  try {
+    const data = await fetchWithRetry(`${CONFIG.API}/api/hall-of-fame`);
+    const hof = data.hall_of_fame || [];
+
+    const card = document.getElementById("hof-card");
     if (hof.length === 0) {
       card.innerHTML = '<div class="empty">No legends yet. Be the first.</div>';
       return;
     }
-    var medals = {1:"🥇",2:"🥈",3:"🥉"};
-    card.innerHTML = "";
-    hof.forEach(function(u){
-      var row = document.createElement("div");
-      row.className = "hof-row";
-      row.innerHTML =
-        '<div class="hof-rank">' + (medals[u.rank] || ("#"+u.rank)) + '</div>' +
-        '<div class="hof-name">' + u.name + '</div>' +
-        '<div class="hof-score">' + Number(u.discovery_score).toLocaleString() + '</div>';
-      card.appendChild(row);
-    });
-  })
-  .catch(function(){
-    document.getElementById("hof-card").innerHTML = '<div class="empty">Could not load.</div>';
-  });
 
+    const medals = { 1: "🥇", 2: "🥈", 3: "🥉" };
+    const fragment = document.createDocumentFragment();
+
+    hof.forEach(user => {
+      const row = document.createElement("div");
+      row.className = "hof-row";
+      const name = sanitize(user.name);
+      const medal = medals[user.rank] || `#${user.rank}`;
+      const score = Number(user.discovery_score || 0).toLocaleString();
+
+      row.innerHTML = `
+        <div class="hof-rank" aria-hidden="true">${medal}</div>
+        <div class="hof-name" title="${name}">${name}</div>
+        <div class="hof-score">${score}</div>
+      `;
+      fragment.appendChild(row);
+    });
+
+    card.innerHTML = "";
+    card.appendChild(fragment);
+  } catch (error) {
+    console.error("Failed to load hall of fame:", error);
+    document.getElementById("hof-card").innerHTML = 
+      '<div class="error">Unable to load hall of fame.</div>';
+  }
+}
+
+/**
+ * Main load function
+ */
+function load(type, filter) {
+  State.currentType = type;
+  State.currentFilter = filter || State.currentFilter;
+
+  // Update tab/filter button states
+  document.querySelectorAll("#category-tabs .tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+    btn.setAttribute("aria-selected", "false");
+  });
+  document.querySelector(`#category-tabs [data-type="${type}"]`).classList.add("active");
+  document.querySelector(`#category-tabs [data-type="${type}"]`).setAttribute("aria-selected", "true");
+
+  document.querySelectorAll("#filter-row .filter-btn").forEach(btn => {
+    btn.classList.remove("active");
+    btn.setAttribute("aria-pressed", "false");
+  });
+  document.querySelector(`#filter-row [data-filter="${filter}"]`).classList.add("active");
+  document.querySelector(`#filter-row [data-filter="${filter}"]`).setAttribute("aria-pressed", "true");
+
+  // Reset podium and list
+  document.getElementById("podium").innerHTML = "";
+  document.getElementById("lb-list").innerHTML = '<div class="loading">Loading...</div>';
+
+  // Load appropriate board
+  if (State.currentFilter === "friends") {
+    loadFriendsBoard();
+  } else {
+    loadGlobalBoard(type);
+  }
+
+  loadMe(type);
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Event Listeners
+document.getElementById("category-tabs").addEventListener("click", (e) => {
+  if (!e.target.classList.contains("tab-btn")) return;
+  load(e.target.getAttribute("data-type"), State.currentFilter);
+});
+
+document.getElementById("filter-row").addEventListener("click", (e) => {
+  if (!e.target.classList.contains("filter-btn")) return;
+  load(State.currentType, e.target.getAttribute("data-filter"));
+});
+
+// Initialize
 load("discovery", "global");
+loadRisingPlayers();
+loadHallOfFame();
 </script>
 
 </body>
