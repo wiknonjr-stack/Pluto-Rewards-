@@ -6,201 +6,359 @@
 <title>Leaderboard — Pluto Rewards</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#04040f;color:#f0f0f5;font-family:'Segoe UI',sans-serif}
-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.06)}
-.logo{font-size:18px;font-weight:800;letter-spacing:3px;color:#f0f0f5;text-decoration:none}
-.logo span{color:#8b5cf6}
-.back{font-size:13px;color:#9ca3af;text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 18px}
-.wrap{max-width:700px;margin:0 auto;padding:36px 20px 100px}
-.tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#00c896;margin-bottom:10px;text-align:center}
-h1{font-size:clamp(28px,6vw,42px);font-weight:900;text-align:center;margin-bottom:8px}
-.sub{font-size:13px;color:#6b7280;text-align:center;margin-bottom:28px}
+:root{
+--bg:#09090B;--card:#1C1C1E;--gold:#D4AF37;--gold-bright:#F4C430;
+--gold-soft:#E6C76B;--purple:#8B5CF6;--cyan:#22D3EE;
+--white:#FFFFFF;--gray:#A1A1AA;
+--border-gold:rgba(212,175,55,0.15);
+--border-purple:rgba(139,92,246,0.2);
+--border-cyan:rgba(34,211,238,0.2);
+}
+body{background:var(--bg);color:var(--white);font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:80px;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.4) 0%,transparent 100%);pointer-events:none;z-index:0}
 
-.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
-.tab-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-size:12px;padding:9px 18px;border-radius:50px;cursor:pointer}
-.tab-btn.active{background:rgba(139,92,246,0.18);border-color:#8b5cf6;color:#a78bfa}
+nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
+.logo{font-size:18px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo-pluto{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px}
 
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-bottom:36px}
-.podium-card{background:#0f0e1c;border-radius:14px;padding:16px 12px;text-align:center;flex:1;max-width:140px}
-.podium-card.p1{order:2;border:1px solid #fbbf24;padding-top:24px;transform:scale(1.05)}
-.podium-card.p2{order:1;border:1px solid #cbd5e1}
-.podium-card.p3{order:3;border:1px solid #d97706}
+.wrap{max-width:600px;margin:0 auto;padding:28px 16px 16px;position:relative;z-index:1}
+.page-title{font-size:clamp(26px,6vw,38px);font-weight:900;text-align:center;letter-spacing:1px}
+.page-sub{font-size:12px;color:var(--gray);text-align:center;margin-top:4px;margin-bottom:20px;letter-spacing:1px}
+
+/* POSITION CARD */
+.position-card{background:linear-gradient(135deg,#1a1400,var(--card));border:1px solid rgba(212,175,55,0.35);border-radius:18px;padding:18px 20px;margin:0 16px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 0 24px rgba(212,175,55,0.08)}
+.position-rank{font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;min-width:70px;text-align:center}
+.position-info{flex:1}
+.position-label{font-size:9px;color:var(--gray);letter-spacing:2px;text-transform:uppercase}
+.position-stats{display:flex;gap:14px;margin-top:4px;flex-wrap:wrap}
+.position-stat{font-size:11px;color:var(--gold-soft);font-weight:700}
+.position-change{font-size:11px;font-weight:700}
+.position-change.up{color:#22c55e}
+.position-change.down{color:#ef4444}
+
+/* TABS */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 16px 4px;margin-bottom:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:8px 16px;border-radius:50px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.tab-btn.active{background:rgba(139,92,246,0.15);border-color:var(--purple);color:var(--purple);font-weight:700}
+
+.filter-row{display:flex;gap:6px;padding:0 16px;margin-bottom:20px}
+.filter-btn{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);font-size:11px;padding:7px;border-radius:10px;cursor:pointer;text-align:center}
+.filter-btn.active{background:rgba(212,175,55,0.1);border-color:var(--gold);color:var(--gold)}
+
+/* PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:0 16px 24px}
+.podium-card{background:var(--card);border-radius:18px;padding:18px 10px;text-align:center;flex:1;max-width:140px;position:relative;overflow:hidden}
+.podium-card::before{content:"";position:absolute;top:-30%;right:-20%;width:100px;height:100px;background:radial-gradient(circle,rgba(212,175,55,0.1),transparent 70%);pointer-events:none}
+.podium-card.p1{order:2;border:2px solid var(--gold);padding-top:26px;transform:scale(1.08);box-shadow:0 0 28px rgba(212,175,55,0.25)}
+.podium-card.p2{order:1;border:1px solid rgba(148,163,184,0.4);box-shadow:0 0 14px rgba(148,163,184,0.08)}
+.podium-card.p3{order:3;border:1px solid rgba(180,83,9,0.4);box-shadow:0 0 14px rgba(180,83,9,0.08)}
 .podium-medal{font-size:28px;margin-bottom:6px}
-.podium-name{font-size:13px;font-weight:700;color:#f9fafb;margin-bottom:4px;word-break:break-word}
-.podium-score{font-size:18px;font-weight:900}
-.podium-label{font-size:9px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.podium-name{font-size:13px;font-weight:800;color:var(--white);margin-bottom:2px}
+.podium-title{font-size:9px;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.podium-score{font-size:17px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.podium-score-label{font-size:8px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 
-.lb-row{display:flex;align-items:center;gap:12px;background:#0f0e1c;border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:12px 14px;margin-bottom:8px}
-.lb-row.me{border-color:#8b5cf6;background:rgba(139,92,246,0.06)}
-.lb-rank{font-size:14px;font-weight:800;color:#6b7280;width:28px;text-align:center}
-.lb-tier{font-size:18px}
-.lb-name{flex:1;font-size:14px;font-weight:600;color:#f9fafb;display:flex;align-items:center;gap:6px}
-.lb-flames{font-size:12px}
-.lb-val{font-size:15px;font-weight:800;color:#a78bfa}
-.lb-val-label{font-size:9px;color:#6b7280;letter-spacing:1px;text-align:right}
+/* RANK ROWS */
+.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 16px 10px}
+.lb-list{margin:0 16px}
+.lb-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border-gold);border-radius:12px;padding:11px 14px;margin-bottom:7px}
+.lb-row.me{border-color:var(--purple);background:rgba(139,92,246,0.07);box-shadow:0 0 12px rgba(139,92,246,0.1)}
+.lb-rank{font-size:13px;font-weight:900;color:var(--gray);width:24px;text-align:center}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:13px;font-weight:700;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-title{font-size:9px;color:var(--purple);letter-spacing:0.5px}
+.lb-score-wrap{text-align:right}
+.lb-score{font-size:13px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lb-move{font-size:10px;font-weight:700}
+.lb-move.up{color:#22c55e}
+.lb-move.down{color:#ef4444}
+.lb-move.new{color:var(--cyan)}
 
-.me-banner{position:fixed;bottom:0;left:0;right:0;background:#0f0e1c;border-top:1px solid rgba(139,92,246,0.3);padding:14px 20px;display:flex;align-items:center;gap:12px;z-index:50}
-.me-banner-rank{font-size:18px;font-weight:900;color:#8b5cf6;width:40px;text-align:center}
-.me-banner-info{flex:1}
-.me-banner-name{font-size:13px;font-weight:700;color:#f9fafb}
-.me-banner-sub{font-size:11px;color:#6b7280}
-.me-banner-val{font-size:16px;font-weight:900;color:#00c896}
+/* RISING */
+.rising-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.rising-row:last-child{border-bottom:none}
+.rising-name{flex:1;font-size:12px;color:var(--white);font-weight:600}
+.rising-jump{font-size:12px;font-weight:800;color:#22c55e}
 
-.loading,.empty,.err{color:#6b7280;font-size:13px;text-align:center;padding:40px 0}
-.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;font-size:11px;color:#6b7280}
-.legend span{display:flex;align-items:center;gap:4px}
+/* HALL OF FAME */
+.hof-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(212,175,55,0.08)}
+.hof-row:last-child{border-bottom:none}
+.hof-rank{font-size:16px;font-weight:900;width:30px}
+.hof-name{flex:1;font-size:13px;font-weight:700;color:var(--white)}
+.hof-score{font-size:12px;font-weight:800;color:var(--gold)}
+
+.card{background:var(--card);border:1px solid var(--border-gold);border-radius:16px;padding:18px;margin:0 16px}
+.card.orange-bd{border-color:rgba(249,115,22,0.2)}
+.card-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+
+.loading,.empty{color:var(--gray);font-size:12px;text-align:center;padding:24px 0}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
+.bottom-nav a.active{color:var(--purple)}
+.bottom-nav a .icon{font-size:20px}
 </style>
 </head>
 <body>
-
-<nav>
-  <a class="logo" href="/"><span>♇</span> PLUTO REWARDS</a>
+  <nav class="top-nav">
+  <a class="logo" href="/"><span class="logo-pluto">♇ PLUTO</span></a>
   <a class="back" href="/">← Home</a>
 </nav>
 
 <div class="wrap">
-  <div class="tag">🏆 Live rankings</div>
-  <h1>Leaderboard</h1>
-  <p class="sub">Compete across discovery, streaks, and earnings. Updated in real time.</p>
-
-  <div class="tabs" id="tabs">
-    <button class="tab-btn active" data-type="discovery">👋 Discovery</button>
-    <button class="tab-btn" data-type="streak">🔥 Streaks</button>
-    <button class="tab-btn" data-type="earnings">♇ Earnings</button>
-  </div>
-
-  <div class="legend">
-    <span>👑 Legendary 200+</span>
-    <span>💎 Platinum 100+</span>
-    <span>🥇 Gold 50+</span>
-    <span>🥈 Silver 20+</span>
-    <span>🥉 Bronze 0+</span>
-  </div>
-
-  <div id="podium" class="podium"></div>
-  <div id="list"><div class="loading">Loading leaderboard...</div></div>
+  <h1 class="page-title">🏆 LEADERBOARD</h1>
+  <p class="page-sub">Compete. Discover. Rise.</p>
 </div>
 
-<div class="me-banner" id="me-banner" style="display:none">
-  <div class="me-banner-rank" id="me-rank">—</div>
-  <div class="me-banner-info">
-    <div class="me-banner-name" id="me-name">You</div>
-    <div class="me-banner-sub" id="me-sub">Connect Spotify to see your rank</div>
+<div class="position-card">
+  <div class="position-rank" id="my-rank">—</div>
+  <div class="position-info">
+    <div class="position-label">Your Rank</div>
+    <div class="position-stats">
+      <span class="position-stat" id="my-percentile">—</span>
+      <span class="position-change" id="my-change">—</span>
+    </div>
   </div>
-  <div class="me-banner-val" id="me-val">—</div>
-                        </div>
-                        <script>
-var API = "https://pluto-rewards-production.up.railway.app";
-var currentType = "discovery";
-var VAL_LABELS = { discovery: "SCORE", streak: "DAYS", earnings: "♇" };
+</div>
 
-function load(type) {
+<div class="tabs" id="category-tabs">
+  <button class="tab-btn active" data-type="discovery">👑 Overall</button>
+  <button class="tab-btn" data-type="streak">🔥 Streak Masters</button>
+  <button class="tab-btn" data-type="earnings">♇ Earnings</button>
+</div>
+
+<div class="filter-row" id="filter-row">
+  <button class="filter-btn active" data-filter="global">Global</button>
+  <button class="filter-btn" data-filter="friends">Friends</button>
+</div>
+
+<div class="podium" id="podium"></div>
+
+<div class="section-label">Rankings</div>
+<div class="lb-list" id="lb-list"><div class="loading">Loading...</div></div>
+
+<div class="section-label">🚀 Rising This Week</div>
+<div class="card" id="rising-card">
+  <div class="loading">Loading...</div>
+</div>
+
+<div class="section-label">🌌 Hall of Fame</div>
+<div class="card" id="hof-card" style="border-color:rgba(212,175,55,0.3)">
+  <div class="loading">Loading...</div>
+</div>
+
+<div style="height:20px"></div>
+
+<nav class="bottom-nav">
+  <a href="/"><span class="icon">🏠</span>Home</a>
+  <a href="/campaigns.html"><span class="icon">🎯</span>Quests</a>
+  <a href="/leaderboard.html" class="active"><span class="icon">🏆</span>Board</a>
+  <a href="/profile.html"><span class="icon">👤</span>Profile</a>
+  </nav>
+  <script>
+var API = "https://pluto-rewards-production.up.railway.app";
+var token = localStorage.getItem("pluto_token");
+var currentType = "discovery";
+var currentFilter = "global";
+var VAL_LABELS = {discovery:"SCORE",streak:"DAYS",earnings:"♇"};
+
+function load(type, filter) {
   currentType = type;
+  currentFilter = filter || currentFilter;
   document.getElementById("podium").innerHTML = "";
-  document.getElementById("list").innerHTML = '<div class="loading">Loading...</div>';
+  document.getElementById("lb-list").innerHTML = '<div class="loading">Loading...</div>';
+
+  if (currentFilter === "friends") {
+    loadFriendsBoard();
+    return;
+  }
 
   fetch(API + "/api/leaderboard/" + type)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      renderPodium(data.leaderboard.slice(0, 3), type);
+    .then(function(r){return r.json();})
+    .then(function(data){
+      renderPodium(data.leaderboard.slice(0,3), type);
       renderList(data.leaderboard.slice(3), type);
-      loadMe(type);
     })
-    .catch(function() {
-      document.getElementById("list").innerHTML = '<div class="err">Could not load leaderboard.</div>';
+    .catch(function(){
+      document.getElementById("lb-list").innerHTML = '<div class="empty">Could not load leaderboard.</div>';
+    });
+
+  loadMe(type);
+}
+
+function loadFriendsBoard() {
+  if (!token) {
+    document.getElementById("lb-list").innerHTML = '<div class="empty">Connect Spotify to see friends.</div>';
+    return;
+  }
+  fetch(API + "/api/friends", { headers: { "Authorization": "Bearer " + token } })
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var friends = data.friends || [];
+      if (friends.length === 0) {
+        document.getElementById("lb-list").innerHTML = '<div class="empty">No friends yet. Follow people on your Profile page.</div>';
+        return;
+      }
+      friends.sort(function(a,b){ return getVal(b,currentType) - getVal(a,currentType); });
+      renderPodium(friends.slice(0,3).map(function(f,i){ f.rank=i+1; return f; }), currentType);
+      renderList(friends.slice(3).map(function(f,i){ f.rank=i+4; return f; }), currentType);
     });
 }
 
-function getVal(u, type) {
-  if (type === "streak") return u.streak_days;
-  if (type === "earnings") return u.total_pluto;
+function getVal(u, type){
+  if(type==="streak") return u.streak_days;
+  if(type==="earnings") return u.total_pluto;
   return u.discovery_score;
 }
 
-function renderPodium(top3, type) {
+function renderPodium(top3, type){
   var podium = document.getElementById("podium");
-  if (top3.length === 0) {
-    podium.innerHTML = '<div class="empty">No fans yet. Be the first!</div>';
-    return;
-  }
-  var medals = ["🥇", "🥈", "🥉"];
-  var classes = ["p1", "p2", "p3"];
+  if(top3.length===0){ podium.innerHTML = '<div class="empty">No fans yet. Be the first!</div>'; return; }
+  var medals = ["🥇","🥈","🥉"];
+  var classes = ["p1","p2","p3"];
   podium.innerHTML = "";
-  top3.forEach(function(u, i) {
+  top3.forEach(function(u,i){
+    var title = u.title ? u.title.name : "Newcomer";
     var div = document.createElement("div");
     div.className = "podium-card " + classes[i];
     div.innerHTML =
       '<div class="podium-medal">' + medals[i] + '</div>' +
-      '<div class="podium-name">' + u.name + ' ' + (u.flames || "") + '</div>' +
-      '<div class="podium-score">' + Number(getVal(u, type)).toLocaleString() + '</div>' +
-      '<div class="podium-label">' + VAL_LABELS[type] + '</div>';
+      '<div class="podium-name">' + u.name + '</div>' +
+      '<div class="podium-title">' + title + '</div>' +
+      '<div class="podium-score">' + Number(getVal(u,type)).toLocaleString() + '</div>' +
+      '<div class="podium-score-label">' + VAL_LABELS[type] + '</div>';
     podium.appendChild(div);
   });
 }
 
-function renderList(rest, type) {
-  var list = document.getElementById("list");
+function renderList(rest, type){
+  var list = document.getElementById("lb-list");
   var myId = localStorage.getItem("pluto_user_id");
-  if (rest.length === 0) {
-    list.innerHTML = "";
-    return;
-  }
-  list.innerHTML = "";
-  rest.forEach(function(u) {
+  if(rest.length===0){ list.innerHTML=""; return; }
+  list.innerHTML="";
+  rest.forEach(function(u){
+    var title = u.title ? u.title.name : "Newcomer";
+    var moveHtml = "";
+    if (u.rank_change === null || u.rank_change === undefined) {
+      moveHtml = '<span class="lb-move new">NEW</span>';
+    } else if (u.rank_change > 0) {
+      moveHtml = '<span class="lb-move up">\u2191 ' + u.rank_change + '</span>';
+    } else if (u.rank_change < 0) {
+      moveHtml = '<span class="lb-move down">\u2193 ' + Math.abs(u.rank_change) + '</span>';
+    } else {
+      moveHtml = '<span class="lb-move">\u2014</span>';
+    }
     var row = document.createElement("div");
-    row.className = "lb-row" + (u.id === myId ? " me" : "");
+    row.className = "lb-row" + (u.id===myId?" me":"");
     row.innerHTML =
       '<div class="lb-rank">#' + u.rank + '</div>' +
-      '<div class="lb-tier">' + u.tier.icon + '</div>' +
-      '<div class="lb-name">' + u.name + ' <span class="lb-flames">' + (u.flames || "") + '</span></div>' +
-      '<div style="text-align:right"><div class="lb-val">' + Number(getVal(u, type)).toLocaleString() + '</div><div class="lb-val-label">' + VAL_LABELS[type] + '</div></div>';
+      '<div class="lb-info"><div class="lb-name">' + u.name + '</div><div class="lb-title">' + title + '</div></div>' +
+      '<div class="lb-score-wrap"><div class="lb-score">' + Number(getVal(u,type)).toLocaleString() + '</div>' + moveHtml + '</div>';
     list.appendChild(row);
   });
 }
 
-function loadMe(type) {
-  var token = localStorage.getItem("pluto_token");
-  var banner = document.getElementById("me-banner");
-  if (!token) {
-    banner.style.display = "flex";
-    document.getElementById("me-rank").textContent = "—";
-    document.getElementById("me-name").textContent = "Not connected";
-    document.getElementById("me-sub").textContent = "Connect Spotify on the home page";
-    document.getElementById("me-val").textContent = "—";
+function loadMe(type){
+  if(!token){
+    document.getElementById("my-rank").textContent = "—";
+    document.getElementById("my-percentile").textContent = "Not connected";
+    document.getElementById("my-change").textContent = "";
     return;
   }
-
-  fetch(API + "/api/leaderboard/" + type + "/me", {
-    headers: { "Authorization": "Bearer " + token }
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    banner.style.display = "flex";
-    if (!data.me) {
-      document.getElementById("me-rank").textContent = "—";
-      document.getElementById("me-name").textContent = "Not ranked yet";
-      document.getElementById("me-sub").textContent = "Join a campaign to appear here";
-      document.getElementById("me-val").textContent = "—";
-      return;
-    }
-    document.getElementById("me-rank").textContent = "#" + data.rank;
-    document.getElementById("me-name").textContent = data.me.name + " " + data.me.tier.icon;
-    document.getElementById("me-sub").textContent = data.me.tier.name + " · out of " + data.total;
-    document.getElementById("me-val").textContent = Number(getVal(data.me, type)).toLocaleString();
-  })
-  .catch(function() {
-    banner.style.display = "none";
-  });
+  fetch(API + "/api/leaderboard/" + type + "/me", { headers:{"Authorization":"Bearer "+token} })
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.me){
+        document.getElementById("my-rank").textContent = "—";
+        document.getElementById("my-percentile").textContent = "Join a quest to rank";
+        document.getElementById("my-change").textContent = "";
+        return;
+      }
+      document.getElementById("my-rank").textContent = "#" + data.rank;
+      document.getElementById("my-percentile").textContent = "Top " + (100 - data.percentile + 1) + "%";
+      var changeEl = document.getElementById("my-change");
+      if (data.rank_change > 0) {
+        changeEl.textContent = "\u2191 " + data.rank_change + " this week";
+        changeEl.className = "position-change up";
+      } else if (data.rank_change < 0) {
+        changeEl.textContent = "\u2193 " + Math.abs(data.rank_change) + " this week";
+        changeEl.className = "position-change down";
+      } else {
+        changeEl.textContent = data.me.title.icon + " " + data.me.title.name;
+        changeEl.className = "position-change";
+      }
+    })
+    .catch(function(){});
 }
 
-document.getElementById("tabs").addEventListener("click", function(e) {
-  if (!e.target.classList.contains("tab-btn")) return;
-  document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+document.getElementById("category-tabs").addEventListener("click", function(e){
+  if(!e.target.classList.contains("tab-btn"))return;
+  document.querySelectorAll("#category-tabs .tab-btn").forEach(function(b){b.classList.remove("active");});
   e.target.classList.add("active");
-  load(e.target.getAttribute("data-type"));
+  load(e.target.getAttribute("data-type"), currentFilter);
 });
 
-load("discovery");
+document.getElementById("filter-row").addEventListener("click", function(e){
+  if(!e.target.classList.contains("filter-btn"))return;
+  document.querySelectorAll("#filter-row .filter-btn").forEach(function(b){b.classList.remove("active");});
+  e.target.classList.add("active");
+  load(currentType, e.target.getAttribute("data-filter"));
+});
+
+// Rising players (mock from current leaderboard rank_change until enough history exists)
+fetch(API + "/api/leaderboard/discovery")
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var rising = (data.leaderboard || [])
+      .filter(function(u){ return u.rank_change && u.rank_change > 0; })
+      .sort(function(a,b){ return b.rank_change - a.rank_change; })
+      .slice(0,5);
+    var card = document.getElementById("rising-card");
+    if (rising.length === 0) {
+      card.innerHTML = '<div class="empty">Check back after a week of activity to see who\\'s climbing fastest.</div>';
+      return;
+    }
+    card.innerHTML = "";
+    rising.forEach(function(u){
+      var row = document.createElement("div");
+      row.className = "rising-row";
+      row.innerHTML = '<div class="rising-name">' + u.name + '</div><div class="rising-jump">\u2191 ' + u.rank_change + '</div>';
+      card.appendChild(row);
+    });
+  })
+  .catch(function(){
+    document.getElementById("rising-card").innerHTML = '<div class="empty">Could not load.</div>';
+  });
+
+// Hall of Fame
+fetch(API + "/api/hall-of-fame")
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var card = document.getElementById("hof-card");
+    var hof = data.hall_of_fame || [];
+    if (hof.length === 0) {
+      card.innerHTML = '<div class="empty">No legends yet. Be the first.</div>';
+      return;
+    }
+    var medals = {1:"🥇",2:"🥈",3:"🥉"};
+    card.innerHTML = "";
+    hof.forEach(function(u){
+      var row = document.createElement("div");
+      row.className = "hof-row";
+      row.innerHTML =
+        '<div class="hof-rank">' + (medals[u.rank] || ("#"+u.rank)) + '</div>' +
+        '<div class="hof-name">' + u.name + '</div>' +
+        '<div class="hof-score">' + Number(u.discovery_score).toLocaleString() + '</div>';
+      card.appendChild(row);
+    });
+  })
+  .catch(function(){
+    document.getElementById("hof-card").innerHTML = '<div class="empty">Could not load.</div>';
+  });
+
+load("discovery", "global");
 </script>
 
 </body>
