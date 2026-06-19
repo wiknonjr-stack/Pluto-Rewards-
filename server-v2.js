@@ -391,37 +391,6 @@ function streakFlames(days) {
   return "";
 }
 
-app.get("/api/leaderboard/:type", async (req, res) => {
-  var sortField = "discovery_score";
-  if (req.params.type === "streak") sortField = "streak_days";
-  if (req.params.type === "earnings") sortField = "total_pluto";
-
-  var result = await supabase
-    .from("users")
-    .select("id, spotify_name, discovery_score, streak_days, total_pluto, fan_level")
-    .order(sortField, { ascending: false })
-    .limit(50);
-
-  if (result.error) {
-    return res.status(500).json({ error: result.error.message });
-  }
-
-  var enriched = result.data.map(function(u, i) {
-    return {
-      rank: i + 1,
-      id: u.id,
-      name: u.spotify_name || "Anonymous Fan",
-      discovery_score: u.discovery_score || 0,
-      streak_days: u.streak_days || 0,
-      total_pluto: u.total_pluto || 0,
-      tier: getTier(u.discovery_score || 0),
-      flames: streakFlames(u.streak_days || 0),
-    };
-  });
-
-  res.json({ leaderboard: enriched, type: req.params.type });
-});
-
 app.get("/api/leaderboard/:type/me", requireAuth, async (req, res) => {
   var sortField = "discovery_score";
   if (req.params.type === "streak") sortField = "streak_days";
@@ -482,7 +451,7 @@ app.get("/api/genres-explored/:userId", async (req, res) => {
   var unique = new Set(result.data.map(function(p) { return p.genre; }));
   res.json({ genres_explored: unique.size, total_genres: 29 });
 });
-var ALL_GENRES = ["Afrobeats","Amapiano","Hip-Hop","R&B","Pop","Latin","UK Drill","K-Pop","EDM","Gospel","Reggae","Indie","Country","Bollywood","Afropop","Highlife","Bongo Flava","J-Pop","Arabic Pop","OPM","Sertanejo","C-Pop","Salsa","Trap","Ndombolo","Rai","Turkish Pop","Classical","French Pop"];
+var ALL_GENRES = ["Afrobeats","Amapiano","Hip-Hop","R&B","Pop","Latin","UK Drill","K-Pop","EDM","Gospel","Reggae","Indie","Country","Bollywood","Afropop","Highlife","Bongo Flava","J-Pop","Arabic Pop"];
 
 function tierInfo(score) {
   var tiers = [
