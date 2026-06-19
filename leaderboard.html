@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#09090B"/>
+<link rel="manifest" href="/manifest.json"/>
 <title>Leaderboard — Pluto Rewards</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -10,22 +12,33 @@
 --bg:#09090B;--card:#1C1C1E;--gold:#D4AF37;--gold-bright:#F4C430;
 --gold-soft:#E6C76B;--purple:#8B5CF6;--cyan:#22D3EE;
 --white:#FFFFFF;--gray:#A1A1AA;
---border-gold:rgba(212,175,55,0.15);
---border-purple:rgba(139,92,246,0.2);
---border-cyan:rgba(34,211,238,0.2);
+--border-gold:rgba(212,175,55,0.15);--border-purple:rgba(139,92,246,0.2);
+--border-cyan:rgba(34,211,238,0.2);--bg-light:rgba(9,9,11,0.5);
 }
 body{background:var(--bg);color:var(--white);font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:80px;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.4) 0%,transparent 100%);pointer-events:none;z-index:0}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.4) 0%,transparent 100%);pointer-events:none;z-index:0;will-change:transform}
 
 nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
 .logo{font-size:18px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none}
 .logo-pluto{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px;transition:all 0.2s ease}
+.back{font-size:12px;color:var(--gray);text-decoration:none;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:50px;padding:8px 16px;transition:all 0.2s ease;cursor:pointer}
 .back:hover,.back:focus{background:rgba(212,175,55,0.1);border-color:var(--gold);outline:none}
 
 .wrap{max-width:600px;margin:0 auto;padding:28px 16px 16px;position:relative;z-index:1}
 .page-title{font-size:clamp(26px,6vw,38px);font-weight:900;text-align:center;letter-spacing:1px}
 .page-sub{font-size:12px;color:var(--gray);text-align:center;margin-top:4px;margin-bottom:20px;letter-spacing:1px}
+
+/* CONTROLS */
+.controls-row{display:flex;gap:8px;align-items:center;padding:0 16px;margin-bottom:16px;flex-wrap:wrap}
+.search-box{flex:1;min-width:200px;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:8px;padding:8px 12px;color:var(--white);font-size:12px}
+.search-box::placeholder{color:var(--gray)}
+.search-box:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,0.06)}
+.refresh-btn{background:rgba(139,92,246,0.15);border:1px solid var(--purple);color:var(--purple);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;transition:all 0.2s ease;display:flex;align-items:center;gap:4px}
+.refresh-btn:hover,.refresh-btn:focus{background:rgba(139,92,246,0.25);outline:none}
+.refresh-btn.loading{opacity:0.5;pointer-events:none}
+.refresh-icon{display:inline-block;animation:spin 1s linear infinite}
+.refresh-btn:not(.loading) .refresh-icon{animation:none}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* POSITION CARD */
 .position-card{background:linear-gradient(135deg,#1a1400,var(--card));border:1px solid rgba(212,175,55,0.35);border-radius:18px;padding:18px 20px;margin:0 16px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 0 24px rgba(212,175,55,0.08)}
@@ -51,8 +64,9 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .filter-btn.active{background:rgba(212,175,55,0.1);border-color:var(--gold);color:var(--gold)}
 
 /* PODIUM */
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:0 16px 24px}
-.podium-card{background:var(--card);border-radius:18px;padding:18px 10px;text-align:center;flex:1;max-width:140px;position:relative;overflow:hidden}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:0 16px 24px;min-height:200px}
+.podium-card{background:var(--card);border-radius:18px;padding:18px 10px;text-align:center;flex:1;max-width:140px;position:relative;overflow:hidden;animation:slideUp 0.5s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
 .podium-card::before{content:"";position:absolute;top:-30%;right:-20%;width:100px;height:100px;background:radial-gradient(circle,rgba(212,175,55,0.1),transparent 70%);pointer-events:none}
 .podium-card.p1{order:2;border:2px solid var(--gold);padding-top:26px;transform:scale(1.08);box-shadow:0 0 28px rgba(212,175,55,0.25)}
 .podium-card.p2{order:1;border:1px solid rgba(148,163,184,0.4);box-shadow:0 0 14px rgba(148,163,184,0.08)}
@@ -63,11 +77,18 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .podium-score{font-size:17px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .podium-score-label{font-size:8px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 
+/* SKELETON LOADER */
+.skeleton{background:var(--bg-light);border-radius:8px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1} 50%{opacity:0.5}}
+.skeleton-podium{display:flex;gap:10px;margin:0 16px 24px}
+.skeleton-podium-card{flex:1;max-width:140px;height:200px;border-radius:18px;background:var(--bg-light)}
+.skeleton-row{height:50px;background:var(--bg-light);border-radius:12px;margin:0 16px 7px;animation:pulse 1.5s ease-in-out infinite}
+
 /* RANK ROWS */
-.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 16px 10px}
+.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 16px 10px;position:sticky;top:70px;background:var(--bg);padding:4px 0;z-index:10}
 .lb-list{margin:0 16px}
-.lb-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border-gold);border-radius:12px;padding:11px 14px;margin-bottom:7px;transition:all 0.2s ease}
-.lb-row:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,0.1)}
+.lb-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border-gold);border-radius:12px;padding:11px 14px;margin-bottom:7px;transition:all 0.2s ease;cursor:pointer}
+.lb-row:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,0.1);transform:translateX(2px)}
 .lb-row.me{border-color:var(--purple);background:rgba(139,92,246,0.07);box-shadow:0 0 12px rgba(139,92,246,0.1)}
 .lb-rank{font-size:13px;font-weight:900;color:var(--gray);width:24px;text-align:center}
 .lb-info{flex:1;min-width:0}
@@ -81,11 +102,18 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .lb-move.new{color:var(--cyan)}
 .lb-move.neutral{color:var(--gray)}
 
+/* PAGINATION */
+.pagination{display:flex;gap:8px;justify-content:center;padding:20px 16px;align-items:center}
+.pagination button{background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);color:var(--gray);padding:8px 12px;border-radius:6px;cursor:pointer;font-size:11px;transition:all 0.2s ease}
+.pagination button:hover:not(:disabled){background:rgba(212,175,55,0.1);border-color:var(--gold);color:var(--gold)}
+.pagination button:disabled{opacity:0.3;cursor:not-allowed}
+.pagination-info{font-size:11px;color:var(--gray)}
+
 /* RISING */
 .rising-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:all 0.2s ease}
 .rising-row:last-child{border-bottom:none}
 .rising-row:hover{padding-left:4px}
-.rising-name{flex:1;font-size:12px;color:var(--white);font-weight:600}
+.rising-name{flex:1;font-size:12px;color:var(--white);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rising-jump{font-size:12px;font-weight:800;color:#22c55e;display:flex;align-items:center;gap:3px}
 
 /* HALL OF FAME */
@@ -99,13 +127,14 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .card.orange-bd{border-color:rgba(249,115,22,0.2)}
 .card-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 
-.loading{color:var(--gray);font-size:12px;text-align:center;padding:24px 0}
-.loading::after{content:"";animation:dots 1.5s steps(4,end) infinite;position:absolute;right:-12px}
+.loading{color:var(--gray);font-size:12px;text-align:center;padding:24px 0;position:relative}
+.loading::after{content:"";animation:dots 1.5s steps(4,end) infinite}
 @keyframes dots{0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."}}
 
 .empty{color:var(--gray);font-size:12px;text-align:center;padding:24px 0;line-height:1.6}
 
-.error{color:#ef4444;font-size:12px;text-align:center;padding:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;margin:0 16px}
+.error{color:#ef4444;font-size:12px;text-align:center;padding:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;margin:0 16px;display:flex;justify-content:space-between;align-items:center}
+.error-close{background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;padding:0}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
 .bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:8px;transition:all 0.2s ease}
@@ -114,10 +143,13 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .bottom-nav a .icon{font-size:20px}
 
 @media (max-width:480px){
-  .podium{margin:0 8px 24px;gap:6px}
+  .podium{margin:0 8px 24px;gap:6px;min-height:160px}
   .podium-card{max-width:110px;padding:14px 8px;font-size:12px}
   .podium-name{font-size:11px}
   .tabs{padding:0 8px 4px}
+  .controls-row{padding:0 8px}
+  .search-box{min-width:150px;padding:6px 10px;font-size:10px}
+  .refresh-btn{font-size:10px;padding:6px 10px}
 }
 </style>
 </head>
@@ -154,10 +186,20 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
   <button class="filter-btn" data-filter="friends" aria-pressed="false">Friends</button>
 </div>
 
+<div class="controls-row">
+  <input type="text" class="search-box" id="search-box" placeholder="Search player..." aria-label="Search players by name"/>
+  <button class="refresh-btn" id="refresh-btn" aria-label="Refresh leaderboard">
+    <span class="refresh-icon">🔄</span>
+    <span>Refresh</span>
+  </button>
+</div>
+
 <div class="podium" id="podium" role="region" aria-label="Top 3 players"></div>
 
 <div class="section-label">Rankings</div>
 <div class="lb-list" id="lb-list"><div class="loading">Loading...</div></div>
+
+<div class="pagination" id="pagination"></div>
 
 <div class="section-label">🚀 Rising This Week</div>
 <div class="card" id="rising-card">
@@ -192,36 +234,62 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 
 <script>
 // ============================================
-// LEADERBOARD APP (Improved Version)
+// COMPREHENSIVE LEADERBOARD APP
 // ============================================
 
 const CONFIG = {
   API: "https://pluto-rewards-production.up.railway.app",
   RETRY_ATTEMPTS: 2,
   RETRY_DELAY: 1000,
-  VAL_LABELS: {
-    discovery: "SCORE",
-    streak: "DAYS",
-    earnings: "♇"
-  },
-  ARROWS: {
-    up: "↑",
-    down: "↓",
-    neutral: "—"
-  }
+  CACHE_TTL: 5 * 60 * 1000, // 5 minutes
+  ITEMS_PER_PAGE: 20,
+  VAL_LABELS: { discovery: "SCORE", streak: "DAYS", earnings: "♇" },
+  ARROWS: { up: "↑", down: "↓", neutral: "—" }
 };
 
-// App State
 const State = {
   token: localStorage.getItem("pluto_token"),
   userId: localStorage.getItem("pluto_user_id"),
   currentType: "discovery",
-  currentFilter: "global"
+  currentFilter: "global",
+  currentPage: 1,
+  searchQuery: "",
+  isLoading: false,
+  lastRefresh: 0,
+  cache: new Map(),
+  allData: [] // Store full unfiltered data for search/pagination
 };
 
-/**
- * Safe fetch with retry and error handling
- */
+// ============================================
+// 1. CACHING SYSTEM
+// ============================================
+class Cache {
+  static key(type, filter) { return `${type}:${filter}`; }
+  static get(type, filter) {
+    const cached = State.cache.get(this.key(type, filter));
+    if (!cached) return null;
+    if (Date.now() - cached.timestamp > CONFIG.CACHE_TTL) {
+      State.cache.delete(this.key(type, filter));
+      return null;
+    }
+    return cached.data;
+  }
+  static set(type, filter, data) {
+    State.cache.set(this.key(type, filter), { data, timestamp: Date.now() });
+  }
+  static clear() { State.cache.clear(); }
+}
+
+// ============================================
+// 2. SERVICE WORKER REGISTRATION
+// ============================================
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
 async function fetchWithRetry(url, options = {}, attempt = 0) {
   try {
     const response = await fetch(url, options);
@@ -236,9 +304,6 @@ async function fetchWithRetry(url, options = {}, attempt = 0) {
   }
 }
 
-/**
- * Safely extract value from user object
- */
 function getVal(user, type) {
   const valMap = {
     streak: () => user.streak_days || 0,
@@ -248,9 +313,6 @@ function getVal(user, type) {
   return (valMap[type] || valMap.discovery)();
 }
 
-/**
- * Sanitize user input to prevent XSS
- */
 function sanitize(text) {
   if (!text) return "Unknown";
   const div = document.createElement("div");
@@ -258,9 +320,6 @@ function sanitize(text) {
   return div.innerHTML;
 }
 
-/**
- * Create rank change HTML with proper accessibility
- */
 function createRankChangeHTML(rankChange) {
   if (rankChange === null || rankChange === undefined) {
     return `<span class="lb-move new" aria-label="New player">NEW</span>`;
@@ -274,9 +333,75 @@ function createRankChangeHTML(rankChange) {
   return `<span class="lb-move neutral" aria-hidden="true">${CONFIG.ARROWS.neutral}</span>`;
 }
 
-/**
- * Render top 3 podium
- */
+// ============================================
+// 3. SKELETON LOADER
+// ============================================
+function showSkeleton() {
+  document.getElementById("podium").innerHTML = '<div class="skeleton-podium"><div class="skeleton-podium-card"></div><div class="skeleton-podium-card"></div><div class="skeleton-podium-card"></div></div>';
+  document.getElementById("lb-list").innerHTML = Array(5).fill(0).map(() => '<div class="skeleton-row"></div>').join('');
+}
+
+// ============================================
+// 4. PAGINATION
+// ============================================
+function renderPagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / CONFIG.ITEMS_PER_PAGE);
+  const pagination = document.getElementById("pagination");
+  
+  if (totalPages <= 1) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  let html = `<button class="pagination" id="prev-btn" ${State.currentPage === 1 ? "disabled" : ""}>← Prev</button>`;
+  html += `<span class="pagination-info">Page ${State.currentPage} of ${totalPages}</span>`;
+  html += `<button class="pagination" id="next-btn" ${State.currentPage === totalPages ? "disabled" : ""}>Next →</button>`;
+  
+  pagination.innerHTML = html;
+  
+  document.getElementById("prev-btn")?.addEventListener("click", () => {
+    State.currentPage--;
+    renderCurrentPage();
+  });
+  document.getElementById("next-btn")?.addEventListener("click", () => {
+    State.currentPage++;
+    renderCurrentPage();
+  });
+}
+
+function renderCurrentPage() {
+  const start = (State.currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
+  const end = start + CONFIG.ITEMS_PER_PAGE;
+  const pageData = State.allData.slice(start, end);
+  
+  renderList(pageData, State.currentType);
+  renderPagination(State.allData.length);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ============================================
+// 5. SEARCH FUNCTIONALITY
+// ============================================
+function filterDataBySearch() {
+  if (!State.searchQuery.trim()) {
+    State.currentPage = 1;
+    renderCurrentPage();
+    return;
+  }
+
+  const query = State.searchQuery.toLowerCase();
+  const filtered = State.allData.filter(user => 
+    user.name.toLowerCase().includes(query)
+  );
+  
+  State.allData = filtered;
+  State.currentPage = 1;
+  renderCurrentPage();
+}
+
+// ============================================
+// 6. RENDERING FUNCTIONS
+// ============================================
 function renderPodium(top3, type) {
   const podium = document.getElementById("podium");
   if (top3.length === 0) {
@@ -312,13 +437,10 @@ function renderPodium(top3, type) {
   podium.appendChild(fragment);
 }
 
-/**
- * Render leaderboard list with DocumentFragment for performance
- */
 function renderList(rest, type) {
   const list = document.getElementById("lb-list");
   if (rest.length === 0) {
-    list.innerHTML = "";
+    list.innerHTML = '<div class="empty">No players found.</div>';
     return;
   }
 
@@ -331,9 +453,7 @@ function renderList(rest, type) {
 
     const row = document.createElement("div");
     row.className = `lb-row${isMe ? " me" : ""}`;
-    if (isMe) {
-      row.setAttribute("aria-label", "Your ranking");
-    }
+    if (isMe) row.setAttribute("aria-label", "Your ranking");
 
     const name = sanitize(user.name);
     const score = Number(getVal(user, type)).toLocaleString();
@@ -356,64 +476,86 @@ function renderList(rest, type) {
   list.appendChild(fragment);
 }
 
-/**
- * Load global leaderboard
- */
-async function loadGlobalBoard(type) {
-  try {
-    const data = await fetchWithRetry(`${CONFIG.API}/api/leaderboard/${type}`);
-    const leaderboard = data.leaderboard || [];
-    renderPodium(leaderboard.slice(0, 3), type);
-    renderList(leaderboard.slice(3), type);
-  } catch (error) {
-    console.error("Failed to load leaderboard:", error);
-    document.getElementById("lb-list").innerHTML = 
-      '<div class="error">Unable to load leaderboard. Please try again later.</div>';
-  }
+function showError(message) {
+  const error = document.createElement("div");
+  error.className = "error";
+  error.innerHTML = `<span>${message}</span><button class="error-close" aria-label="Close error">×</button>`;
+  error.querySelector(".error-close").addEventListener("click", () => error.remove());
+  document.getElementById("lb-list").parentElement.insertBefore(error, document.getElementById("lb-list"));
+  setTimeout(() => error.remove(), 5000);
 }
 
-/**
- * Load friends leaderboard
- */
-async function loadFriendsBoard() {
-  if (!State.token) {
-    document.getElementById("lb-list").innerHTML = 
-      '<div class="empty">Connect Spotify to see friends.</div>';
+// ============================================
+// 7. DATA LOADING WITH CACHING
+// ============================================
+async function loadGlobalBoard(type) {
+  showSkeleton();
+  
+  // Check cache first
+  const cached = Cache.get(type, "global");
+  if (cached) {
+    State.allData = cached.leaderboard || [];
+    renderPodium(State.allData.slice(0, 3), type);
+    State.currentPage = 1;
+    renderCurrentPage();
     return;
   }
 
   try {
+    State.isLoading = true;
+    const data = await fetchWithRetry(`${CONFIG.API}/api/leaderboard/${type}`);
+    State.isLoading = false;
+    
+    Cache.set(type, "global", data);
+    State.allData = data.leaderboard || [];
+    
+    renderPodium(State.allData.slice(0, 3), type);
+    State.currentPage = 1;
+    renderCurrentPage();
+  } catch (error) {
+    State.isLoading = false;
+    console.error("Failed to load leaderboard:", error);
+    showError("Unable to load leaderboard. Check your connection.");
+  }
+}
+
+async function loadFriendsBoard() {
+  showSkeleton();
+  
+  if (!State.token) {
+    document.getElementById("lb-list").innerHTML = '<div class="empty">Connect Spotify to see friends.</div>';
+    return;
+  }
+
+  try {
+    State.isLoading = true;
     const data = await fetchWithRetry(
       `${CONFIG.API}/api/friends`,
       { headers: { "Authorization": `Bearer ${State.token}` } }
     );
+    State.isLoading = false;
 
     const friends = data.friends || [];
     if (friends.length === 0) {
-      document.getElementById("lb-list").innerHTML = 
-        '<div class="empty">No friends yet. Follow people on your Profile page.</div>';
+      document.getElementById("lb-list").innerHTML = '<div class="empty">No friends yet. Follow people on your Profile page.</div>';
       return;
     }
 
-    // Sort friends by current leaderboard type
     friends.sort((a, b) => getVal(b, State.currentType) - getVal(a, State.currentType));
-
-    // Assign ranks
+    
     const top3 = friends.slice(0, 3).map((f, i) => ({ ...f, rank: i + 1 }));
-    const rest = friends.slice(3).map((f, i) => ({ ...f, rank: i + 4 }));
+    State.allData = friends.slice(3).map((f, i) => ({ ...f, rank: i + 4 }));
 
     renderPodium(top3, State.currentType);
-    renderList(rest, State.currentType);
+    State.currentPage = 1;
+    renderCurrentPage();
   } catch (error) {
+    State.isLoading = false;
     console.error("Failed to load friends:", error);
-    document.getElementById("lb-list").innerHTML = 
-      '<div class="error">Unable to load friends. Please try again.</div>';
+    showError("Unable to load friends. Try again later.");
   }
 }
 
-/**
- * Load current user's rank
- */
 async function loadMe(type) {
   if (!State.token) {
     document.getElementById("my-rank").textContent = "—";
@@ -454,9 +596,6 @@ async function loadMe(type) {
   }
 }
 
-/**
- * Load and render rising players
- */
 async function loadRisingPlayers() {
   try {
     const data = await fetchWithRetry(`${CONFIG.API}/api/leaderboard/discovery`);
@@ -467,7 +606,7 @@ async function loadRisingPlayers() {
 
     const card = document.getElementById("rising-card");
     if (rising.length === 0) {
-      card.innerHTML = '<div class="empty">Check back after a week of activity to see who\'s climbing fastest.</div>';
+      card.innerHTML = '<div class="empty">Check back after a week of activity.</div>';
       return;
     }
 
@@ -489,14 +628,10 @@ async function loadRisingPlayers() {
     card.appendChild(fragment);
   } catch (error) {
     console.error("Failed to load rising players:", error);
-    document.getElementById("rising-card").innerHTML = 
-      '<div class="error">Unable to load rising players.</div>';
+    document.getElementById("rising-card").innerHTML = '<div class="error">Unable to load.</div>';
   }
 }
 
-/**
- * Load and render hall of fame
- */
 async function loadHallOfFame() {
   try {
     const data = await fetchWithRetry(`${CONFIG.API}/api/hall-of-fame`);
@@ -530,19 +665,47 @@ async function loadHallOfFame() {
     card.appendChild(fragment);
   } catch (error) {
     console.error("Failed to load hall of fame:", error);
-    document.getElementById("hof-card").innerHTML = 
-      '<div class="error">Unable to load hall of fame.</div>';
+    document.getElementById("hof-card").innerHTML = '<div class="error">Unable to load.</div>';
   }
 }
 
-/**
- * Main load function
- */
+// ============================================
+// 8. MANUAL REFRESH & ANALYTICS
+// ============================================
+async function refreshData() {
+  const btn = document.getElementById("refresh-btn");
+  btn.classList.add("loading");
+  
+  Cache.clear();
+  
+  if (State.currentFilter === "friends") {
+    await loadFriendsBoard();
+  } else {
+    await loadGlobalBoard(State.currentType);
+  }
+  
+  await loadMe(State.currentType);
+  await loadRisingPlayers();
+  await loadHallOfFame();
+  
+  btn.classList.remove("loading");
+  State.lastRefresh = Date.now();
+  
+  // Simple analytics
+  console.log("[Analytics] Refresh: ", { type: State.currentType, filter: State.currentFilter, timestamp: new Date().toISOString() });
+}
+
+// ============================================
+// 9. MAIN LOAD FUNCTION
+// ============================================
 function load(type, filter) {
   State.currentType = type;
   State.currentFilter = filter || State.currentFilter;
+  State.currentPage = 1;
+  State.searchQuery = "";
+  document.getElementById("search-box").value = "";
 
-  // Update tab/filter button states
+  // Update UI
   document.querySelectorAll("#category-tabs .tab-btn").forEach(btn => {
     btn.classList.remove("active");
     btn.setAttribute("aria-selected", "false");
@@ -557,24 +720,22 @@ function load(type, filter) {
   document.querySelector(`#filter-row [data-filter="${filter}"]`).classList.add("active");
   document.querySelector(`#filter-row [data-filter="${filter}"]`).setAttribute("aria-pressed", "true");
 
-  // Reset podium and list
-  document.getElementById("podium").innerHTML = "";
-  document.getElementById("lb-list").innerHTML = '<div class="loading">Loading...</div>';
-
-  // Load appropriate board
-  if (State.currentFilter === "friends") {
+  // Load data
+  if (filter === "friends") {
     loadFriendsBoard();
   } else {
     loadGlobalBoard(type);
   }
 
   loadMe(type);
-
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" });
+  
+  console.log("[Analytics] Tab switch: ", { type, filter });
 }
 
-// Event Listeners
+// ============================================
+// 10. EVENT LISTENERS
+// ============================================
 document.getElementById("category-tabs").addEventListener("click", (e) => {
   if (!e.target.classList.contains("tab-btn")) return;
   load(e.target.getAttribute("data-type"), State.currentFilter);
@@ -583,6 +744,25 @@ document.getElementById("category-tabs").addEventListener("click", (e) => {
 document.getElementById("filter-row").addEventListener("click", (e) => {
   if (!e.target.classList.contains("filter-btn")) return;
   load(State.currentType, e.target.getAttribute("data-filter"));
+});
+
+document.getElementById("refresh-btn").addEventListener("click", refreshData);
+
+// Search with debounce
+let searchTimeout;
+document.getElementById("search-box").addEventListener("input", (e) => {
+  State.searchQuery = e.target.value;
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(filterDataBySearch, 300);
+});
+
+// Keyboard navigation (Escape to clear search)
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.activeElement.id === "search-box") {
+    document.getElementById("search-box").value = "";
+    State.searchQuery = "";
+    filterDataBySearch();
+  }
 });
 
 // Initialize
