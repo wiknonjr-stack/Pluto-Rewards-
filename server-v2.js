@@ -751,6 +751,145 @@ app.get("/api/badges/me", requireAuth, async (req, res) => {
 
   res.json({ badges: badges, total_possible: 8 });
 });
+function getTitle(score, streak, genresCount) {
+  if (score >= 200) return { name: "Legend", icon: "👑" };
+  if (streak >= 30) return { name: "Oracle", icon: "🌌" };
+  if (genresCount >= 15) return { name: "Explorer", icon: "🌍" };
+  if (score >= 100) return { name: "Trend Hunter", icon: "🔥" };
+  if (genresCount >= 5) return { name: "Curator", icon: "🎵" };
+  return { name: "Newcomer", icon: "✨" };
+}
+
+async function snapshotRanks(type, sortField) {
+  var result = await supabase.from("users").select("id").order(sortField, { ascending: false }).limit(500);
+  if (result.error) return;
+  var today = new Date().toISOString().split("T")[0];
+  var rows = result.data.map(function(u, i) {
+    return { user_id: u.id, leaderboard_type: type, rank: i + 1, snapshot_date: today };
+  });
+  await supabase.from("rank_snapshots").upsert(rows, { onConflict: "user_id,leaderboard_type,snapshot_date" });
+}
+
+app.get("/api/leaderboard/:type", async (req, res) => {
+  var sortField = "discovery_score";
+  if (req.params.type === "streak") sortField = "streak_days";
+  if (req.params.type === "earnings") sortField = "total_pluto";
+
+  var result = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, total_pluto, fan_level")
+    .order(sortField, { ascending: false })
+    .limit(50);
+
+  if (result.error) return res.status(500).json({ error: result.error.message });
+
+  var weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  var oldRanksRes = await supabase
+    .from("rank_snapshots")
+    .select("user_id, rank")
+    .eq("leaderboard_type", req.params.type)
+    .lte("snapshot_date", weekAgo)
+    .order("snapshot_date", { ascending: false });
+
+  var oldRankMap = {};
+  (oldRanksRes.data || []).forEach(function(r) {
+    if (!(r.user_id in oldRankMap)) oldRankMap[r.user_id] = r.rank;
+  });
+
+  var genresRes = await supabase.from("campaign_participants").select("user_id, genre");
+  var genreCountByUser = {};
+  (genresRes.data || []).forEach(function(p) {
+    if (!genreCountByUser[p.user_id]) genreCountByUser[p.user_id] = new Set();
+    genreCountByUser[p.user_id].add(p.genre);
+  });
+
+  var enriched = result.data.map(function(u, i) {
+    var rank = i + 1;
+    var oldRank = oldRankMap[u.id];
+    var rankChange = oldRank ? oldRank - rank : null;
+    var genresCount = genreCountByUser[u.id] ? genreCountByUser[u.id].size : 0;
+
+    return {
+      rank: rank,
+      id: u.id,
+      name: u.spotify_name || "Anonymous Fan",
+      discovery_score: u.discovery_score || 0,
+      streak_days: u.streak_days || 0,
+      total_pluto: u.total_pluto || 0,
+      title: getTitle(u.discovery_score || 0, u.streak_days || 0, genresCount),
+      rank_change: rankChange,
+      flames: (u.streak_days || 0) >= 100 ? "🔥🔥🔥" : (u.streak_days || 0) >= 30 ? "🔥🔥" : (u.streak_days || 0) >= 7 ? "🔥" : "",
+    };
+  });
+
+  snapshotRanks(req.params.type, sortField);
+
+  res.json({ leaderboard: enriched, type: req.params.type });
+});
+
+app.get("/api/leaderboard/:type/me", requireAuth, async (req, res) => {
+  var sortField = "discovery_score";
+  if (req.params.type === "streak") sortField = "streak_days";
+  if (req.params.type === "earnings") sortField = "total_pluto";
+
+  var all = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score, streak_days, total_pluto")
+    .order(sortField, { ascending: false });
+
+  if (all.error) return res.status(500).json({ error: all.error.message });
+
+  var idx = all.data.findIndex(function(u) { return u.id === req.user.id; });
+  var me = all.data[idx];
+  var total = all.data.length;
+
+  var genresRes = await supabase.from("campaign_participants").select("genre").eq("user_id", req.user.id);
+  var genresCount = new Set((genresRes.data || []).map(function(g) { return g.genre; })).size;
+
+  var weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  var oldRankRes = await supabase
+    .from("rank_snapshots")
+    .select("rank")
+    .eq("user_id", req.user.id)
+    .eq("leaderboard_type", req.params.type)
+    .lte("snapshot_date", weekAgo)
+    .order("snapshot_date", { ascending: false })
+    .limit(1)
+    .single();
+
+  var oldRank = oldRankRes.data ? oldRankRes.data.rank : null;
+  var rankChange = oldRank ? oldRank - (idx + 1) : null;
+  var percentile = total > 0 ? Math.round(((total - idx) / total) * 100) : 0;
+
+  res.json({
+    rank: idx + 1,
+    total: total,
+    percentile: percentile,
+    rank_change: rankChange,
+    me: me ? {
+      name: me.spotify_name || "Anonymous Fan",
+      discovery_score: me.discovery_score || 0,
+      streak_days: me.streak_days || 0,
+      total_pluto: me.total_pluto || 0,
+      title: getTitle(me.discovery_score || 0, me.streak_days || 0, genresCount),
+    } : null,
+  });
+});
+
+app.get("/api/hall-of-fame", async (req, res) => {
+  var result = await supabase
+    .from("users")
+    .select("id, spotify_name, discovery_score")
+    .order("discovery_score", { ascending: false })
+    .limit(10);
+
+  if (result.error) return res.status(500).json({ error: result.error.message });
+
+  var ranked = result.data.map(function(u, i) {
+    return { rank: i + 1, name: u.spotify_name || "Anonymous Fan", discovery_score: u.discovery_score || 0 };
+  });
+  res.json({ hall_of_fame: ranked });
+});
 app.listen(PORT, function () {
   console.log("Pluto Rewards backend running on port " + PORT);
   console.log("Spotify redirect: " + SPOTIFY_REDIRECT_URI);
