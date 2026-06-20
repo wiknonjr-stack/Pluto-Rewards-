@@ -125,6 +125,35 @@ app.get("/auth/me", requireAuth, async function (req, res) {
   if (result.error) return res.status(404).json({ error: "User not found" });
   res.json({ user: result.data });
 });
+
+function getTitle(score) {
+  if (score >= 100) return { name: "Oracle", icon: "🌌" };
+  if (score >= 60) return { name: "Pathfinder", icon: "🔥" };
+  if (score >= 30) return { name: "Scout", icon: "🔭" };
+  if (score >= 10) return { name: "Explorer", icon: "🌍" };
+  return { name: "Newcomer", icon: "✨" };
+}
+
+function nextTitleInfo(score) {
+  var tiers = [
+    { name: "Newcomer", min: 0 },
+    { name: "Explorer", min: 10 },
+    { name: "Scout", min: 30 },
+    { name: "Pathfinder", min: 60 },
+    { name: "Oracle", min: 100 },
+  ];
+  var currentIdx = 0;
+  for (var i = 0; i < tiers.length; i++) {
+    if (score >= tiers[i].min) currentIdx = i;
+  }
+  var next = tiers[currentIdx + 1];
+  if (!next) {
+    return { next: null, pointsToNext: 0, progress: 100 };
+  }
+  var current = tiers[currentIdx];
+  var progress = Math.round(((score - current.min) / (next.min - current.min)) * 100);
+  return { next: next.name, pointsToNext: next.min - score, progress: progress };
+  }
 app.post("/api/set-username", requireAuth, async function (req, res) {
   var name = req.body.name;
   if (!name || name.trim().length < 2) return res.status(400).json({ error: "Name too short" });
@@ -135,12 +164,6 @@ app.post("/api/set-username", requireAuth, async function (req, res) {
     .select()
     .single();
   if (result.error) return res.status(500).json({ error: result.error.message });
-  res.json({ user: result.data });
-});
-
-app.get("/api/profile", requireAuth, async function (req, res) {
-  var result = await supabase.from("users").select("*").eq("id", req.user.id).single();
-  if (result.error) return res.status(404).json({ error: "Not found" });
   res.json({ user: result.data });
 });
 
@@ -157,7 +180,6 @@ app.patch("/api/profile", requireAuth, async function (req, res) {
 app.post("/api/profile/avatar", requireAuth, async function (req, res) {
   var imageBase64 = req.body.image;
   if (!imageBase64) return res.status(400).json({ error: "No image provided" });
-
   try {
     var matches = imageBase64.match(/^data:(image\/\w+);base64,(.+)$/);
     if (!matches) return res.status(400).json({ error: "Invalid image format" });
@@ -165,16 +187,12 @@ app.post("/api/profile/avatar", requireAuth, async function (req, res) {
     var ext = mimeType.split("/")[1];
     var base64Data = matches[2];
     var buffer = Buffer.from(base64Data, "base64");
-
     if (buffer.length > 2 * 1024 * 1024) return res.status(400).json({ error: "Image too large (max 2MB)" });
-
     var fileName = req.user.id + "." + ext;
     var uploadRes = await supabase.storage.from("avatars").upload(fileName, buffer, { contentType: mimeType, upsert: true });
     if (uploadRes.error) return res.status(500).json({ error: uploadRes.error.message });
-
     var publicUrl = SUPABASE_URL + "/storage/v1/object/public/avatars/" + fileName;
     await supabase.from("users").update({ avatar_url: publicUrl }).eq("id", req.user.id);
-
     res.json({ avatar_url: publicUrl });
   } catch (err) {
     console.error("Avatar upload error:", err.message);
@@ -183,25 +201,6 @@ app.post("/api/profile/avatar", requireAuth, async function (req, res) {
 });
 
 var ALL_GENRES = ["Afrobeats","Amapiano","Hip-Hop","R&B","Pop","Latin","UK Drill","K-Pop","EDM","Gospel","Reggae","Indie","Country","Bollywood","Afropop","Highlife","Bongo Flava","J-Pop","Arabic Pop","OPM","Sertanejo","C-Pop","Salsa","Trap","Ndombolo","Rai","Turkish Pop","Classical","French Pop"];
-
-function tierInfo(score) {
-  var tiers = [
-    { name: "Bronze", min: 0, color: "#d97706", icon: "🥉" },
-    { name: "Silver", min: 20, color: "#cbd5e1", icon: "🥈" },
-    { name: "Gold", min: 50, color: "#fcd34d", icon: "🥇" },
-    { name: "Platinum", min: 100, color: "#a78bfa", icon: "💎" },
-    { name: "Legendary", min: 200, color: "#fbbf24", icon: "👑" },
-  ];
-  var current = tiers[0];
-  for (var i = 0; i < tiers.length; i++) { if (score >= tiers[i].min) current = tiers[i]; }
-  var next = tiers[tiers.indexOf(current) + 1];
-  return {
-    name: current.name, color: current.color, icon: current.icon,
-    next: next ? next.name : null,
-    pointsToNext: next ? next.min - score : 0,
-    progress: next ? Math.round(((score - current.min) / (next.min - current.min)) * 100) : 100,
-  };
-}
 
 app.get("/api/profile/me", requireAuth, async function (req, res) {
   var userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
@@ -213,6 +212,7 @@ app.get("/api/profile/me", requireAuth, async function (req, res) {
 
   var score = user.discovery_score || 0;
   var streak = user.streak_days || 0;
+  var longestStreak = Math.max(user.longest_streak || 0, streak);
   var flames = streak >= 100 ? "🔥🔥🔥" : streak >= 30 ? "🔥🔥" : streak >= 7 ? "🔥" : "";
 
   res.json({
@@ -220,12 +220,14 @@ app.get("/api/profile/me", requireAuth, async function (req, res) {
     avatar_url: user.avatar_url || null,
     discovery_score: score,
     streak_days: streak,
+    longest_streak: longestStreak,
     flames: flames,
     total_pluto: user.total_pluto || 0,
     wallet_address: user.wallet_address || null,
     country: user.country || null,
     member_since: user.created_at,
-    tier: tierInfo(score),
+    title: getTitle(score),
+    title_progress: nextTitleInfo(score),
     genres_explored: uniqueGenres,
     genres_count: uniqueGenres.length,
     total_genres: ALL_GENRES.length,
@@ -283,9 +285,10 @@ app.post("/api/campaigns/:id/join", requireAuth, async function (req, res) {
     var yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
     newStreak = (user.last_active_date === yesterday) ? newStreak + 1 : 1;
   }
+  var longestStreak = Math.max(user.longest_streak || 0, newStreak);
 
   await supabase.from("users").update({
-    discovery_score: discoveryScore, last_active_date: today, streak_days: newStreak,
+    discovery_score: discoveryScore, last_active_date: today, streak_days: newStreak, longest_streak: longestStreak,
   }).eq("id", req.user.id);
 
   res.json({
@@ -316,13 +319,36 @@ app.post("/api/checkin", requireAuth, async function (req, res) {
 
   var yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
   var newStreak = (user.last_active_date === yesterday) ? (user.streak_days || 0) + 1 : 1;
+  var longestStreak = Math.max(user.longest_streak || 0, newStreak);
 
   var reward = 100;
   if (newStreak % 30 === 0) reward = 5000;
   else if (newStreak % 7 === 0) reward = 1000;
 
+  var mysteryRoll = Math.random();
+  var mysteryBonus = 0;
+  var mysteryBadge = false;
+  var mysteryTier = null;
+  if (mysteryRoll < 0.05) {
+    mysteryTier = "rare";
+    mysteryBadge = true;
+    mysteryBonus = 0;
+  } else if (mysteryRoll < 0.15) {
+    mysteryTier = "big";
+    mysteryBonus = 1000;
+  } else if (mysteryRoll < 0.40) {
+    mysteryTier = "medium";
+    mysteryBonus = 300 + Math.floor(Math.random() * 200);
+  } else if (mysteryRoll < 1.0) {
+    mysteryTier = "small";
+    mysteryBonus = 50 + Math.floor(Math.random() * 100);
+  }
+
+  var totalReward = reward + mysteryBonus;
+
   var updateRes = await supabase.from("users").update({
-    streak_days: newStreak, last_active_date: today, total_pluto: (user.total_pluto || 0) + reward,
+    streak_days: newStreak, last_active_date: today, longest_streak: longestStreak,
+    total_pluto: (user.total_pluto || 0) + totalReward,
   }).eq("id", req.user.id);
 
   if (updateRes.error) {
@@ -330,22 +356,22 @@ app.post("/api/checkin", requireAuth, async function (req, res) {
     return res.status(500).json({ error: "Failed to update checkin" });
   }
 
-  var logRes = await supabase.from("checkins_log").insert({ user_id: req.user.id, reward: reward });
+  var logRes = await supabase.from("checkins_log").insert({ user_id: req.user.id, reward: totalReward });
   if (logRes.error) console.error("Checkin log error:", logRes.error);
 
+  if (mysteryBadge) {
+    await supabase.from("user_badges").upsert(
+      { user_id: req.user.id, badge_name: "Mystery Hunter" },
+      { onConflict: "user_id,badge_name", ignoreDuplicates: true }
+    );
+  }
+
   res.json({
-    message: "Checked in!", streak_days: newStreak, reward: reward,
-    total_pluto: (user.total_pluto || 0) + reward,
+    message: "Checked in!", streak_days: newStreak, longest_streak: longestStreak,
+    reward: reward, mystery_bonus: mysteryBonus, mystery_tier: mysteryTier, mystery_badge: mysteryBadge,
+    total_reward: totalReward, total_pluto: (user.total_pluto || 0) + totalReward,
   });
 });
-
-function getTitle(score) {
-  if (score >= 100) return { name: "Oracle", icon: "🌌" };
-  if (score >= 60) return { name: "Pathfinder", icon: "🔥" };
-  if (score >= 30) return { name: "Scout", icon: "🔭" };
-  if (score >= 10) return { name: "Explorer", icon: "🌍" };
-  return { name: "Newcomer", icon: "✨" };
-}
 
 async function snapshotRanks(type, sortField) {
   var result = await supabase.from("users").select("id").not("spotify_name", "is", null).order(sortField, { ascending: false }).limit(500);
@@ -491,7 +517,11 @@ app.get("/api/friends", requireAuth, async function (req, res) {
   var followsRes = await supabase.from("follows").select("following_id").eq("follower_id", req.user.id);
   if (followsRes.error) return res.status(500).json({ error: followsRes.error.message });
   var ids = followsRes.data.map(function (f) { return f.following_id; });
-  if (ids.length === 0) return res.json({ friends: [] });
+
+  var followersRes = await supabase.from("follows").select("follower_id", { count: "exact" }).eq("following_id", req.user.id);
+  var followersCount = followersRes.count || 0;
+
+  if (ids.length === 0) return res.json({ friends: [], followers_count: followersCount, following_count: 0 });
 
   var usersRes = await supabase.from("users").select("id, spotify_name, discovery_score, streak_days, avatar_url, total_pluto").in("id", ids);
   if (usersRes.error) return res.status(500).json({ error: usersRes.error.message });
@@ -503,7 +533,7 @@ app.get("/api/friends", requireAuth, async function (req, res) {
       total_pluto: u.total_pluto || 0, title: getTitle(u.discovery_score || 0),
     };
   });
-  res.json({ friends: friends });
+  res.json({ friends: friends, followers_count: followersCount, following_count: ids.length });
 });
 
 app.get("/api/recap", requireAuth, async function (req, res) {
@@ -523,6 +553,7 @@ app.get("/api/recap", requireAuth, async function (req, res) {
     pluto_earned: totalEarned, campaigns_joined: joinsRes.data.length, new_genres: uniqueGenres.size,
   });
 });
+
 app.get("/api/community/stats", async function (req, res) {
   var usersRes = await supabase.from("users").select("id, total_pluto, discovery_score", { count: "exact" });
   var campaignsRes = await supabase.from("campaigns").select("id", { count: "exact" }).eq("status", "active");
@@ -550,7 +581,6 @@ app.get("/api/quests/daily", async function (req, res) {
   ];
   res.json({ quest: quests[dayIndex], date: new Date().toISOString().split("T")[0] });
 });
-
 app.get("/api/badges/me", requireAuth, async function (req, res) {
   var userRes = await supabase.from("users").select("*").eq("id", req.user.id).single();
   if (userRes.error) return res.status(404).json({ error: "Not found" });
@@ -559,17 +589,24 @@ app.get("/api/badges/me", requireAuth, async function (req, res) {
   var genresRes = await supabase.from("campaign_participants").select("genre").eq("user_id", req.user.id);
   var uniqueGenres = new Set((genresRes.data || []).map(function (p) { return p.genre; }));
 
-  var badges = [];
-  if ((user.discovery_score || 0) >= 10) badges.push({ name: "First Discovery", icon: "🌱", earned: true });
-  if (uniqueGenres.size >= 5) badges.push({ name: "Genre Explorer", icon: "🌍", earned: true });
-  if (uniqueGenres.size >= 15) badges.push({ name: "World Traveler", icon: "🗺️", earned: true });
-  if ((user.streak_days || 0) >= 7) badges.push({ name: "Week Warrior", icon: "🔥", earned: true });
-  if ((user.streak_days || 0) >= 30) badges.push({ name: "Month Master", icon: "🏅", earned: true });
-  if ((user.streak_days || 0) >= 100) badges.push({ name: "Century Streak", icon: "💯", earned: true });
-  if ((user.discovery_score || 0) >= 100) badges.push({ name: "Platinum Discoverer", icon: "💎", earned: true });
-  if ((user.discovery_score || 0) >= 200) badges.push({ name: "Legendary Status", icon: "👑", earned: true });
+  var specialBadgesRes = await supabase.from("user_badges").select("badge_name").eq("user_id", req.user.id);
+  var specialBadges = (specialBadgesRes.data || []).map(function (b) { return b.badge_name; });
 
-  res.json({ badges: badges, total_possible: 8 });
+  var founderCutoffRes = await supabase.from("users").select("id").order("created_at", { ascending: true }).limit(500);
+  var founderIds = (founderCutoffRes.data || []).map(function (u) { return u.id; });
+  var isFounder = founderIds.indexOf(req.user.id) !== -1;
+
+  var badges = [];
+  badges.push({ name: "First Discovery", icon: "🌱", earned: (user.discovery_score || 0) >= 10, requirement: "Earn 10 Discovery Score" });
+  badges.push({ name: "Genre Explorer", icon: "🌍", earned: uniqueGenres.size >= 5, requirement: "Explore 5 genres" });
+  badges.push({ name: "World Traveler", icon: "🗺️", earned: uniqueGenres.size >= 15, requirement: "Explore 15 genres" });
+  badges.push({ name: "Week Warrior", icon: "🔥", earned: (user.streak_days || 0) >= 7, requirement: "7-day streak" });
+  badges.push({ name: "Month Master", icon: "🏅", earned: (user.streak_days || 0) >= 30, requirement: "30-day streak" });
+  badges.push({ name: "Century Streak", icon: "💯", earned: (user.streak_days || 0) >= 100, requirement: "100-day streak" });
+  badges.push({ name: "Mystery Hunter", icon: "🎁", earned: specialBadges.indexOf("Mystery Hunter") !== -1, requirement: "Find a rare Mystery Drop" });
+  badges.push({ name: "Founding Fan", icon: "👑", earned: isFounder, requirement: "Be one of the first 500 Pluto users" });
+
+  res.json({ badges: badges, total_possible: badges.length, total_earned: badges.filter(function (b) { return b.earned; }).length });
 });
 
 app.listen(PORT, function () {
