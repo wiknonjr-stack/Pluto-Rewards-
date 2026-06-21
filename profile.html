@@ -23,11 +23,15 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 
 #menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:none}
 #menu-overlay.show{display:block}
-#side-menu{position:fixed;top:0;right:-260px;width:240px;height:100%;background:var(--card);border-left:1px solid var(--border-gold);z-index:301;transition:right .25s;padding:24px 20px}
+#side-menu{position:fixed;top:0;right:-260px;width:240px;height:100%;background:var(--card);border-left:1px solid var(--border-gold);z-index:301;transition:right .25s;padding:24px 20px;overflow-y:auto}
 #side-menu.show{right:0}
 .menu-close{text-align:right;font-size:20px;color:var(--gray);cursor:pointer;margin-bottom:16px}
 .menu-link{display:block;padding:12px 14px;border-radius:10px;color:var(--white);text-decoration:none;font-size:14px;margin-bottom:4px}
 .menu-link:active{background:rgba(212,175,55,0.08)}
+.menu-section{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-soft);margin:18px 0 6px;padding:0 14px}
+.menu-section:first-of-type{margin-top:6px}
+.menu-sub{display:block;padding:9px 14px 9px 26px;border-radius:8px;color:var(--gray);text-decoration:none;font-size:12px;margin-bottom:2px}
+.menu-sub:active{background:rgba(212,175,55,0.06)}
 
 .wrap{max-width:560px;margin:0 auto;padding:28px 20px 24px;position:relative;z-index:1}
 
@@ -37,7 +41,6 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 .avatar-wrap{position:relative;width:84px;height:84px;margin:0 auto 12px;border-radius:50%;overflow:hidden;border:2px solid rgba(212,175,55,0.4);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1}
 .avatar-wrap img{width:100%;height:100%;object-fit:cover}
 .avatar-wrap .placeholder{font-size:34px}
-.avatar-edit{position:absolute;bottom:0;right:0;background:var(--gold);color:#000;font-size:10px;font-weight:800;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 #avatar-input{display:none}
 
 .profile-name{font-size:22px;font-weight:900;margin-bottom:4px}
@@ -73,6 +76,17 @@ nav.top-nav{display:flex;justify-content:space-between;align-items:center;paddin
 
 canvas{display:none}
 
+#avatar-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:998;align-items:flex-end;justify-content:center}
+#avatar-sheet.show{display:flex}
+.sheet-box{background:var(--card);border:1px solid var(--border-gold);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:500px}
+.sheet-opt{display:block;width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--white);font-size:15px;font-weight:600;padding:14px;border-radius:12px;margin-bottom:10px;cursor:pointer;text-align:center}
+.sheet-cancel{display:block;width:100%;background:none;border:none;color:var(--gray);font-size:14px;padding:10px;cursor:pointer;text-align:center}
+
+#view-photo-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;align-items:center;justify-content:center;padding:24px}
+#view-photo-modal.show{display:flex}
+#view-photo-modal img{max-width:90%;max-height:70%;border-radius:16px;border:2px solid rgba(212,175,55,0.4)}
+.view-close{position:absolute;top:24px;right:24px;color:var(--white);font-size:28px;cursor:pointer}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
 .bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
 .bottom-nav a.active{color:var(--purple)}
@@ -89,10 +103,35 @@ canvas{display:none}
 <div id="menu-overlay"></div>
 <div id="side-menu">
   <div class="menu-close" id="menu-close">✕</div>
+
   <a class="menu-link" href="/">🏠 Home</a>
-  <a class="menu-link" href="/campaigns.html">🎯 Quests</a>
-  <a class="menu-link" href="/leaderboard.html">🏆 Leaderboard</a>
   <a class="menu-link" href="/profile.html">👤 Profile</a>
+
+  <div class="menu-section">🔭 Discover</div>
+  <a class="menu-sub" href="/more.html?section=radar">Discovery Radar</a>
+  <a class="menu-sub" href="/more.html?section=rising">Rising Fast</a>
+  <a class="menu-sub" href="/more.html?section=gems">Hidden Gems</a>
+  <a class="menu-sub" href="/campaigns.html">Genre Explorer</a>
+
+  <div class="menu-section">🌌 Explorer</div>
+  <a class="menu-sub" href="/more.html?section=achievements">Achievements</a>
+
+  <div class="menu-section">🔔 Activity</div>
+  <a class="menu-sub" href="/more.html?section=rewards">Reward History</a>
+  <a class="menu-sub" href="/more.html?section=quests">Quest Activity</a>
+
+  <div class="menu-section">👥 Community</div>
+  <a class="menu-sub" href="/leaderboard.html">Leaderboard</a>
+
+  <div class="menu-section">🎁 Mystery</div>
+  <a class="menu-sub" href="/more.html?section=mystery">Mystery Drops</a>
+
+  <div class="menu-section">More</div>
+  <a class="menu-sub" href="/more.html?section=how">How It Works</a>
+  <a class="menu-sub" href="/more.html?section=faq">FAQ</a>
+  <a class="menu-sub" href="mailto:plutorewardsio@gmail.com">Support</a>
+  <a class="menu-sub" href="/more.html?section=language">Language</a>
+  <a class="menu-sub" href="/more.html?section=settings">Settings</a>
 </div>
 
 <div class="wrap" id="content">
@@ -101,15 +140,31 @@ canvas{display:none}
 
 <canvas id="shareCanvas" width="600" height="800"></canvas>
 
+<div id="avatar-sheet">
+  <div class="sheet-box">
+    <button class="sheet-opt" id="opt-view">View Photo</button>
+    <button class="sheet-opt" id="opt-change">Change Photo</button>
+    <button class="sheet-cancel" id="opt-cancel">Cancel</button>
+  </div>
+</div>
+
+<div id="view-photo-modal">
+  <div class="view-close" id="view-close">✕</div>
+  <img id="view-photo-img" src="" />
+</div>
+
+<input type="file" id="avatar-input" accept="image/*" />
+
 <nav class="bottom-nav">
   <a href="/"><span class="icon">🏠</span>Home</a>
   <a href="/campaigns.html"><span class="icon">🎯</span>Quests</a>
   <a href="/leaderboard.html"><span class="icon">🏆</span>Board</a>
   <a href="/profile.html" class="active"><span class="icon">👤</span>Profile</a>
-  </nav>
-  <script>
+</nav>
+<script>
 var API = "https://pluto-rewards-production.up.railway.app";
 var token = localStorage.getItem("pluto_token");
+var currentProfile = null;
 
 document.getElementById("menu-btn").addEventListener("click", function() {
   document.getElementById("side-menu").classList.add("show");
@@ -122,27 +177,51 @@ function closeMenu() {
   document.getElementById("menu-overlay").classList.remove("show");
 }
 
+function clearSessionAndPrompt() {
+  localStorage.removeItem("pluto_token");
+  localStorage.removeItem("pluto_user_id");
+  localStorage.removeItem("pluto_name");
+  document.getElementById("content").innerHTML =
+    '<div class="login-prompt">Your session expired. <a href="/">Reconnect on the home page</a> to see your profile.</div>';
+}
+
 if (!token) {
   document.getElementById("content").innerHTML =
     '<div class="login-prompt">Connect your Spotify on the <a href="/">home page</a> to see your profile.</div>';
 } else {
+  loadProfile();
+}
+
+function loadProfile() {
   Promise.all([
-    fetch(API + "/api/profile/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); }),
-    fetch(API + "/api/leaderboard/discovery/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); }),
-    fetch(API + "/api/badges/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); })
+    fetch(API + "/api/profile/me", { headers: { "Authorization": "Bearer " + token } }),
+    fetch(API + "/api/leaderboard/discovery/me", { headers: { "Authorization": "Bearer " + token } }),
+    fetch(API + "/api/badges/me", { headers: { "Authorization": "Bearer " + token } })
   ])
-  .then(function(results) {
-    try {
-      render(results[0], results[1], results[2]);
-    } catch (renderErr) {
-      document.getElementById("content").innerHTML = '<div class="login-prompt">Render error: ' + renderErr.message + '<br><br>Data 1: ' + JSON.stringify(results[0]).slice(0,200) + '<br><br>Data 2: ' + JSON.stringify(results[1]).slice(0,200) + '<br><br>Data 3: ' + JSON.stringify(results[2]).slice(0,200) + '</div>';
+  .then(function(responses) {
+    var authFailed = responses.some(function(r) { return r.status === 401; });
+    if (authFailed) {
+      clearSessionAndPrompt();
+      return null;
     }
+    return Promise.all(responses.map(function(r) { return r.json(); }));
+  })
+  .then(function(results) {
+    if (!results) return;
+    if (!results[0] || results[0].error === "Not found") {
+      clearSessionAndPrompt();
+      return;
+    }
+    currentProfile = results[0];
+    render(results[0], results[1] || {}, results[2] || { badges: [], total_earned: 0, total_possible: 8 });
   })
   .catch(function(err) {
-    document.getElementById("content").innerHTML = '<div class="login-prompt">Fetch error: ' + err.message + '</div>';
+    document.getElementById("content").innerHTML =
+      '<div class="login-prompt">Could not load profile. <a href="/" onclick="localStorage.clear()">Reconnect</a> or try again.</div>';
   });
-    }
-
+}
+</script>
+<script>
 function render(p, rankData, badgeData) {
   var percentile = rankData.percentile ? (100 - rankData.percentile + 1) : null;
   var progress = p.title_progress || { next: null, pointsToNext: 0, progress: 100 };
@@ -158,11 +237,9 @@ function render(p, rankData, badgeData) {
 
   document.getElementById("content").innerHTML =
     '<div class="profile-card">' +
-      '<div class="avatar-wrap" id="avatar-wrap" onclick="document.getElementById(\'avatar-input\').click()">' +
+      '<div class="avatar-wrap" id="avatar-wrap">' +
         (p.avatar_url ? '<img src="' + p.avatar_url + '" />' : '<div class="placeholder">' + p.title.icon + '</div>') +
-        '<div class="avatar-edit">\u270E</div>' +
       '</div>' +
-      '<input type="file" id="avatar-input" accept="image/*" />' +
       '<div class="profile-name">' + p.name + '</div>' +
       (p.country ? '<div class="profile-country">' + p.country + '</div>' : '') +
       '<div class="title-badge">' + p.title.icon + ' ' + p.title.name + '</div>' +
@@ -177,61 +254,80 @@ function render(p, rankData, badgeData) {
     '</div>' +
 
     '<div class="stat-row">' +
-      '<div class="stat-box"><div class="stat-icon">\uD83D\uDD25</div><div class="stat-val">' + p.streak_days + '</div><div class="stat-lbl">Current Streak</div></div>' +
-      '<div class="stat-box"><div class="stat-icon">\u26A1</div><div class="stat-val">' + p.longest_streak + '</div><div class="stat-lbl">Longest Streak</div></div>' +
+      '<div class="stat-box"><div class="stat-icon">🔥</div><div class="stat-val">' + p.streak_days + '</div><div class="stat-lbl">Current Streak</div></div>' +
+      '<div class="stat-box"><div class="stat-icon">⚡</div><div class="stat-val">' + p.longest_streak + '</div><div class="stat-lbl">Longest Streak</div></div>' +
     '</div>' +
 
     '<div class="badge-section">' +
-      '<div class="badge-head"><span class="badge-title">Badges (' + badgeData.total_earned + '/' + badgeData.total_possible + ')</span><span class="badge-link">View all \u2192</span></div>' +
+      '<div class="badge-head"><span class="badge-title">Badges (' + (badgeData.total_earned || 0) + '/' + (badgeData.total_possible || 8) + ')</span><a class="badge-link" href="/more.html?section=achievements">View all →</a></div>' +
       '<div class="badge-row">' + badgeIcons + '</div>' +
     '</div>' +
 
-    '<button class="share-btn" id="share-btn">\uD83D\uDCE4 Share My Stats</button>';
+    '<button class="share-btn" id="share-btn">📤 Share My Stats</button>';
 
   document.getElementById("share-btn").addEventListener("click", function() {
     shareStats(p);
   });
 
-  setupAvatarUpload(p);
-}
-
-function setupAvatarUpload(p) {
-  var input = document.getElementById("avatar-input");
-  input.addEventListener("change", function(e) {
-    var file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image too large. Max 2MB.");
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function() {
-      fetch(API + "/api/profile/avatar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({ image: reader.result })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.avatar_url) {
-          p.avatar_url = data.avatar_url;
-          document.getElementById("avatar-wrap").innerHTML =
-            '<img src="' + data.avatar_url + '" />' +
-            '<div class="avatar-edit">\u270E</div>';
-        } else {
-          alert("Upload failed: " + (data.error || "unknown error"));
-        }
-      })
-      .catch(function() { alert("Upload failed."); });
-    };
-    reader.readAsDataURL(file);
+  document.getElementById("avatar-wrap").addEventListener("click", function() {
+    document.getElementById("avatar-sheet").classList.add("show");
   });
 }
-  </script>
-  <script>
+
+document.getElementById("opt-cancel").addEventListener("click", function() {
+  document.getElementById("avatar-sheet").classList.remove("show");
+});
+
+document.getElementById("opt-view").addEventListener("click", function() {
+  document.getElementById("avatar-sheet").classList.remove("show");
+  if (currentProfile && currentProfile.avatar_url) {
+    document.getElementById("view-photo-img").src = currentProfile.avatar_url;
+    document.getElementById("view-photo-modal").classList.add("show");
+  } else {
+    alert("No photo uploaded yet. Tap Change Photo to add one.");
+  }
+});
+
+document.getElementById("view-close").addEventListener("click", function() {
+  document.getElementById("view-photo-modal").classList.remove("show");
+});
+
+document.getElementById("opt-change").addEventListener("click", function() {
+  document.getElementById("avatar-sheet").classList.remove("show");
+  document.getElementById("avatar-input").click();
+});
+
+document.getElementById("avatar-input").addEventListener("change", function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    alert("Image too large. Max 2MB.");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function() {
+    fetch(API + "/api/profile/avatar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ image: reader.result })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.avatar_url) {
+        currentProfile.avatar_url = data.avatar_url;
+        document.getElementById("avatar-wrap").innerHTML = '<img src="' + data.avatar_url + '" />';
+      } else {
+        alert("Upload failed: " + (data.error || "unknown error"));
+      }
+    })
+    .catch(function() { alert("Upload failed."); });
+  };
+  reader.readAsDataURL(file);
+});
+
 function shareStats(p) {
   var canvas = document.getElementById("shareCanvas");
   var ctx = canvas.getContext("2d");
@@ -244,7 +340,7 @@ function shareStats(p) {
 
   ctx.fillStyle = "#D4AF37";
   ctx.font = "bold 28px sans-serif";
-  ctx.fillText("\u2647 PLUTO REWARDS", 40, 60);
+  ctx.fillText("♇ PLUTO REWARDS", 40, 60);
 
   if (p.avatar_url) {
     var img = new Image();
@@ -285,7 +381,7 @@ function finishShareCard(p, ctx, canvas) {
     { label: "DISCOVERY SCORE", val: p.discovery_score },
     { label: "CURRENT STREAK", val: p.streak_days + " days" },
     { label: "LONGEST STREAK", val: p.longest_streak + " days" },
-    { label: "PLUTO EARNED", val: Number(p.total_pluto).toLocaleString() + " \u2647" }
+    { label: "PLUTO EARNED", val: Number(p.total_pluto).toLocaleString() + " ♇" }
   ];
 
   var y = 260;
@@ -311,7 +407,7 @@ function finishShareCard(p, ctx, canvas) {
       navigator.share({
         files: [file],
         title: "My Pluto Rewards Stats",
-        text: "Check out my Pluto Rewards stats! " + p.title.icon + " " + p.title.name + ", " + p.discovery_score + " discovery score, " + p.streak_days + "-day streak \uD83D\uDD25"
+        text: "Check out my Pluto Rewards stats! " + p.title.icon + " " + p.title.name + ", " + p.discovery_score + " discovery score, " + p.streak_days + "-day streak 🔥"
       }).catch(function() {});
     } else {
       var url = URL.createObjectURL(blob);
