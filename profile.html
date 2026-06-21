@@ -134,10 +134,10 @@ if (!token) {
   .then(function(results) {
     render(results[0], results[1], results[2]);
   })
-  .catch(function() {
-    document.getElementById("content").innerHTML = '<div class="login-prompt">Could not load profile. Try refreshing.</div>';
+  .catch(function(err) {
+    document.getElementById("content").innerHTML = '<div class="login-prompt">Error: ' + err.message + '</div>';
   });
-}
+    }
 
 function render(p, rankData, badgeData) {
   var percentile = rankData.percentile ? (100 - rankData.percentile + 1) : null;
