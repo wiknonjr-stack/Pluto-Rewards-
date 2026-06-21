@@ -132,10 +132,14 @@ if (!token) {
     fetch(API + "/api/badges/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); })
   ])
   .then(function(results) {
-    render(results[0], results[1], results[2]);
+    try {
+      render(results[0], results[1], results[2]);
+    } catch (renderErr) {
+      document.getElementById("content").innerHTML = '<div class="login-prompt">Render error: ' + renderErr.message + '<br><br>Data 1: ' + JSON.stringify(results[0]).slice(0,200) + '<br><br>Data 2: ' + JSON.stringify(results[1]).slice(0,200) + '<br><br>Data 3: ' + JSON.stringify(results[2]).slice(0,200) + '</div>';
+    }
   })
   .catch(function(err) {
-    document.getElementById("content").innerHTML = '<div class="login-prompt">Error: ' + err.message + '</div>';
+    document.getElementById("content").innerHTML = '<div class="login-prompt">Fetch error: ' + err.message + '</div>';
   });
     }
 
