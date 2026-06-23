@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pluto Rewards — Not trending. Yet.</title>
+<title>Pluto — Discover What's Next</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -15,85 +15,69 @@
 --border-cyan:rgba(34,211,238,0.2);
 }
 body{background:var(--bg);color:var(--white);font-family:'Segoe UI',sans-serif;overflow-x:hidden;padding-bottom:80px;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 50% 10%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 70% 40%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 85% 15%,rgba(212,175,55,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 20% 80%,rgba(139,92,246,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 60% 75%,rgba(34,211,238,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 90% 55%,rgba(212,175,55,0.3) 0%,transparent 100%);pointer-events:none;z-index:0}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(139,92,246,0.25) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 20% 80%,rgba(139,92,246,0.2) 0%,transparent 100%);pointer-events:none;z-index:0}
 
 nav.top-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border-gold);position:sticky;top:0;background:rgba(9,9,11,0.92);backdrop-filter:blur(14px);z-index:100}
-.logo{font-size:20px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none}
-.logo-pluto{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;padding:9px 18px;border-radius:50px;text-decoration:none;font-size:12px;border:none;cursor:pointer}
+.logo{font-size:20px;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.connect-btn{background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;padding:9px 18px;border-radius:50px;text-decoration:none;font-size:12px;border:none;cursor:pointer}
+.connected-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-.hero{padding:48px 24px 32px;max-width:600px;margin:0 auto;text-align:center;position:relative;z-index:1}
-.hero-tag{display:inline-block;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);background:rgba(34,211,238,0.06);border:1px solid var(--border-cyan);border-radius:20px;padding:5px 14px;margin-bottom:22px}
-h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom:8px}
-.text-gold{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.text-outline{-webkit-text-stroke:2px var(--gold);color:transparent}
-.tagline{font-size:13px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
-.hero-desc{font-size:14px;color:var(--gray);line-height:1.8;max-width:420px;margin:0 auto 28px}
-.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;font-size:14px;padding:13px 28px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;box-shadow:0 0 28px rgba(212,175,55,0.2);display:inline-block}
+.feed{max-width:600px;margin:0 auto;padding:20px 16px;position:relative;z-index:1}
 
-.stats-row{display:flex;border-top:1px solid var(--border-gold);border-bottom:1px solid var(--border-gold);background:rgba(28,28,30,0.6);position:relative;z-index:1}
-.stat-item{flex:1;padding:16px 8px;text-align:center;border-right:1px solid var(--border-gold)}
-.stat-item:last-child{border-right:none}
-.stat-num{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-lbl{font-size:9px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+.trend-line{font-size:11px;color:var(--cyan);letter-spacing:1px;text-align:center;padding:10px 0 4px;opacity:0.8}
 
-.marquee{overflow:hidden;padding:12px 0;background:var(--card);border-top:1px solid var(--border-gold);border-bottom:1px solid var(--border-gold);position:relative;z-index:1}
-.marquee-inner{display:flex;animation:marquee 22s linear infinite;width:max-content}
-.marquee-inner span{font-size:10px;letter-spacing:3px;padding:0 20px;color:#374151;white-space:nowrap}
-.marquee-inner span.gold{color:var(--gold)}
-.marquee-inner span.purple{color:var(--purple)}
-.marquee-inner span.cyan{color:var(--cyan)}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.hero-card{background:linear-gradient(135deg,#171205,var(--card));border:1px solid rgba(212,175,55,0.25);border-radius:20px;padding:24px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero-card::before{content:"";position:absolute;top:-40%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,175,55,0.08),transparent 70%);pointer-events:none}
+.hero-not-logged{text-align:center;padding:8px 0}
+.hero-not-logged p{font-size:13px;color:var(--gray);margin-bottom:16px;line-height:1.6}
+.hero-not-logged a{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;font-size:14px;padding:12px 28px;border-radius:50px;text-decoration:none}
+.hero-logged{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero-stat{text-align:center;flex:1}
+.hero-stat-val{font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat-lbl{font-size:9px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+.hero-divider{width:1px;height:40px;background:rgba(255,255,255,0.06)}
+.hero-title-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--purple);background:rgba(139,92,246,0.1);border:1px solid var(--border-purple);border-radius:50px;padding:5px 12px;margin-top:8px}
 
-.feed{max-width:600px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
-.section-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+.section-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
 .section-label::after{content:"";flex:1;height:1px;background:var(--border-gold)}
 .section-label.cyan-label{color:var(--cyan)}
 .section-label.cyan-label::after{background:var(--border-cyan)}
 .section-label.purple-label{color:var(--purple)}
 .section-label.purple-label::after{background:var(--border-purple)}
 
-.hero-card{background:linear-gradient(135deg,#1a1400,#1C1C1E);border:1px solid rgba(212,175,55,0.35);border-radius:20px;padding:24px;margin-bottom:14px;position:relative;overflow:hidden}
-.hero-card::before{content:"";position:absolute;top:-30%;right:-15%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,175,55,0.1),transparent 70%);pointer-events:none}
-.reward-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-soft);margin-bottom:6px}
-.reward-amount{font-size:40px;font-weight:900;line-height:1;margin-bottom:4px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.reward-sub{font-size:12px;color:var(--gray);margin-bottom:18px}
-.reward-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:6px}
-.reward-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:3px;transition:width .6s;width:0%}
-.reward-hint{font-size:11px;color:var(--gray)}
-
 .card{background:var(--card);border:1px solid var(--border-gold);border-radius:16px;padding:18px;margin-bottom:12px}
 .card.purple-card{border-color:var(--border-purple)}
 .card.cyan-card{border-color:var(--border-cyan)}
 .card-row{display:flex;align-items:center;gap:12px}
-.card-icon{font-size:26px;width:44px;height:44px;background:rgba(212,175,55,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.card-icon.purple-icon{background:rgba(139,92,246,0.1)}
-.card-icon.cyan-icon{background:rgba(34,211,238,0.08)}
+.card-icon{font-size:26px;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon.gold-bg{background:rgba(212,175,55,0.08)}
+.card-icon.purple-bg{background:rgba(139,92,246,0.1)}
+.card-icon.cyan-bg{background:rgba(34,211,238,0.08)}
 .card-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px}
 .card-sub{font-size:12px;color:var(--gray);line-height:1.5}
-.badge-gold{font-size:11px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--gold),var(--gold-bright));border-radius:50px;padding:5px 14px;white-space:nowrap;border:none;cursor:pointer;text-decoration:none;display:inline-block}
-.badge-ghost{font-size:11px;font-weight:700;color:var(--gold);background:rgba(212,175,55,0.08);border:1px solid var(--border-gold);border-radius:50px;padding:5px 14px;white-space:nowrap;text-decoration:none;display:inline-block}
-.badge-purple{font-size:11px;font-weight:700;color:var(--purple);background:rgba(139,92,246,0.1);border:1px solid var(--border-purple);border-radius:50px;padding:5px 14px;white-space:nowrap;text-decoration:none;display:inline-block}
-.badge-cyan{font-size:11px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,0.06);border:1px solid var(--border-cyan);border-radius:50px;padding:5px 14px;white-space:nowrap;text-decoration:none;display:inline-block}
+.badge-gold{font-size:11px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--gold),var(--gold-bright));border-radius:50px;padding:6px 14px;white-space:nowrap;border:none;cursor:pointer;text-decoration:none;display:inline-block}
+.badge-purple{font-size:11px;font-weight:700;color:var(--purple);background:rgba(139,92,246,0.1);border:1px solid var(--border-purple);border-radius:50px;padding:6px 14px;white-space:nowrap;text-decoration:none;display:inline-block}
+.badge-cyan{font-size:11px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,0.06);border:1px solid var(--border-cyan);border-radius:50px;padding:6px 14px;white-space:nowrap;text-decoration:none;display:inline-block}
 
-.feed-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.feed-item:last-child{border-bottom:none}
-.feed-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;animation:pulse 2s infinite}
-.feed-dot.cyan-dot{background:var(--cyan)}
-.feed-dot.purple-dot{background:var(--purple)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
-.feed-text{font-size:12px;color:var(--gray);flex:1;line-height:1.4}
-.feed-text strong{color:var(--white)}
-.feed-time{font-size:10px;color:#4b5563;flex-shrink:0}
+.streak-card{background:linear-gradient(135deg,#0d0820,var(--card));border:1px solid var(--border-purple);border-radius:16px;padding:20px;margin-bottom:12px}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.streak-days{font-size:32px;font-weight:900;color:var(--white)}
+.streak-days span{font-size:14px;color:var(--gray);font-weight:400;margin-left:4px}
+.streak-flames{font-size:20px}
+.streak-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.streak-fill{height:100%;background:linear-gradient(90deg,var(--purple),#a78bfa);border-radius:3px;transition:width .5s}
+.streak-hint{font-size:11px;color:var(--gray);display:flex;justify-content:space-between}
+.claim-btn{width:100%;background:linear-gradient(135deg,var(--purple),#a78bfa);color:#fff;font-weight:700;font-size:14px;padding:13px;border:none;border-radius:50px;cursor:pointer;margin-top:14px}
+.claim-btn:disabled{opacity:0.5;cursor:not-allowed}
+.streak-result{font-size:12px;color:var(--gold);margin-top:10px;display:none;text-align:center}
 
-.lb-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.lb-item:last-child{border-bottom:none}
-.lb-rank{font-size:13px;font-weight:900;color:var(--gray);width:26px;text-align:center}
-.lb-rank.gold{color:var(--gold)}
-.lb-rank.silver{color:#94a3b8}
-.lb-rank.bronze{color:#b45309}
-.lb-name{flex:1;font-size:13px;font-weight:600;color:var(--white)}
-.lb-score{font-size:13px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.mystery-hint{width:8px;height:8px;border-radius:50%;background:var(--gold);display:inline-block;animation:mystery-pulse 1.5s ease-in-out infinite;margin-left:6px;vertical-align:middle}
+@keyframes mystery-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,0.4)}50%{box-shadow:0 0 0 6px rgba(212,175,55,0)}}
+
+.map-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}
+.map-tile{background:rgba(34,211,238,0.03);border:1px solid rgba(34,211,238,0.06);border-radius:7px;padding:7px 3px;text-align:center;font-size:8px;color:#4b5563;line-height:1.4}
+.map-tile.unlocked{background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.25);color:var(--cyan);font-weight:700}
 
 .campaign-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;margin-bottom:4px}
 .campaign-scroll::-webkit-scrollbar{display:none}
@@ -103,15 +87,6 @@ h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom
 .campaign-mini-pool{font-size:18px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .campaign-mini-label{font-size:9px;color:var(--gray);margin-top:2px}
 
-.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
-.quick-btn{background:var(--card);border:1px solid var(--border-purple);border-radius:14px;padding:18px 8px;text-align:center;text-decoration:none;display:block}
-.quick-btn .q-icon{font-size:26px;margin-bottom:6px}
-.quick-btn .q-label{font-size:9px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
-
-.map-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
-.map-tile{background:rgba(34,211,238,0.03);border:1px solid rgba(34,211,238,0.06);border-radius:8px;padding:8px 4px;text-align:center;font-size:9px;color:#4b5563;line-height:1.4}
-.map-tile.unlocked{background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.25);color:var(--cyan);font-weight:700;box-shadow:0 0 8px rgba(34,211,238,0.1)}
-
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,0.97);border-top:1px solid var(--border-purple);display:flex;justify-content:space-around;align-items:center;padding:10px 0 14px;z-index:100;backdrop-filter:blur(10px)}
 .bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--gray);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
 .bottom-nav a.active{color:var(--purple)}
@@ -119,7 +94,7 @@ h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom
 
 #pluto-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;padding:24px}
 #pluto-modal.show{display:flex}
-.modal-card{background:var(--card);border:1px solid rgba(212,175,55,0.35);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 0 40px rgba(212,175,55,0.1)}
+.modal-card{background:var(--card);border:1px solid rgba(212,175,55,0.3);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
 .modal-card .m-icon{font-size:40px;margin-bottom:10px}
 .modal-card h2{font-size:22px;font-weight:900;color:var(--white);margin-bottom:6px}
 .modal-card p{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:18px}
@@ -127,153 +102,88 @@ h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom
 .modal-card input:focus{border-color:var(--gold)}
 .modal-card .submit-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-weight:700;font-size:15px;padding:13px;border:none;border-radius:50px;cursor:pointer}
 .modal-card .err{font-size:12px;color:#ef4444;margin-top:10px;display:none}
-.contract{font-size:10px;color:rgba(212,175,55,0.3);font-family:monospace;text-align:center;padding:16px 0 4px;word-break:break-all}
+
+#launch-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;transition:opacity 0.8s ease}
+.l-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,0.1),transparent 70%);pointer-events:none;animation:glow-pulse 2s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+.l-logo{font-size:52px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateY(20px);transition:all 0.6s ease;position:relative;z-index:1}
+.l-tagline{font-size:clamp(24px,6vw,40px);font-weight:900;color:var(--white);text-align:center;line-height:1.1;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.3s;position:relative;z-index:1}
+.l-tagline span{background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.l-bar-wrap{position:absolute;bottom:60px;width:120px;opacity:0;transition:opacity 0.4s ease 0.6s}
+.l-bar{height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden}
+.l-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:1px;transition:width 2.4s linear}
 </style>
 </head>
 <body>
-  <div id="launch-screen" style="position:fixed;inset:0;background:#09090B;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;transition:opacity 0.8s ease">
 
-  <div style="position:absolute;inset:0;background-image:radial-gradient(1px 1px at 15% 25%,rgba(212,175,55,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 35% 65%,rgba(139,92,246,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 55% 15%,rgba(212,175,55,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(34,211,238,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 88% 20%,rgba(212,175,55,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 25% 85%,rgba(139,92,246,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 65% 78%,rgba(34,211,238,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 92% 60%,rgba(212,175,55,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 45% 38%,rgba(212,175,55,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 78% 88%,rgba(139,92,246,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 8% 50%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 52% 52%,rgba(212,175,55,0.3) 0%,transparent 100%);pointer-events:none"></div>
-
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%);pointer-events:none;animation:glow-pulse 2s ease-in-out infinite"></div>
-
-  <div id="launch-logo" style="font-size:52px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#D4AF37,#F4C430,#E6C76B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;opacity:0;transform:translateY(20px);transition:all 0.6s ease;position:relative;z-index:1">
-    ♇ PLUTO
+<div id="launch-screen">
+  <div class="l-glow"></div>
+  <div class="l-logo" id="l-logo">♇ PLUTO</div>
+  <div class="l-tagline" id="l-tagline">Not trending.<br><span>Yet.</span></div>
+  <div class="l-bar-wrap" id="l-bar-wrap">
+    <div class="l-bar"><div class="l-fill" id="l-fill"></div></div>
   </div>
-
-  <div id="launch-tag" style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#A1A1AA;margin-bottom:48px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.2s;position:relative;z-index:1">
-    Rewards
-  </div>
-
-  <div id="launch-tagline" style="font-size:clamp(28px,7vw,48px);font-weight:900;color:#FFFFFF;text-align:center;line-height:1.1;margin-bottom:16px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.4s;position:relative;z-index:1">
-    Not trending.<br><span style="background:linear-gradient(135deg,#D4AF37,#F4C430);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Yet.</span>
-  </div>
-
-  <div id="launch-sub" style="font-size:13px;color:#A1A1AA;letter-spacing:1px;text-align:center;opacity:0;transition:all 0.6s ease 0.6s;position:relative;z-index:1">
-    Your streams. Your tokens.
-  </div>
-
-  <div id="launch-bar-wrap" style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:120px;opacity:0;transition:opacity 0.4s ease 0.8s">
-    <div style="height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden">
-      <div id="launch-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#D4AF37,#F4C430);border-radius:1px;transition:width 2.4s linear"></div>
-    </div>
-  </div>
-
 </div>
 
-<style>
-@keyframes glow-pulse{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
-</style>
-
-<script>
-(function() {
-  if (sessionStorage.getItem("pluto_launched")) {
-    document.getElementById("launch-screen").style.display = "none";
-    return;
-  }
-
-  var screen = document.getElementById("launch-screen");
-  var logo = document.getElementById("launch-logo");
-  var tag = document.getElementById("launch-tag");
-  var tagline = document.getElementById("launch-tagline");
-  var sub = document.getElementById("launch-sub");
-  var barWrap = document.getElementById("launch-bar-wrap");
-  var bar = document.getElementById("launch-bar");
-
-  setTimeout(function() {
-    logo.style.opacity = "1";
-    logo.style.transform = "translateY(0)";
-  }, 100);
-
-  setTimeout(function() {
-    tag.style.opacity = "1";
-    tag.style.transform = "translateY(0)";
-  }, 300);
-
-  setTimeout(function() {
-    tagline.style.opacity = "1";
-    tagline.style.transform = "translateY(0)";
-  }, 500);
-
-  setTimeout(function() {
-    sub.style.opacity = "1";
-  }, 700);
-
-  setTimeout(function() {
-    barWrap.style.opacity = "1";
-    setTimeout(function() { bar.style.width = "100%"; }, 50);
-  }, 900);
-
-  setTimeout(function() {
-    screen.style.opacity = "0";
-    setTimeout(function() {
-      screen.style.display = "none";
-      sessionStorage.setItem("pluto_launched", "1");
-    }, 800);
-  }, 3200);
-})();
-</script>
-  <nav class="top-nav">
-  <a class="logo" href="/"><span class="logo-pluto">♇ PLUTO</span></a>
-  <a class="nav-cta" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join">Get Rewarded →</a>
+<nav class="top-nav">
+  <a class="logo" href="/">♇ PLUTO</a>
+  <a class="connect-btn" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join">Connect Spotify</a>
 </nav>
 
-<section class="hero">
-  <div class="hero-tag">🟢 Live on World Chain</div>
-  <h1>You've been<br><span class="text-outline">listening.</span><br><span class="text-gold">Get paid.</span></h1>
-  <p class="tagline">Not trending. Yet.</p>
-  <p class="hero-desc">Pluto Rewards turns your Spotify listening history into real cryptocurrency. No purchase required. No artists needed.</p>
-  <a class="btn-primary" href="https://pluto-rewards-production.up.railway.app/auth/spotify" id="join2">🎵 Connect Spotify & Claim</a>
-</section>
+<div class="feed" id="feed">
 
-<div class="stats-row">
-  <div class="stat-item"><div class="stat-num">39</div><div class="stat-lbl">Campaigns</div></div>
-  <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">Ways to earn</div></div>
-  <div class="stat-item"><div class="stat-num">100K</div><div class="stat-lbl">Max ♇</div></div>
-  <div class="stat-item"><div class="stat-num">2min</div><div class="stat-lbl">To start</div></div>
-</div>
+  <div class="trend-line" id="trend-line">🌍 Loading today's discovery...</div>
 
-<div class="marquee">
-  <div class="marquee-inner">
-    <span>STREAMING REWARDS</span><span class="gold">♇ PLUTO</span>
-    <span>WORLD CHAIN</span><span class="cyan">DISCOVERY</span>
-    <span>TOP LISTENER</span><span class="gold">GET PAID</span>
-    <span>CRYPTO REWARDS</span><span class="purple">FAN ECONOMY</span>
-    <span>STREAMING REWARDS</span><span class="gold">♇ PLUTO</span>
-    <span>WORLD CHAIN</span><span class="cyan">DISCOVERY</span>
-    <span>TOP LISTENER</span><span class="gold">GET PAID</span>
-    <span>CRYPTO REWARDS</span><span class="purple">FAN ECONOMY</span>
-  </div>
-</div>
-
-<div class="feed">
-
-  <div class="section-label">👑 Next Reward</div>
-  <div class="hero-card">
-    <div class="reward-label">Your next milestone</div>
-    <div class="reward-amount" id="next-reward">+1,000 ♇</div>
-    <div class="reward-sub" id="next-reward-sub">Complete your 7-day streak</div>
-    <div class="reward-bar"><div class="reward-fill" id="reward-fill"></div></div>
-    <div class="reward-hint" id="reward-hint">Check in daily to unlock</div>
-  </div>
-
-  <div class="section-label purple-label">🔥 Daily Reward</div>
-  <div class="card purple-card">
-    <div class="card-row">
-      <div class="card-icon purple-icon">🔥</div>
-      <div style="flex:1">
-        <div class="card-title">Daily Check-In</div>
-        <div class="card-sub" id="checkin-sub">Claim today's reward and keep your streak alive.</div>
-      </div>
-      <button class="badge-gold" id="checkin-btn" onclick="doCheckin()">Claim</button>
+  <div class="hero-card" id="hero-card">
+    <div class="hero-not-logged" id="hero-not-logged">
+      <p>Discover what's next.<br>Before everyone else.</p>
+      <a href="https://pluto-rewards-production.up.railway.app/auth/spotify">🎵 Connect Spotify</a>
     </div>
-    <div id="checkin-result" style="font-size:12px;color:var(--gold);margin-top:10px;display:none"></div>
+    <div class="hero-logged" id="hero-logged" style="display:none">
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="hero-rank">—</div>
+        <div class="hero-stat-lbl">Your Rank</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="hero-score">—</div>
+        <div class="hero-stat-lbl">Discovery</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="hero-pluto">—</div>
+        <div class="hero-stat-lbl">♇ Points</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:10px;display:none" id="hero-title-wrap">
+      <div class="hero-title-badge" id="hero-title-badge">✨ Newcomer</div>
+    </div>
   </div>
 
-  <div class="section-label purple-label">💜 Featured Challenge</div>
+  <div class="section-label purple-label">🔥 Daily Mission</div>
+  <div class="streak-card">
+    <div class="streak-top">
+      <div>
+        <div class="streak-days" id="streak-days">0 <span>day streak</span></div>
+        <div style="font-size:11px;color:var(--gray);margin-top:3px" id="streak-next">Next milestone: 7 days</div>
+      </div>
+      <div class="streak-flames" id="streak-flames"></div>
+    </div>
+    <div class="streak-bar"><div class="streak-fill" id="streak-fill" style="width:0%"></div></div>
+    <div class="streak-hint">
+      <span id="streak-progress-label">Day 0 of 7</span>
+      <span id="streak-reward-label">+1,000 ♇ at 7 days</span>
+    </div>
+    <button class="claim-btn" id="claim-btn" onclick="doCheckin()">
+      Claim Daily Reward <span class="mystery-hint"></span>
+    </button>
+    <div class="streak-result" id="streak-result"></div>
+  </div>
+
+  <div class="section-label">⭐ Quest of the Week</div>
   <div class="card purple-card">
     <div class="card-row">
-      <div class="card-icon purple-icon">🌍</div>
+      <div class="card-icon purple-bg">🌍</div>
       <div style="flex:1">
         <div class="card-title">Genre Explorer</div>
         <div class="card-sub">Join campaigns in 5 different genres this month. Earn Discovery Legend badge + bonus ♇.</div>
@@ -282,96 +192,36 @@ h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom
     </div>
   </div>
 
-  <div class="section-label cyan-label">🌊 Rising Star of the Day</div>
-  <div class="card cyan-card">
-    <div class="card-row">
-      <div class="card-icon cyan-icon">⭐</div>
-      <div style="flex:1">
-        <div class="card-title" id="rising-star-genre">Amapiano</div>
-        <div class="card-sub">Fastest growing genre on Pluto today. Early movers earn more.</div>
-      </div>
-      <a href="/campaigns.html" class="badge-cyan">Earn</a>
-    </div>
-  </div>
-
   <div class="section-label cyan-label">💎 Hidden Gem</div>
   <div class="card cyan-card">
     <div class="card-row">
-      <div class="card-icon cyan-icon">💎</div>
+      <div class="card-icon cyan-bg">💎</div>
       <div style="flex:1">
-        <div class="card-title" id="hidden-gem-genre">Bongo Flava</div>
+        <div class="card-title" id="hidden-gem-name">Bongo Flava</div>
         <div class="card-sub">Low competition. High reward. Be the first to discover this campaign.</div>
       </div>
       <a href="/campaigns.html" class="badge-cyan">Explore</a>
     </div>
   </div>
 
-  <div class="section-label">⚡ Live Activity</div>
-  <div class="card" id="live-feed">
-    <div class="feed-item">
-      <div class="feed-dot"></div>
-      <div class="feed-text"><strong>wiknon</strong> joined the Afrobeats campaign</div>
-      <div class="feed-time">just now</div>
-    </div>
-    <div class="feed-item">
-      <div class="feed-dot purple-dot"></div>
-      <div class="feed-text"><strong>A fan</strong> reached a 7-day streak 🔥</div>
-      <div class="feed-time">2m ago</div>
-    </div>
-    <div class="feed-item">
-      <div class="feed-dot cyan-dot"></div>
-      <div class="feed-text"><strong>A fan</strong> explored their 5th genre 🌍</div>
-      <div class="feed-time">5m ago</div>
-    </div>
-    <div class="feed-item">
-      <div class="feed-dot"></div>
-      <div class="feed-text"><strong>Weekend Drop</strong> K-Pop campaign is now live ⚡</div>
-      <div class="feed-time">10m ago</div>
-    </div>
-  </div>
-
   <div class="section-label cyan-label">🌊 Discovery Map</div>
   <div class="card cyan-card">
     <div class="map-grid" id="discovery-map"></div>
-    <div style="font-size:11px;color:var(--gray);margin-top:10px">
-      <span style="color:var(--cyan)">Cyan</span> = genres you've unlocked. Join more campaigns to expand your map.
+    <div style="font-size:11px;color:var(--gray);margin-top:8px">
+      <span style="color:var(--cyan)">Cyan</span> = genres you've unlocked. Join more quests to expand your map.
     </div>
   </div>
 
-  <div class="section-label">👑 Top Fans This Week</div>
-  <div class="card" id="mini-leaderboard">
-    <div style="color:var(--gray);font-size:12px">Loading...</div>
-  </div>
-  <a href="/leaderboard.html" style="display:block;text-align:center;font-size:12px;color:var(--gold);text-decoration:none;margin-bottom:4px;padding:4px 0">View full leaderboard →</a>
-
-  <div class="section-label">🔥 Trending Campaigns</div>
+  <div class="section-label">🔥 Trending Quests</div>
   <div class="campaign-scroll" id="trending-campaigns">
     <div style="color:var(--gray);font-size:12px;padding:8px">Loading...</div>
   </div>
-
-  <div class="section-label purple-label">💜 Quick Actions</div>
-  <div class="quick-grid">
-    <a class="quick-btn" href="/campaigns.html">
-      <div class="q-icon">🎯</div>
-      <div class="q-label">Campaigns</div>
-    </a>
-    <a class="quick-btn" href="/leaderboard.html">
-      <div class="q-icon">🏆</div>
-      <div class="q-label">Leaderboard</div>
-    </a>
-    <a class="quick-btn" href="/profile.html">
-      <div class="q-icon">👤</div>
-      <div class="q-label">Profile</div>
-    </a>
-  </div>
-
-  <div class="contract">Contract: 0x818b85e381b9f36b5a3f597788513633981c406e · World Chain</div>
 
 </div>
 
 <nav class="bottom-nav">
   <a href="/" class="active"><span class="icon">🏠</span>Home</a>
-  <a href="/campaigns.html"><span class="icon">🎯</span>Campaigns</a>
+  <a href="/campaigns.html"><span class="icon">🎯</span>Quests</a>
   <a href="/leaderboard.html"><span class="icon">🏆</span>Board</a>
   <a href="/profile.html"><span class="icon">👤</span>Profile</a>
 </nav>
@@ -385,19 +235,69 @@ h1{font-size:clamp(36px,9vw,64px);font-weight:900;line-height:1.04;margin-bottom
     <button class="submit-btn" id="pluto-name-submit">bet</button>
     <p class="err" id="pluto-name-error">at least 2 characters please</p>
   </div>
-                            </div>
-                            <script>
+    </div>
+    <script>
 var API = "https://pluto-rewards-production.up.railway.app";
+var token = localStorage.getItem("pluto_token");
+var GEMS = ["Bongo Flava","Ndombolo","Rai","OPM","Sertanejo","C-Pop","Turkish Pop","Highlife","Rai","Arabic Pop"];
+var TRENDS = [
+  "🌍 Afrobeats is climbing fast across East Africa today",
+  "🔥 Amapiano fans are the most active on Pluto this week",
+  "🌊 K-Pop campaigns filling up — join before the pool runs out",
+  "💎 Hidden: Bongo Flava has the lowest competition right now",
+  "🚀 Hip-Hop Discovery Score leaders gained 40 pts this week",
+  "🌌 Indie fans are quietly dominating the leaderboard",
+  "⭐ Gospel campaigns hit a new participation record",
+  "🎯 Latin genre explorers up 3x this month",
+  "👑 Three new Pathfinder titles earned today",
+  "🔭 EDM: highest reward-per-join ratio right now"
+];
 var GENRES = ["Afrobeats","Amapiano","Hip-Hop","R&B","Pop","Latin","UK Drill","K-Pop","EDM","Gospel","Reggae","Indie","Country","Bollywood","Afropop","Highlife","Bongo Flava","J-Pop","Arabic Pop","OPM","Sertanejo","C-Pop","Salsa","Trap","Ndombolo","Rai","Turkish Pop","Classical","French Pop"];
-var RISING = ["Amapiano","Afrobeats","K-Pop","Hip-Hop","Latin","EDM","Bongo Flava","UK Drill"];
-var GEMS = ["Bongo Flava","Ndombolo","Rai","OPM","Sertanejo","C-Pop","Turkish Pop","Highlife"];
 
-document.getElementById("rising-star-genre").textContent = RISING[Math.floor(Math.random()*RISING.length)];
-document.getElementById("hidden-gem-genre").textContent = GEMS[Math.floor(Math.random()*GEMS.length)];
+// Launch screen
+(function() {
+  if (sessionStorage.getItem("pluto_launched")) {
+    document.getElementById("launch-screen").style.display = "none";
+    return;
+  }
+  var screen = document.getElementById("launch-screen");
+  var logo = document.getElementById("l-logo");
+  var tagline = document.getElementById("l-tagline");
+  var barWrap = document.getElementById("l-bar-wrap");
+  var fill = document.getElementById("l-fill");
 
+  setTimeout(function() { logo.style.opacity="1"; logo.style.transform="translateY(0)"; }, 100);
+  setTimeout(function() { tagline.style.opacity="1"; tagline.style.transform="translateY(0)"; }, 400);
+  setTimeout(function() { barWrap.style.opacity="1"; setTimeout(function(){ fill.style.width="100%"; }, 50); }, 700);
+  setTimeout(function() {
+    screen.style.opacity="0";
+    setTimeout(function() { screen.style.display="none"; sessionStorage.setItem("pluto_launched","1"); }, 800);
+  }, 3200);
+})();
+
+// Daily trend
+var trendIdx = new Date().getDate() % TRENDS.length;
+document.getElementById("trend-line").textContent = TRENDS[trendIdx];
+
+// Hidden gem
+document.getElementById("hidden-gem-name").textContent = GEMS[new Date().getDate() % GEMS.length];
+
+// Default discovery map (no login)
+(function() {
+  var grid = document.getElementById("discovery-map");
+  grid.innerHTML = "";
+  GENRES.forEach(function(g) {
+    var tile = document.createElement("div");
+    tile.className = "map-tile";
+    tile.textContent = g;
+    grid.appendChild(tile);
+  });
+})();
+
+// Auth
 var params = new URLSearchParams(window.location.search);
-var token = params.get("token");
-var userId = params.get("user_id");
+var urlToken = params.get("token");
+var urlUserId = params.get("user_id");
 var newUser = params.get("new_user");
 var error = params.get("error");
 
@@ -406,16 +306,17 @@ if (error) {
   history.replaceState({}, document.title, window.location.pathname);
 }
 
-if (token && userId) {
-  localStorage.setItem("pluto_token", token);
-  localStorage.setItem("pluto_user_id", userId);
+if (urlToken && urlUserId) {
+  localStorage.setItem("pluto_token", urlToken);
+  localStorage.setItem("pluto_user_id", urlUserId);
+  token = urlToken;
   if (newUser === "true") {
     document.getElementById("pluto-modal").classList.add("show");
   } else {
     showLoggedInState();
   }
   history.replaceState({}, document.title, window.location.pathname);
-} else if (localStorage.getItem("pluto_token")) {
+} else if (token) {
   showLoggedInState();
 }
 
@@ -426,7 +327,7 @@ document.getElementById("pluto-name-submit").addEventListener("click", function(
   errorEl.style.display = "none";
   fetch(API + "/api/set-username", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("pluto_token") },
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
     body: JSON.stringify({ name: name })
   })
   .then(function(r) { return r.json(); })
@@ -436,125 +337,141 @@ document.getElementById("pluto-name-submit").addEventListener("click", function(
     showLoggedInState();
   })
   .catch(function() {
-    errorEl.textContent = "Something went wrong. Try again.";
-    errorEl.style.display = "block";
+    document.getElementById("pluto-name-error").textContent = "Something went wrong. Try again.";
+    document.getElementById("pluto-name-error").style.display = "block";
   });
 });
 
 function showLoggedInState() {
-  var name = localStorage.getItem("pluto_name") || "Fan";
-  document.querySelectorAll('#join, #join2').forEach(function(btn) {
-    btn.textContent = "✓ " + name;
-    btn.style.background = "linear-gradient(135deg,#D4AF37,#F4C430)";
-    btn.style.color = "#000";
-    btn.style.pointerEvents = "none";
-    btn.removeAttribute("href");
-  });
+  var joinBtn = document.getElementById("join");
+  if (joinBtn) {
+    joinBtn.textContent = "✓ Connected";
+    joinBtn.style.background = "rgba(34,197,94,0.15)";
+    joinBtn.style.color = "#22c55e";
+    joinBtn.style.border = "1px solid rgba(34,197,94,0.3)";
+    joinBtn.style.pointerEvents = "none";
+    joinBtn.removeAttribute("href");
+  }
+  document.getElementById("hero-not-logged").style.display = "none";
+  document.getElementById("hero-logged").style.display = "flex";
+  document.getElementById("hero-title-wrap").style.display = "block";
   loadUserData();
 }
 
 function loadUserData() {
-  var t = localStorage.getItem("pluto_token");
-  if (!t) return;
-  fetch(API + "/api/profile/me", { headers: { "Authorization": "Bearer " + t } })
-    .then(function(r) { return r.json(); })
-    .then(function(p) {
-      var streak = p.streak_days || 0;
-      var nextMilestone, nextLabel, progress;
-      if (streak < 7) {
-        nextMilestone = 1000; nextLabel = "Complete your 7-day streak";
-        progress = Math.round((streak / 7) * 100);
-      } else if (streak < 30) {
-        nextMilestone = 5000; nextLabel = "Complete your 30-day streak";
-        progress = Math.round(((streak - 7) / 23) * 100);
-      } else {
-        nextMilestone = 10000; nextLabel = "Complete your 100-day streak";
-        progress = Math.round(((streak - 30) / 70) * 100);
-      }
-      document.getElementById("next-reward").textContent = "+" + nextMilestone.toLocaleString() + " \u2647";
-      document.getElementById("next-reward-sub").textContent = nextLabel;
-      document.getElementById("reward-fill").style.width = progress + "%";
-      document.getElementById("reward-hint").textContent = "Current streak: " + streak + " days \uD83D\uDD25";
-      document.getElementById("checkin-sub").textContent = "Current streak: " + streak + " days. Keep it going!";
+  if (!token) return;
+  Promise.all([
+    fetch(API + "/api/profile/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); }),
+    fetch(API + "/api/leaderboard/discovery/me", { headers: { "Authorization": "Bearer " + token } }).then(function(r) { return r.json(); })
+  ])
+  .then(function(results) {
+    var p = results[0];
+    var rankData = results[1];
 
-      var exploredGenres = p.genres_explored || [];
-      var mapGrid = document.getElementById("discovery-map");
-      mapGrid.innerHTML = "";
-      GENRES.forEach(function(g) {
-        var tile = document.createElement("div");
-        tile.className = "map-tile" + (exploredGenres.indexOf(g) !== -1 ? " unlocked" : "");
-        tile.textContent = g;
-        mapGrid.appendChild(tile);
-      });
-    })
-    .catch(function() {
-      var mapGrid = document.getElementById("discovery-map");
-      mapGrid.innerHTML = "";
-      GENRES.forEach(function(g) {
-        var tile = document.createElement("div");
-        tile.className = "map-tile";
-        tile.textContent = g;
-        mapGrid.appendChild(tile);
-      });
+    if (p.error) return;
+
+    var rank = rankData.rank ? "#" + rankData.rank : "—";
+    document.getElementById("hero-rank").textContent = rank;
+    document.getElementById("hero-score").textContent = p.discovery_score || 0;
+    document.getElementById("hero-pluto").textContent = Number(p.total_pluto || 0).toLocaleString();
+
+    var title = p.title || { name: "Newcomer", icon: "✨" };
+    document.getElementById("hero-title-badge").textContent = title.icon + " " + title.name;
+
+    var streak = p.streak_days || 0;
+    var flames = streak >= 100 ? "🔥🔥🔥" : streak >= 30 ? "🔥🔥" : streak >= 7 ? "🔥" : "";
+    document.getElementById("streak-days").innerHTML = streak + ' <span>day streak</span>';
+    document.getElementById("streak-flames").textContent = flames;
+
+    var nextMilestone = streak < 7 ? 7 : streak < 30 ? 30 : 100;
+    var prevMilestone = streak < 7 ? 0 : streak < 30 ? 7 : 30;
+    var progress = Math.round(((streak - prevMilestone) / (nextMilestone - prevMilestone)) * 100);
+    var reward = nextMilestone === 7 ? 1000 : nextMilestone === 30 ? 5000 : 10000;
+
+    document.getElementById("streak-fill").style.width = Math.min(progress, 100) + "%";
+    document.getElementById("streak-progress-label").textContent = "Day " + streak + " of " + nextMilestone;
+    document.getElementById("streak-reward-label").textContent = "+" + reward.toLocaleString() + " ♇ at " + nextMilestone + " days";
+    document.getElementById("streak-next").textContent = "Next milestone: " + nextMilestone + " days";
+
+    var exploredGenres = p.genres_explored || [];
+    var grid = document.getElementById("discovery-map");
+    grid.innerHTML = "";
+    GENRES.forEach(function(g) {
+      var tile = document.createElement("div");
+      tile.className = "map-tile" + (exploredGenres.indexOf(g) !== -1 ? " unlocked" : "");
+      tile.textContent = g;
+      grid.appendChild(tile);
     });
+  })
+  .catch(function() {});
 }
-
-loadUserData();
-
+    </script>
+    <script>
 function doCheckin() {
-  var t = localStorage.getItem("pluto_token");
-  if (!t) { alert("Connect your Spotify first!"); return; }
-  var btn = document.getElementById("checkin-btn");
-  btn.textContent = "...";
+  if (!token) {
+    alert("Connect your Spotify first!");
+    return;
+  }
+  var btn = document.getElementById("claim-btn");
+  btn.textContent = "Claiming...";
   btn.disabled = true;
+
   fetch(API + "/api/checkin", {
     method: "POST",
-    headers: { "Authorization": "Bearer " + t }
+    headers: { "Authorization": "Bearer " + token }
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    var result = document.getElementById("checkin-result");
+    var result = document.getElementById("streak-result");
     result.style.display = "block";
-    if (data.reward > 0) {
-      result.textContent = "\uD83D\uDD25 " + data.streak_days + "-day streak! +" + data.reward + " \u2647 earned";
-      result.style.color = "var(--gold)";
-      btn.textContent = "Claimed!";
-    } else {
+
+    if (data.reward === 0) {
       result.textContent = "Already checked in today. Come back tomorrow!";
       result.style.color = "var(--gray)";
-      btn.textContent = "Done";
-    }
-  })
-  .catch(function() {
-    document.getElementById("checkin-btn").textContent = "Claim";
-    document.getElementById("checkin-btn").disabled = false;
-  });
-}
-
-fetch(API + "/api/leaderboard/discovery")
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    var lb = document.getElementById("mini-leaderboard");
-    lb.innerHTML = "";
-    var top = (data.leaderboard || []).slice(0, 5);
-    if (top.length === 0) {
-      lb.innerHTML = '<div style="color:var(--gray);font-size:12px">No fans yet — be the first!</div>';
+      btn.textContent = "Done for today";
       return;
     }
-    var rankClasses = ["gold","silver","bronze","",""];
-    top.forEach(function(u, i) {
-      var row = document.createElement("div");
-      row.className = "lb-item";
-      row.innerHTML =
-        '<div class="lb-rank ' + (rankClasses[i] || "") + '">#' + u.rank + '</div>' +
-        '<div class="lb-name">' + u.name + ' ' + (u.tier ? u.tier.icon : "") + '</div>' +
-        '<div class="lb-score">' + u.discovery_score + ' pts</div>';
-      lb.appendChild(row);
-    });
+
+    var streak = data.streak_days || 0;
+    var flames = streak >= 100 ? "🔥🔥🔥" : streak >= 30 ? "🔥🔥" : streak >= 7 ? "🔥" : "🔥";
+
+    if (data.mystery_tier === "rare") {
+      result.innerHTML = flames + " " + streak + "-day streak! +" + data.reward + " ♇<br>🎁 RARE DROP — Mystery Hunter badge unlocked! 👑";
+      result.style.color = "var(--gold)";
+    } else if (data.mystery_tier === "big") {
+      result.innerHTML = flames + " " + streak + "-day streak! +" + data.reward + " ♇<br>🎁 BIG MYSTERY DROP — +" + data.mystery_bonus + " ♇ bonus!";
+      result.style.color = "var(--gold)";
+    } else if (data.mystery_tier === "medium") {
+      result.innerHTML = flames + " " + streak + "-day streak! +" + data.reward + " ♇<br>✨ Mystery bonus — +" + data.mystery_bonus + " ♇";
+      result.style.color = "var(--gold-soft)";
+    } else if (data.mystery_tier === "small") {
+      result.innerHTML = flames + " " + streak + "-day streak! +" + data.total_reward + " ♇ earned";
+      result.style.color = "var(--gold-soft)";
+    } else {
+      result.innerHTML = flames + " " + streak + "-day streak! +" + data.reward + " ♇ earned";
+      result.style.color = "var(--gold-soft)";
+    }
+
+    btn.textContent = "✓ Claimed!";
+
+    document.getElementById("streak-days").innerHTML = streak + ' <span>day streak</span>';
+    document.getElementById("streak-flames").textContent = flames;
+
+    var nextMilestone = streak < 7 ? 7 : streak < 30 ? 30 : 100;
+    var prevMilestone = streak < 7 ? 0 : streak < 30 ? 7 : 30;
+    var progress = Math.round(((streak - prevMilestone) / (nextMilestone - prevMilestone)) * 100);
+    document.getElementById("streak-fill").style.width = Math.min(progress, 100) + "%";
+    document.getElementById("streak-progress-label").textContent = "Day " + streak + " of " + nextMilestone;
+
+    document.getElementById("hero-score").textContent = data.discovery_score || document.getElementById("hero-score").textContent;
+    document.getElementById("hero-pluto").textContent = Number(data.total_pluto || 0).toLocaleString();
   })
   .catch(function() {
-    document.getElementById("mini-leaderboard").innerHTML = '<div style="color:var(--gray);font-size:12px">Could not load.</div>';
+    var btn = document.getElementById("claim-btn");
+    btn.textContent = "Claim Daily Reward";
+    btn.disabled = false;
   });
+}
 
 fetch(API + "/api/campaigns")
   .then(function(r) { return r.json(); })
@@ -579,7 +496,8 @@ fetch(API + "/api/campaigns")
     });
   })
   .catch(function() {
-    document.getElementById("trending-campaigns").innerHTML = '<div style="color:var(--gray);font-size:12px;padding:8px">Could not load.</div>';
+    document.getElementById("trending-campaigns").innerHTML =
+      '<div style="color:var(--gray);font-size:12px;padding:8px">Could not load quests.</div>';
   });
 </script>
 
